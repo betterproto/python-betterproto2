@@ -1,6 +1,6 @@
 # Better Protobuf / gRPC Support for Python
 
-![](https://github.com/danielgtaylor/python-betterproto/actions/workflows/ci.yml/badge.svg)
+![](https://github.com/betterproto/python-betterproto2/actions/workflows/ci.yml/badge.svg)
 
 > :octocat: If you're reading this on github, please be aware that it might mention unreleased features! See the latest released README on [pypi](https://pypi.org/project/betterproto/).
 
@@ -559,12 +559,8 @@ protoc \
 - [x] Automate running tests
 - [ ] Cleanup!
 
-## Community
-
-Join us on [Slack](https://join.slack.com/t/betterproto/shared_invite/zt-f0n0uolx-iN8gBNrkPxtKHTLpG3o1OQ)!
-
 ## License
 
 Copyright © 2019 Daniel G. Taylor
 
-http://dgt.mit-license.org/
+Copyright © 2024 The betterproto contributors
