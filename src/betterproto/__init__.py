@@ -987,19 +987,12 @@ class Message(ABC):
                 # send the value even if the value is the default zero value.
                 selected_in_group = bool(meta.group) or meta.optional
 
-                # Empty messages can still be sent on the wire if they were
-                # set (or received empty).
-                # TODO this is here for historical reasons, now if a message is defined (ie not None), it should be sent
-                serialize_empty = isinstance(value, Message)
-
                 include_default_value_for_oneof = self._include_default_value_for_oneof(
                     field_name=field_name, meta=meta
                 )
 
                 if value == self._get_field_default(field_name) and not (
-                    selected_in_group
-                    or serialize_empty
-                    or include_default_value_for_oneof
+                    selected_in_group or include_default_value_for_oneof
                 ):
                     # Default (zero) values are not serialized. Two exceptions are
                     # if this is the selected oneof item or if we know we have to
@@ -1044,6 +1037,7 @@ class Message(ABC):
                     # a oneof, make sure we serialize it. This ensures that the byte string
                     # output isn't simply an empty string. This also ensures that round trip
                     # serialization will keep `which_one_of` calls consistent.
+                    serialize_empty = False
                     if (
                         isinstance(value, str)
                         and value == ""
