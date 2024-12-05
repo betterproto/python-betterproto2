@@ -207,8 +207,7 @@ async def test_service_call_high_level_with_overrides(mocker, overrides_gen):
         await _test_client(client, name=name, **overrides)
         assert request_spy.call_count == 1
 
-        # for python <3.8 request_spy.call_args.kwargs do not work
-        _, request_spy_call_kwargs = request_spy.call_args_list[0]
+        request_spy_call_kwargs = request_spy.call_args.kwargs
 
         # ensure all overrides were successful
         for key, value in overrides.items():
