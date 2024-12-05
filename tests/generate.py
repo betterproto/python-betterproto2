@@ -189,11 +189,7 @@ def main():
         verbose = False
         whitelist = set(sys.argv[1:])
 
-    try:
-        asyncio.run(generate(whitelist, verbose))
-    except AttributeError:
-        # compatibility code for python < 3.7
-        asyncio.get_event_loop().run_until_complete(generate(whitelist, verbose))
+    asyncio.run(generate(whitelist, verbose))
 
 
 if __name__ == "__main__":
