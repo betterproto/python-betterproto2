@@ -1127,9 +1127,9 @@ class EnumDescriptorProto(betterproto.Message):
     
     """
 
-    reserved_range: List[
-        "EnumDescriptorProtoEnumReservedRange"
-    ] = betterproto.message_field(4, repeated=True)
+    reserved_range: List["EnumDescriptorProtoEnumReservedRange"] = (
+        betterproto.message_field(4, repeated=True)
+    )
     """
     Range of reserved numeric values. Reserved numeric values may not be used
     by enum values in the same enum declaration. Reserved ranges may not
@@ -1761,73 +1761,7 @@ class UninterpretedOptionNamePart(betterproto.Message):
 
     is_extension: bool = betterproto.bool_field(2)
     """
-<<<<<<< HEAD
     
-=======
-    TODO Enums in C++ gencode (and potentially other languages) are
-     not well scoped.  This means that each of the feature enums below can clash
-     with each other.  The short names we've chosen maximize call-site
-     readability, but leave us very open to this scenario.  A future feature will
-     be designed and implemented to handle this, hopefully before we ever hit a
-     conflict here.
-    """
-
-    field_presence: "FeatureSetFieldPresence" = betterproto.enum_field(1)
-    enum_type: "FeatureSetEnumType" = betterproto.enum_field(2)
-    repeated_field_encoding: "FeatureSetRepeatedFieldEncoding" = betterproto.enum_field(
-        3
-    )
-    utf8_validation: "FeatureSetUtf8Validation" = betterproto.enum_field(4)
-    message_encoding: "FeatureSetMessageEncoding" = betterproto.enum_field(5)
-    json_format: "FeatureSetJsonFormat" = betterproto.enum_field(6)
-
-
-@dataclass(eq=False, repr=False)
-class FeatureSetDefaults(betterproto.Message):
-    """
-    A compiled specification for the defaults of a set of features.  These
-     messages are generated from FeatureSet extensions and can be used to seed
-     feature resolution. The resolution with this object becomes a simple search
-     for the closest matching edition, followed by proto merges.
-    """
-
-    defaults: List["FeatureSetDefaultsFeatureSetEditionDefault"] = (
-        betterproto.message_field(1)
-    )
-    minimum_edition: "Edition" = betterproto.enum_field(4)
-    """
-    The minimum supported edition (inclusive) when this was constructed.
-     Editions before this will not have defaults.
-    """
-
-    maximum_edition: "Edition" = betterproto.enum_field(5)
-    """
-    The maximum known edition (inclusive) when this was constructed. Editions
-     after this will not have reliable defaults.
-    """
-
-
-@dataclass(eq=False, repr=False)
-class FeatureSetDefaultsFeatureSetEditionDefault(betterproto.Message):
-    """
-    A map from every known edition with a unique set of defaults to its
-     defaults. Not all editions may be contained here.  For a given edition,
-     the defaults at the closest matching edition ordered at or before it should
-     be used.  This field must be in strict ascending order by edition.
-    """
-
-    edition: "Edition" = betterproto.enum_field(3)
-    overridable_features: "FeatureSet" = betterproto.message_field(4)
-    """Defaults of features that can be overridden in this edition."""
-
-    fixed_features: "FeatureSet" = betterproto.message_field(5)
-    """Defaults of features that can't be overridden in this edition."""
-
-    features: "FeatureSet" = betterproto.message_field(2)
-    """
-    TODO Deprecate and remove this field, which is just the
-     above two merged.
->>>>>>> main
     """
 
 

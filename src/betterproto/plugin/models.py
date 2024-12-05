@@ -231,7 +231,7 @@ class ProtoContentBase:
 
     @property
     def deprecated(self) -> bool:
-        return self.proto_obj.options.deprecated
+        return self.proto_obj.options and self.proto_obj.options.deprecated
 
 
 @dataclass
@@ -311,7 +311,10 @@ class OutputTemplate:
         if any(x for x in self.messages.values() if any(x.deprecated_fields)):
             has_deprecated = True
         if any(
-            any(m.proto_obj.options and m.proto_obj.options.deprecated for m in s.methods)
+            any(
+                m.proto_obj.options and m.proto_obj.options.deprecated
+                for m in s.methods
+            )
             for s in self.services.values()
         ):
             has_deprecated = True
@@ -345,7 +348,6 @@ class MessageCompiler(ProtoContentBase):
                 self.output_file.enums[self.proto_name] = self
             else:
                 self.output_file.messages[self.proto_name] = self
-        self.deprecated = self.proto_obj.options and self.proto_obj.options.deprecated
         super().__post_init__()
 
     @property

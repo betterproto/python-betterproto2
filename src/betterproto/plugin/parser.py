@@ -61,7 +61,9 @@ def traverse(
             # Adjust the name since we flatten the hierarchy.
             # Todo: don't change the name, but include full name in returned tuple
             should_rename = (
-                not isinstance(item, DescriptorProto) or not item.options.map_entry
+                not isinstance(item, DescriptorProto)
+                or not item.options
+                or not item.options.map_entry
             )
 
             item.name = next_prefix = (

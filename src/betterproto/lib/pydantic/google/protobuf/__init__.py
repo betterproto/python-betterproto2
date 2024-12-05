@@ -1837,9 +1837,9 @@ class FeatureSetDefaults(betterproto.Message):
      for the closest matching edition, followed by proto merges.
     """
 
-    defaults: List[
-        "FeatureSetDefaultsFeatureSetEditionDefault"
-    ] = betterproto.message_field(1)
+    defaults: List["FeatureSetDefaultsFeatureSetEditionDefault"] = (
+        betterproto.message_field(1)
+    )
     minimum_edition: "Edition" = betterproto.enum_field(
         4, enum_default_value=lambda: Edition.try_value(0)
     )
