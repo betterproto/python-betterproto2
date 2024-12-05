@@ -534,20 +534,6 @@ def encode_varint(value: int) -> bytes:
         return stream.getvalue()
 
 
-def size_varint(value: int) -> int:
-    """Calculates the size in bytes that a value would take as a varint."""
-    if value < -(1 << 63):
-        raise ValueError(
-            "Negative value is not representable as a 64-bit integer - unable to encode a varint within 10 bytes."
-        )
-    elif value < 0:
-        return 10
-    elif value == 0:
-        return 1
-    else:
-        return math.ceil(value.bit_length() / 7)
-
-
 def _preprocess_single(proto_type: str, wraps: str, value: Any) -> bytes:
     """Adjusts values before serialization."""
     if proto_type in (
@@ -583,41 +569,6 @@ def _preprocess_single(proto_type: str, wraps: str, value: Any) -> bytes:
     return value
 
 
-def _len_preprocessed_single(proto_type: str, wraps: str, value: Any) -> int:
-    """Calculate the size of adjusted values for serialization without fully serializing them."""
-    if proto_type in (
-        TYPE_ENUM,
-        TYPE_BOOL,
-        TYPE_INT32,
-        TYPE_INT64,
-        TYPE_UINT32,
-        TYPE_UINT64,
-    ):
-        return size_varint(value)
-    elif proto_type in (TYPE_SINT32, TYPE_SINT64):
-        # Handle zig-zag encoding.
-        return size_varint(value << 1 if value >= 0 else (value << 1) ^ (~0))
-    elif proto_type in FIXED_TYPES:
-        return len(struct.pack(_pack_fmt(proto_type), value))
-    elif proto_type == TYPE_STRING:
-        return len(value.encode("utf-8"))
-    elif proto_type == TYPE_MESSAGE:
-        if isinstance(value, datetime):
-            # Convert the `datetime` to a timestamp message.
-            value = _Timestamp.from_datetime(value)
-        elif isinstance(value, timedelta):
-            # Convert the `timedelta` to a duration message.
-            value = _Duration.from_timedelta(value)
-        elif wraps:
-            if value is None:
-                return 0
-            value = _get_wrapper(wraps)(value=value)
-
-        return len(bytes(value))
-
-    return len(value)
-
-
 def _serialize_single(
     field_number: int,
     proto_type: str,
@@ -647,31 +598,6 @@ def _serialize_single(
         raise NotImplementedError(proto_type)
 
     return bytes(output)
-
-
-def _len_single(
-    field_number: int,
-    proto_type: str,
-    value: Any,
-    *,
-    serialize_empty: bool = False,
-    wraps: str = "",
-) -> int:
-    """Calculates the size of a serialized single field and value."""
-    size = _len_preprocessed_single(proto_type, wraps, value)
-    if proto_type in WIRE_VARINT_TYPES:
-        size += size_varint(field_number << 3)
-    elif proto_type in WIRE_FIXED_32_TYPES:
-        size += size_varint((field_number << 3) | 5)
-    elif proto_type in WIRE_FIXED_64_TYPES:
-        size += size_varint((field_number << 3) | 1)
-    elif proto_type in WIRE_LEN_DELIM_TYPES:
-        if size or serialize_empty or wraps:
-            size += size_varint((field_number << 3) | 2) + size_varint(size)
-    else:
-        raise NotImplementedError(proto_type)
-
-    return size
 
 
 def _parse_float(value: Any) -> float:
@@ -1031,199 +957,111 @@ class Message(ABC):
         delimit:
             Whether to prefix the message with a varint declaring its size.
         """
+        b = bytes(self)
+
         if delimit == SIZE_DELIMITED:
-            dump_varint(len(self), stream)
+            dump_varint(len(b), stream)
 
-        for field_name, meta in self._betterproto.meta_by_field_name.items():
-            value = getattr(self, field_name)
-
-            if value is None:
-                # Optional items should be skipped. This is used for the Google
-                # wrapper types and proto3 field presence/optional fields.
-                continue
-
-            # Being selected in a a group means this field is the one that is
-            # currently set in a `oneof` group, so it must be serialized even
-            # if the value is the default zero value.
-            #
-            # Note that proto3 field presence/optional fields are put in a
-            # synthetic single-item oneof by protoc, which helps us ensure we
-            # send the value even if the value is the default zero value.
-            selected_in_group = bool(meta.group) or meta.optional
-
-            # Empty messages can still be sent on the wire if they were
-            # set (or received empty).
-            # TODO this is here for historical reasons, now if a message is defined (ie not None), it should be sent
-            serialize_empty = isinstance(value, Message)
-
-            include_default_value_for_oneof = self._include_default_value_for_oneof(
-                field_name=field_name, meta=meta
-            )
-
-            if value == self._get_field_default(field_name) and not (
-                selected_in_group or serialize_empty or include_default_value_for_oneof
-            ):
-                # Default (zero) values are not serialized. Two exceptions are
-                # if this is the selected oneof item or if we know we have to
-                # serialize an empty message (i.e. zero value was explicitly
-                # set by the user).
-                continue
-
-            if isinstance(value, list):
-                if meta.proto_type in PACKED_TYPES:
-                    # Packed lists look like a length-delimited field. First,
-                    # preprocess/encode each value into a buffer and then
-                    # treat it like a field of raw bytes.
-                    buf = bytearray()
-                    for item in value:
-                        buf += _preprocess_single(meta.proto_type, "", item)
-                    stream.write(_serialize_single(meta.number, TYPE_BYTES, buf))
-                else:
-                    for item in value:
-                        stream.write(
-                            _serialize_single(
-                                meta.number,
-                                meta.proto_type,
-                                item,
-                                wraps=meta.wraps or "",
-                                serialize_empty=True,
-                            )
-                            # if it's an empty message it still needs to be represented
-                            # as an item in the repeated list
-                            or b"\n\x00"
-                        )
-
-            elif isinstance(value, dict):
-                for k, v in value.items():
-                    assert meta.map_types
-                    sk = _serialize_single(1, meta.map_types[0], k)
-                    sv = _serialize_single(2, meta.map_types[1], v)
-                    stream.write(
-                        _serialize_single(meta.number, meta.proto_type, sk + sv)
-                    )
-            else:
-                # If we have an empty string and we're including the default value for
-                # a oneof, make sure we serialize it. This ensures that the byte string
-                # output isn't simply an empty string. This also ensures that round trip
-                # serialization will keep `which_one_of` calls consistent.
-                if (
-                    isinstance(value, str)
-                    and value == ""
-                    and include_default_value_for_oneof
-                ):
-                    serialize_empty = True
-
-                stream.write(
-                    _serialize_single(
-                        meta.number,
-                        meta.proto_type,
-                        value,
-                        serialize_empty=serialize_empty or bool(selected_in_group),
-                        wraps=meta.wraps or "",
-                    )
-                )
-
-        stream.write(self._unknown_fields)
+        stream.write(b)
 
     def __bytes__(self) -> bytes:
         """
         Get the binary encoded Protobuf representation of this message instance.
         """
         with BytesIO() as stream:
-            self.dump(stream)
-            return stream.getvalue()
+            for field_name, meta in self._betterproto.meta_by_field_name.items():
+                value = getattr(self, field_name)
 
-    def __len__(self) -> int:
-        """
-        Get the size of the encoded Protobuf representation of this message instance.
-        """
-        size = 0
-        for field_name, meta in self._betterproto.meta_by_field_name.items():
-            value = getattr(self, field_name)
+                if value is None:
+                    # Optional items should be skipped. This is used for the Google
+                    # wrapper types and proto3 field presence/optional fields.
+                    continue
 
-            if value is None:
-                # Optional items should be skipped. This is used for the Google
-                # wrapper types and proto3 field presence/optional fields.
-                continue
+                # Being selected in a a group means this field is the one that is
+                # currently set in a `oneof` group, so it must be serialized even
+                # if the value is the default zero value.
+                #
+                # Note that proto3 field presence/optional fields are put in a
+                # synthetic single-item oneof by protoc, which helps us ensure we
+                # send the value even if the value is the default zero value.
+                selected_in_group = bool(meta.group) or meta.optional
 
-            # Being selected in a group means this field is the one that is
-            # currently set in a `oneof` group, so it must be serialized even
-            # if the value is the default zero value.
-            #
-            # Note that proto3 field presence/optional fields are put in a
-            # synthetic single-item oneof by protoc, which helps us ensure we
-            # send the value even if the value is the default zero value.
-            selected_in_group = bool(meta.group)
+                # Empty messages can still be sent on the wire if they were
+                # set (or received empty).
+                # TODO this is here for historical reasons, now if a message is defined (ie not None), it should be sent
+                serialize_empty = isinstance(value, Message)
 
-            # Empty messages can still be sent on the wire if they were
-            # set (or received empty).
-            serialize_empty = isinstance(value, Message)
-
-            include_default_value_for_oneof = self._include_default_value_for_oneof(
-                field_name=field_name, meta=meta
-            )
-
-            if value == self._get_field_default(field_name) and not (
-                selected_in_group or serialize_empty or include_default_value_for_oneof
-            ):
-                # Default (zero) values are not serialized. Two exceptions are
-                # if this is the selected oneof item or if we know we have to
-                # serialize an empty message (i.e. zero value was explicitly
-                # set by the user).
-                continue
-
-            if isinstance(value, list):
-                if meta.proto_type in PACKED_TYPES:
-                    # Packed lists look like a length-delimited field. First,
-                    # preprocess/encode each value into a buffer and then
-                    # treat it like a field of raw bytes.
-                    buf = bytearray()
-                    for item in value:
-                        buf += _preprocess_single(meta.proto_type, "", item)
-                    size += _len_single(meta.number, TYPE_BYTES, buf)
-                else:
-                    for item in value:
-                        size += (
-                            _len_single(
-                                meta.number,
-                                meta.proto_type,
-                                item,
-                                wraps=meta.wraps or "",
-                                serialize_empty=True,
-                            )
-                            # if it's an empty message it still needs to be represented
-                            # as an item in the repeated list
-                            or 2
-                        )
-
-            elif isinstance(value, dict):
-                for k, v in value.items():
-                    assert meta.map_types
-                    sk = _serialize_single(1, meta.map_types[0], k)
-                    sv = _serialize_single(2, meta.map_types[1], v)
-                    size += _len_single(meta.number, meta.proto_type, sk + sv)
-            else:
-                # If we have an empty string and we're including the default value for
-                # a oneof, make sure we serialize it. This ensures that the byte string
-                # output isn't simply an empty string. This also ensures that round trip
-                # serialization will keep `which_one_of` calls consistent.
-                if (
-                    isinstance(value, str)
-                    and value == ""
-                    and include_default_value_for_oneof
-                ):
-                    serialize_empty = True
-
-                size += _len_single(
-                    meta.number,
-                    meta.proto_type,
-                    value,
-                    serialize_empty=serialize_empty or bool(selected_in_group),
-                    wraps=meta.wraps or "",
+                include_default_value_for_oneof = self._include_default_value_for_oneof(
+                    field_name=field_name, meta=meta
                 )
 
-        size += len(self._unknown_fields)
-        return size
+                if value == self._get_field_default(field_name) and not (
+                    selected_in_group
+                    or serialize_empty
+                    or include_default_value_for_oneof
+                ):
+                    # Default (zero) values are not serialized. Two exceptions are
+                    # if this is the selected oneof item or if we know we have to
+                    # serialize an empty message (i.e. zero value was explicitly
+                    # set by the user).
+                    continue
+
+                if isinstance(value, list):
+                    if meta.proto_type in PACKED_TYPES:
+                        # Packed lists look like a length-delimited field. First,
+                        # preprocess/encode each value into a buffer and then
+                        # treat it like a field of raw bytes.
+                        buf = bytearray()
+                        for item in value:
+                            buf += _preprocess_single(meta.proto_type, "", item)
+                        stream.write(_serialize_single(meta.number, TYPE_BYTES, buf))
+                    else:
+                        for item in value:
+                            stream.write(
+                                _serialize_single(
+                                    meta.number,
+                                    meta.proto_type,
+                                    item,
+                                    wraps=meta.wraps or "",
+                                    serialize_empty=True,
+                                )
+                                # if it's an empty message it still needs to be represented
+                                # as an item in the repeated list
+                                or b"\n\x00"
+                            )
+
+                elif isinstance(value, dict):
+                    for k, v in value.items():
+                        assert meta.map_types
+                        sk = _serialize_single(1, meta.map_types[0], k)
+                        sv = _serialize_single(2, meta.map_types[1], v)
+                        stream.write(
+                            _serialize_single(meta.number, meta.proto_type, sk + sv)
+                        )
+                else:
+                    # If we have an empty string and we're including the default value for
+                    # a oneof, make sure we serialize it. This ensures that the byte string
+                    # output isn't simply an empty string. This also ensures that round trip
+                    # serialization will keep `which_one_of` calls consistent.
+                    if (
+                        isinstance(value, str)
+                        and value == ""
+                        and include_default_value_for_oneof
+                    ):
+                        serialize_empty = True
+
+                    stream.write(
+                        _serialize_single(
+                            meta.number,
+                            meta.proto_type,
+                            value,
+                            serialize_empty=serialize_empty or bool(selected_in_group),
+                            wraps=meta.wraps or "",
+                        )
+                    )
+
+            stream.write(self._unknown_fields)
+            return stream.getvalue()
 
     # For compatibility with other libraries
     def SerializeToString(self: T) -> bytes:

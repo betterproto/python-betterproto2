@@ -21,7 +21,7 @@ oneof_example = oneof.Test().from_dict(
     {"pitied": 1, "just_a_regular_field": 123456789, "bar_name": "Testing"}
 )
 
-len_oneof = len(oneof_example)
+len_oneof = len(bytes(oneof_example))
 
 nested_example = nested.Test().from_dict(
     {
@@ -143,11 +143,6 @@ def test_message_dump_delimited(tmp_path):
         assert test_stream.read() == exp_stream.read()
 
 
-def test_message_len():
-    assert len_oneof == len(bytes(oneof_example))
-    assert len(nested_example) == len(bytes(nested_example))
-
-
 def test_message_load_file_single():
     with open(streams_path / "message_dump_file_single.expected", "rb") as stream:
         assert oneof.Test().load(stream) == oneof_example
@@ -186,74 +181,24 @@ def test_message_load_too_large():
         oneof.Test().load(stream, len_oneof + 1)
 
 
-def test_message_len_optional_field():
-    @dataclass
-    class Request(betterproto.Message):
-        flag: Optional[bool] = betterproto.message_field(1, wraps=betterproto.TYPE_BOOL)
-
-    assert len(Request()) == len(b"")
-    assert len(Request(flag=True)) == len(b"\n\x02\x08\x01")
-    assert len(Request(flag=False)) == len(b"\n\x00")
-
-
-def test_message_len_repeated_field():
-    assert len(repeated_example) == len(bytes(repeated_example))
-
-
-def test_message_len_packed_field():
-    assert len(packed_example) == len(bytes(packed_example))
-
-
-def test_message_len_map_field():
-    assert len(map_example) == len(bytes(map_example))
-
-
-def test_message_len_empty_string():
-    @dataclass
-    class Empty(betterproto.Message):
-        string: str = betterproto.string_field(1, "group")
-        integer: int = betterproto.int32_field(2, "group")
-
-    empty = Empty().from_dict({"string": ""})
-    assert len(empty) == len(bytes(empty))
-
-
 def test_calculate_varint_size_negative():
     single_byte = -1
     multi_byte = -10000000
     edge = -(1 << 63)
-    beyond = -(1 << 63) - 1
     before = -(1 << 63) + 1
 
-    assert (
-        betterproto.size_varint(single_byte)
-        == len(betterproto.encode_varint(single_byte))
-        == 10
-    )
-    assert (
-        betterproto.size_varint(multi_byte)
-        == len(betterproto.encode_varint(multi_byte))
-        == 10
-    )
-    assert betterproto.size_varint(edge) == len(betterproto.encode_varint(edge)) == 10
-    assert (
-        betterproto.size_varint(before) == len(betterproto.encode_varint(before)) == 10
-    )
-
-    with pytest.raises(ValueError):
-        betterproto.size_varint(beyond)
+    assert len(betterproto.encode_varint(single_byte)) == 10
+    assert len(betterproto.encode_varint(multi_byte)) == 10
+    assert len(betterproto.encode_varint(edge)) == 10
+    assert len(betterproto.encode_varint(before)) == 10
 
 
 def test_calculate_varint_size_positive():
     single_byte = 1
     multi_byte = 10000000
 
-    assert betterproto.size_varint(single_byte) == len(
-        betterproto.encode_varint(single_byte)
-    )
-    assert betterproto.size_varint(multi_byte) == len(
-        betterproto.encode_varint(multi_byte)
-    )
+    assert len(betterproto.encode_varint(single_byte))
+    assert len(betterproto.encode_varint(multi_byte))
 
 
 def test_dump_varint_negative(tmp_path):
