@@ -929,7 +929,7 @@ class Message(ABC):
             if meta.group:
                 group_current.setdefault(meta.group)
 
-                value = self.__raw_get(field_name)
+                value = self.__getattribute__(field_name)
                 if value is not None:
                     group_current[meta.group] = field_name
 
@@ -937,16 +937,13 @@ class Message(ABC):
         self.__dict__["_unknown_fields"] = b""
         self.__dict__["_group_current"] = group_current
 
-    def __raw_get(self, name: str) -> Any:
-        return super().__getattribute__(name)
-
     def __eq__(self, other) -> bool:
         if type(self) is not type(other):
             return NotImplemented
 
         for field_name in self._betterproto.meta_by_field_name:
-            self_val = self.__raw_get(field_name)
-            other_val = other.__raw_get(field_name)
+            self_val = self.__getattribute__(field_name)
+            other_val = other.__getattribute__(field_name)
 
             if self_val != other_val:
                 # We consider two nan values to be the same for the
@@ -968,14 +965,14 @@ class Message(ABC):
         parts = [
             f"{field_name}={value!r}"
             for field_name in self._betterproto.sorted_field_names
-            for value in (self.__raw_get(field_name),)
+            for value in (self.__getattribute__(field_name),)
             if value != self._get_field_default(field_name)
         ]
         return f"{self.__class__.__name__}({', '.join(parts)})"
 
     # def __rich_repr__(self) -> Iterable[Tuple[str, Any, Any]]:
     #     for field_name in self._betterproto.sorted_field_names:
-    #         yield field_name, self.__raw_get(field_name), PLACEHOLDER
+    #         yield field_name, self.__getattribute__(field_name), PLACEHOLDER
 
     def __setattr__(self, attr: str, value: Any) -> None:
         if hasattr(self, "_group_current"):  # __post_init__ had already run
@@ -992,21 +989,21 @@ class Message(ABC):
     def __bool__(self) -> bool:
         """True if the Message has any fields with non-default values."""
         return any(
-            self.__raw_get(field_name) != self._get_field_default(field_name)
+            self.__getattribute__(field_name) != self._get_field_default(field_name)
             for field_name in self._betterproto.meta_by_field_name
         )
 
     def __deepcopy__(self: T, _: Any = {}) -> T:
         kwargs = {}
         for name in self._betterproto.sorted_field_names:
-            value = self.__raw_get(name)
+            value = self.__getattribute__(name)
             kwargs[name] = deepcopy(value)
         return self.__class__(**kwargs)  # type: ignore
 
     def __copy__(self: T, _: Any = {}) -> T:
         kwargs = {}
         for name in self._betterproto.sorted_field_names:
-            value = self.__raw_get(name)
+            value = self.__getattribute__(name)
             kwargs[name] = value
         return self.__class__(**kwargs)  # type: ignore
 
@@ -1919,7 +1916,7 @@ class Message(ABC):
         :class:`bool`
             `True` if field has been set, otherwise `False`.
         """
-        return self.__raw_get(name) is not self._get_field_default(name)
+        return self.__getattribute__(name) is not self._get_field_default(name)
 
     @classmethod
     def _validate_field_groups(cls, values):
