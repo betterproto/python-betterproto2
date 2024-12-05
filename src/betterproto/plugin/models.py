@@ -176,7 +176,7 @@ def get_comment(
             # We don't add this space to the generated file.
             lines = [line[1:] if line and line[0] == " " else line for line in lines]
 
-            return f'"""\n{"\n".join(lines)}\n"""'
+            return "\n".join(lines)
 
     return ""
 
