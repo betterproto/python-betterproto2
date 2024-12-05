@@ -133,9 +133,9 @@ def test_message_dump_file_multiple(tmp_path):
 
 def test_message_dump_delimited(tmp_path):
     with open(tmp_path / "message_dump_delimited.out", "wb") as stream:
-        oneof_example.dump(stream, betterproto.SIZE_DELIMITED)
-        oneof_example.dump(stream, betterproto.SIZE_DELIMITED)
-        nested_example.dump(stream, betterproto.SIZE_DELIMITED)
+        oneof_example.dump(stream, True)
+        oneof_example.dump(stream, True)
+        nested_example.dump(stream, True)
 
     with open(tmp_path / "message_dump_delimited.out", "rb") as test_stream, open(
         streams_path / "delimited_messages.in", "rb"
@@ -340,8 +340,8 @@ def test_single_message(compile_jar, tmp_path):
 def test_multiple_messages(compile_jar, tmp_path):
     # Write delimited messages to file
     with open(tmp_path / "py_multiple_messages.out", "wb") as stream:
-        oneof_example.dump(stream, betterproto.SIZE_DELIMITED)
-        nested_example.dump(stream, betterproto.SIZE_DELIMITED)
+        oneof_example.dump(stream, True)
+        nested_example.dump(stream, True)
 
     # Have Java read and return the messages
     run_jar("multiple_messages", tmp_path)
@@ -362,7 +362,7 @@ def test_infinite_messages(compile_jar, tmp_path):
     # Write delimited messages to file
     with open(tmp_path / "py_infinite_messages.out", "wb") as stream:
         for x in range(num_messages):
-            oneof_example.dump(stream, betterproto.SIZE_DELIMITED)
+            oneof_example.dump(stream, True)
 
     # Have Java read and return the messages
     run_jar("infinite_messages", tmp_path)

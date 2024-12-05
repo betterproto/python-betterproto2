@@ -959,7 +959,7 @@ class Message(ABC):
         """
         b = bytes(self)
 
-        if delimit == SIZE_DELIMITED:
+        if delimit:
             dump_varint(len(b), stream)
 
         stream.write(b)
