@@ -152,7 +152,7 @@ The generated client can be used like so:
         # don't forget to close the channel when you're done!
         channel.close()
 
-    asyncio.run(main())  # python 3.7 only
+    asyncio.run(main())
 
     # outputs
     EchoResponse(values=['hello', 'hello'])
