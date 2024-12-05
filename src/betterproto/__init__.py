@@ -956,6 +956,7 @@ class Message(ABC):
             The stream to dump the message to.
         delimit:
             Whether to prefix the message with a varint declaring its size.
+            TODO is it actually needed?
         """
         b = bytes(self)
 
