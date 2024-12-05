@@ -436,7 +436,7 @@ class FieldCompiler(ProtoContentBase):
         # Check for new imports
         self.add_imports_to(self.output_file)
 
-    def get_field_string(self, indent: int = 4) -> str:
+    def get_field_string(self) -> str:
         """Construct string representation of this field as a field."""
         name = f"{self.py_name}"
         annotations = f": {self.annotation}"
