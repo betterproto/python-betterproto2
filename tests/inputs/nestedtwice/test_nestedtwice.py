@@ -22,4 +22,4 @@ from tests.output_betterproto.nestedtwice import (
     ],
 )
 def test_comment(cls, expected_comment):
-    assert cls.__doc__ == expected_comment
+    assert cls.__doc__.strip() == expected_comment

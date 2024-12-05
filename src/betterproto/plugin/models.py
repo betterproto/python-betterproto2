@@ -147,9 +147,9 @@ PROTO_PACKED_TYPES = (
 
 
 def get_comment(
-    proto_file: "FileDescriptorProto", path: List[int], indent: int = 4
+    proto_file: "FileDescriptorProto",
+    path: List[int],
 ) -> str:
-    pad = " " * indent
     for sci_loc in proto_file.source_code_info.location:
         if list(sci_loc.path) == path:
             all_comments = list(sci_loc.leading_detached_comments)
@@ -176,12 +176,7 @@ def get_comment(
             # We don't add this space to the generated file.
             lines = [line[1:] if line and line[0] == " " else line for line in lines]
 
-            # This is a field, message, enum, service, or method
-            if len(lines) == 1 and len(lines[0]) < 79 - indent - 6:
-                return f'{pad}"""{lines[0]}"""'
-            else:
-                joined = f"\n{pad}".join(lines)
-                return f'{pad}"""\n{pad}{joined}\n{pad}"""'
+            return f'"""\n{"\n".join(lines)}\n"""'
 
     return ""
 
@@ -192,7 +187,6 @@ class ProtoContentBase:
     source_file: FileDescriptorProto
     typing_compiler: TypingCompiler
     path: List[int]
-    comment_indent: int = 4
     parent: Union["betterproto.Message", "OutputTemplate"]
 
     __dataclass_fields__: Dict[str, object]
@@ -225,9 +219,7 @@ class ProtoContentBase:
         """Crawl the proto source code and retrieve comments
         for this object.
         """
-        return get_comment(
-            proto_file=self.source_file, path=self.path, indent=self.comment_indent
-        )
+        return get_comment(proto_file=self.source_file, path=self.path)
 
     @property
     def deprecated(self) -> bool:
@@ -727,7 +719,6 @@ class ServiceMethodCompiler(ProtoContentBase):
     parent: ServiceCompiler
     proto_obj: MethodDescriptorProto
     path: List[int] = PLACEHOLDER
-    comment_indent: int = 8
 
     def __post_init__(self) -> None:
         # Add method to service
