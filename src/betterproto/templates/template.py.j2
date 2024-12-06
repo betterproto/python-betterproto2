@@ -83,7 +83,12 @@ class {{ service.py_name }}Stub(betterproto.ServiceStub):
     {% for method in service.methods %}
     async def {{ method.py_name }}(self
         {%- if not method.client_streaming -%}
-            , {{ method.py_input_message_param }}: "{{ method.py_input_message_type }}"
+            , {{ method.py_input_message_param }}:
+                {%- if method.is_input_msg_empty -%}
+                    "{{ method.py_input_message_type }} | None" = None
+                {%- else -%}
+                    "{{ method.py_input_message_type }}"
+                {%- endif -%}
         {%- else -%}
             {# Client streaming: need a request iterator instead #}
             , {{ method.py_input_message_param }}_iterator: "{{ output_file.typing_compiler.union(output_file.typing_compiler.async_iterable(method.py_input_message_type), output_file.typing_compiler.iterable(method.py_input_message_type)) }}"
@@ -117,6 +122,11 @@ class {{ service.py_name }}Stub(betterproto.ServiceStub):
         ):
             yield response
             {% else %}{# i.e. not client streaming #}
+        {% if method.is_input_msg_empty %}
+        if {{ method.py_input_message_param }} is None:
+            {{ method.py_input_message_param }} = {{ method.py_input_message_type }}()
+
+        {% endif %}
         async for response in self._unary_stream(
             "{{ method.route }}",
             {{ method.py_input_message_param }},
@@ -140,6 +150,11 @@ class {{ service.py_name }}Stub(betterproto.ServiceStub):
             metadata=metadata,
         )
             {% else %}{# i.e. not client streaming #}
+        {% if method.is_input_msg_empty %}
+        if {{ method.py_input_message_param }} is None:
+            {{ method.py_input_message_param }} = {{ method.py_input_message_type }}()
+
+        {% endif %}
         return await self._unary_unary(
             "{{ method.route }}",
             {{ method.py_input_message_param }},

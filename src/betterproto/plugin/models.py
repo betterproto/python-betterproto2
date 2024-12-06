@@ -64,8 +64,7 @@ from betterproto.lib.google.protobuf import (
 )
 from betterproto.lib.google.protobuf.compiler import CodeGeneratorRequest
 
-from .. import which_one_of
-from ..compile.importing import get_type_reference
+from ..compile.importing import get_type_reference, parse_source_type_name
 from ..compile.naming import (
     pythonize_class_name,
     pythonize_enum_member_name,
@@ -702,6 +701,14 @@ class ServiceMethodCompiler(ProtoContentBase):
             unwrap=False,
             pydantic=self.output_file.pydantic_dataclasses,
         ).strip('"')
+
+    @property
+    def is_input_msg_empty(self: "ServiceMethodCompiler") -> bool:
+        package, name = parse_source_type_name(self.proto_obj.input_type, self.request)
+
+        msg = self.request.output_packages[package].messages[name]
+
+        return not bool(msg.fields)
 
     @property
     def py_input_message_param(self) -> str:
