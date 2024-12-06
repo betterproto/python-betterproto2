@@ -24,6 +24,7 @@ import datetime
 
 {% if output_file.pydantic_dataclasses %}
 from pydantic.dataclasses import dataclass
+from pydantic import model_validator
 {%- else -%}
 from dataclasses import dataclass
 {% endif %}
@@ -33,11 +34,6 @@ from dataclasses import dataclass
 {% for line in output_file.typing_compiler.import_lines() %}
 {{ line }}
 {% endfor %}
-{% endif %}
-
-{% if output_file.pydantic_imports %}
-from pydantic import {% for i in output_file.pydantic_imports|sort %}{{ i }}{% if not loop.last %}, {% endif %}{% endfor %}
-
 {% endif %}
 
 import betterproto

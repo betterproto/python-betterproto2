@@ -31,7 +31,6 @@ from .models import (
     OneOfFieldCompiler,
     OutputTemplate,
     PluginRequestCompiler,
-    PydanticOneOfFieldCompiler,
     ServiceCompiler,
     ServiceMethodCompiler,
     is_map,
@@ -209,9 +208,7 @@ def _make_one_of_field_compiler(
     proto_obj: "FieldDescriptorProto",
     path: List[int],
 ) -> FieldCompiler:
-    pydantic = output_package.pydantic_dataclasses
-    Cls = PydanticOneOfFieldCompiler if pydantic else OneOfFieldCompiler
-    return Cls(
+    return OneOfFieldCompiler(
         source_file=source_file,
         parent=parent,
         proto_obj=proto_obj,
