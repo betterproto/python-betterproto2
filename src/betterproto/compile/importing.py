@@ -91,10 +91,10 @@ def get_type_reference(
             return typing_compiler.optional(wrapped_type.__name__)
 
         if source_type == ".google.protobuf.Duration":
-            return "timedelta"
+            return "datetime.timedelta"
 
         elif source_type == ".google.protobuf.Timestamp":
-            return "datetime"
+            return "datetime.datetime"
 
     source_package, source_type = parse_source_type_name(source_type, request)
 

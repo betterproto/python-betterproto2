@@ -260,7 +260,6 @@ class OutputTemplate:
     package_proto_obj: FileDescriptorProto
     input_files: List[str] = field(default_factory=list)
     imports_end: Set[str] = field(default_factory=set)
-    datetime_imports: Set[str] = field(default_factory=set)
     pydantic_imports: Set[str] = field(default_factory=set)
     builtins_import: bool = False
     messages: Dict[str, "MessageCompiler"] = field(default_factory=dict)
@@ -465,17 +464,6 @@ class FieldCompiler(ProtoContentBase):
         return args
 
     @property
-    def datetime_imports(self) -> Set[str]:
-        imports = set()
-        annotation = self.annotation
-        # FIXME: false positives - e.g. `MyDatetimedelta`
-        if "timedelta" in annotation:
-            imports.add("timedelta")
-        if "datetime" in annotation:
-            imports.add("datetime")
-        return imports
-
-    @property
     def pydantic_imports(self) -> Set[str]:
         return set()
 
@@ -486,7 +474,6 @@ class FieldCompiler(ProtoContentBase):
         )
 
     def add_imports_to(self, output_file: OutputTemplate) -> None:
-        output_file.datetime_imports.update(self.datetime_imports)
         output_file.pydantic_imports.update(self.pydantic_imports)
         output_file.builtins_import = output_file.builtins_import or self.use_builtins
 
