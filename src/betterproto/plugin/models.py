@@ -260,7 +260,6 @@ class OutputTemplate:
     package_proto_obj: FileDescriptorProto
     input_files: List[str] = field(default_factory=list)
     imports_end: Set[str] = field(default_factory=set)
-    builtins_import: bool = False
     messages: Dict[str, "MessageCompiler"] = field(default_factory=dict)
     enums: Dict[str, "EnumDefinitionCompiler"] = field(default_factory=dict)
     services: Dict[str, "ServiceCompiler"] = field(default_factory=dict)
@@ -312,8 +311,6 @@ class OutputTemplate:
         if has_deprecated:
             imports.add("warnings")
 
-        if self.builtins_import:
-            imports.add("builtins")
         return imports
 
 
@@ -430,10 +427,6 @@ class FieldCompiler(ProtoContentBase):
             self.parent.fields.append(self)
         super().__post_init__()
 
-    def ready(self) -> None:
-        # Check for new imports
-        self.add_imports_to(self.output_file)
-
     def get_field_string(self) -> str:
         """Construct string representation of this field as a field."""
         name = f"{self.py_name}"
@@ -467,9 +460,6 @@ class FieldCompiler(ProtoContentBase):
         return self.py_type in self.parent.builtins_types or (
             self.py_type == self.py_name and self.py_name in dir(builtins)
         )
-
-    def add_imports_to(self, output_file: OutputTemplate) -> None:
-        output_file.builtins_import = output_file.builtins_import or self.use_builtins
 
     @property
     def field_wraps(self) -> Optional[str]:
