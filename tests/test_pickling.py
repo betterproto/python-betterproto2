@@ -8,7 +8,6 @@ from typing import (
     Dict,
     List,
 )
-from unittest.mock import ANY
 
 import cachelib
 

@@ -1255,8 +1255,11 @@ class Message(ABC):
             if meta.proto_type == TYPE_MAP:
                 # Value represents a single key/value pair entry in the map.
                 current[value.key] = value.value
-            elif isinstance(current, list) and not isinstance(value, list):
-                current.append(value)
+            elif isinstance(current, list):
+                if isinstance(value, list):
+                    current.extend(value)
+                else:
+                    current.append(value)
             else:
                 setattr(self, field_name, value)
 
