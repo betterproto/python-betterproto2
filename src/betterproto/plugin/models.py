@@ -263,7 +263,6 @@ class OutputTemplate:
     messages: Dict[str, "MessageCompiler"] = field(default_factory=dict)
     enums: Dict[str, "EnumDefinitionCompiler"] = field(default_factory=dict)
     services: Dict[str, "ServiceCompiler"] = field(default_factory=dict)
-    imports_type_checking_only: Set[str] = field(default_factory=set)
     pydantic_dataclasses: bool = False
     output: bool = True
     typing_compiler: TypingCompiler = field(default_factory=DirectImportTypingCompiler)
@@ -664,14 +663,6 @@ class ServiceMethodCompiler(ProtoContentBase):
     def __post_init__(self) -> None:
         # Add method to service
         self.parent.methods.append(self)
-
-        self.output_file.imports_type_checking_only.add("import grpclib.server")
-        self.output_file.imports_type_checking_only.add(
-            "from betterproto.grpc.grpclib_client import MetadataLike"
-        )
-        self.output_file.imports_type_checking_only.add(
-            "from grpclib.metadata import Deadline"
-        )
 
         super().__post_init__()  # check for unset fields
 

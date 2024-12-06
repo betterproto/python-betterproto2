@@ -42,10 +42,9 @@ from betterproto.grpc.grpclib_server import ServiceBase
 import grpclib
 {% endif %}
 
-{% if output_file.imports_type_checking_only %}
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-{% for i in output_file.imports_type_checking_only|sort %}    {{ i }}
-{% endfor %}
-{% endif %}
+    import grpclib.server
+    from betterproto.grpc.grpclib_client import MetadataLike
+    from grpclib.metadata import Deadline

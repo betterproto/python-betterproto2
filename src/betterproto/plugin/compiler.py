@@ -38,7 +38,7 @@ def outputfile_compiler(output_file: OutputTemplate) -> str:
     header_template = env.get_template("header.py.j2")
 
     code = body_template.render(output_file=output_file)
-    code = header_template.render(output_file=output_file) + code
+    code = header_template.render(output_file=output_file) + "\n" + code
 
     # Sort imports, delete unused ones
     code = subprocess.check_output(
