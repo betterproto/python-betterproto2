@@ -290,29 +290,6 @@ class OutputTemplate:
         """
         return sorted(f.name for f in self.input_files)
 
-    @property
-    def python_module_imports(self) -> Set[str]:
-        imports = set()
-
-        has_deprecated = False
-        if any(m.deprecated for m in self.messages.values()):
-            has_deprecated = True
-        if any(x for x in self.messages.values() if any(x.deprecated_fields)):
-            has_deprecated = True
-        if any(
-            any(
-                m.proto_obj.options and m.proto_obj.options.deprecated
-                for m in s.methods
-            )
-            for s in self.services.values()
-        ):
-            has_deprecated = True
-
-        if has_deprecated:
-            imports.add("warnings")
-
-        return imports
-
 
 @dataclass
 class MessageCompiler(ProtoContentBase):
