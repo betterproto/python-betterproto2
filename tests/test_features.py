@@ -95,29 +95,31 @@ def test_oneof_support():
 
     @dataclass
     class Foo(betterproto.Message):
-        bar: int = betterproto.int32_field(1, group="group1")
-        baz: str = betterproto.string_field(2, group="group1")
-        sub: Sub = betterproto.message_field(3, group="group2")
-        abc: str = betterproto.string_field(4, group="group2")
+        bar: int = betterproto.int32_field(1, optional=True, group="group1")
+        baz: str = betterproto.string_field(2, optional=True, group="group1")
+        sub: Sub = betterproto.message_field(3, optional=True, group="group2")
+        abc: str = betterproto.string_field(4, optional=True, group="group2")
 
     foo = Foo()
 
     assert betterproto.which_one_of(foo, "group1")[0] == ""
 
     foo.bar = 1
-    foo.baz = "test"
+    assert betterproto.which_one_of(foo, "group1")[0] == "bar"
 
-    # Other oneof fields should now be unset
-    assert foo.bar is None
+    foo.bar = None
+    foo.baz = "test"
     assert betterproto.which_one_of(foo, "group1")[0] == "baz"
 
     foo.sub = Sub(val=1)
+    assert betterproto.which_one_of(foo, "group2")[0] == "sub"
 
+    foo.sub = None
     foo.abc = "test"
-
-    # Group 1 shouldn't be touched, group 2 should have reset
-    assert foo.sub is None
     assert betterproto.which_one_of(foo, "group2")[0] == "abc"
+
+    # Group 1 shouldn't be touched
+    assert betterproto.which_one_of(foo, "group1")[0] == "baz"
 
     # Zero value should always serialize for one-of
     foo = Foo(bar=0)
@@ -419,9 +421,9 @@ def test_oneof_default_value_set_causes_writes_wire():
 
     @dataclass
     class Foo(betterproto.Message):
-        bar: int = betterproto.int32_field(1, group="group1")
-        baz: str = betterproto.string_field(2, group="group1")
-        qux: Empty = betterproto.message_field(3, group="group1")
+        bar: int = betterproto.int32_field(1, optional=True, group="group1")
+        baz: str = betterproto.string_field(2, optional=True, group="group1")
+        qux: Empty = betterproto.message_field(3, optional=True, group="group1")
 
     def _round_trip_serialization(foo: Foo) -> Foo:
         return Foo().parse(bytes(foo))
