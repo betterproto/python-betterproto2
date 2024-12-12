@@ -785,7 +785,7 @@ class ProtoClassMetadata:
     def _get_default_gen(
         cls: Type["Message"], fields: Iterable[dataclasses.Field]
     ) -> Dict[str, Callable[[], Any]]:
-        return {field.name: cls._get_field_default_gen(field) for field in fields}
+        return {field.name: field.default_factory for field in fields}
 
     @staticmethod
     def _get_cls_by_field(
@@ -1044,10 +1044,6 @@ class Message(ABC):
             # ignore warnings when initialising deprecated field defaults
             warnings.filterwarnings("ignore", category=DeprecationWarning)
             return self._betterproto.default_gen[field_name]()
-
-    @classmethod
-    def _get_field_default_gen(cls, field: dataclasses.Field) -> Any:
-        return field.default_factory
 
     def _postprocess_single(
         self, wire_type: int, meta: FieldMetadata, field_name: str, value: Any
