@@ -1047,37 +1047,7 @@ class Message(ABC):
 
     @classmethod
     def _get_field_default_gen(cls, field: dataclasses.Field) -> Any:
-        if field.metadata["betterproto"].optional:
-            return type(None)
-
-        t = cls._type_hint(field.name)
-
-        is_310_union = isinstance(t, _types_UnionType)
-        if hasattr(t, "__origin__") or is_310_union:
-            if is_310_union or t.__origin__ is Union:
-                # This is an optional field (either wrapped, or using proto3
-                # field presence). For setting the default we really don't care
-                # what kind of field it is.
-                return type(None)
-            if t.__origin__ is list:
-                # This is some kind of list (repeated) field.
-                return list
-            if t.__origin__ is dict:
-                # This is some kind of map (dict in Python).
-                return dict
-            return t
-        if issubclass(t, Enum):
-            # Enums always default to zero.
-            return t.try_value
-        if t is datetime:
-            # Offsets are relative to 1970-01-01T00:00:00Z
-            return datetime_default_gen
-        # In proto 3, message fields are always optional
-        if issubclass(t, Message):
-            return type(None)
-        # This is either a primitive scalar or another message type. Calling
-        # it should result in its zero value.
-        return t
+        return field.default_factory
 
     def _postprocess_single(
         self, wire_type: int, meta: FieldMetadata, field_name: str, value: Any
