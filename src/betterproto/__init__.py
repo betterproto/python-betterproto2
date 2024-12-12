@@ -574,7 +574,6 @@ def _serialize_single(
     proto_type: str,
     value: Any,
     *,
-    serialize_empty: bool = False,
     wraps: str = "",
 ) -> bytes:
     """Serializes a single field and value."""
@@ -591,9 +590,8 @@ def _serialize_single(
         key = encode_varint((field_number << 3) | 1)
         output += key + value
     elif proto_type in WIRE_LEN_DELIM_TYPES:
-        if len(value) or serialize_empty or wraps:
-            key = encode_varint((field_number << 3) | 2)
-            output += key + encode_varint(len(value)) + value
+        key = encode_varint((field_number << 3) | 2)
+        output += key + encode_varint(len(value)) + value
     else:
         raise NotImplementedError(proto_type)
 
@@ -985,7 +983,6 @@ class Message(ABC):
                                     meta.proto_type,
                                     item,
                                     wraps=meta.wraps or "",
-                                    serialize_empty=True,
                                 )
                                 # if it's an empty message it still needs to be represented
                                 # as an item in the repeated list
@@ -1006,7 +1003,6 @@ class Message(ABC):
                             meta.number,
                             meta.proto_type,
                             value,
-                            serialize_empty=True,
                             wraps=meta.wraps or "",
                         )
                     )
