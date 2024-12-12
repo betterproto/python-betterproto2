@@ -843,21 +843,7 @@ class Message(ABC):
     _betterproto_meta: ClassVar[ProtoClassMetadata]
 
     def __post_init__(self) -> None:
-        # # Keep track of whether every field was default
-        # all_sentinel = True
-
-        # Set current field of each group after `__init__` has already been run.
-        group_current: Dict[str, Optional[str]] = {}
-        for field_name, meta in self._betterproto.meta_by_field_name.items():
-            if meta.group:
-                group_current.setdefault(meta.group)
-
-                value = self.__getattribute__(field_name)
-                if value is not None:
-                    group_current[meta.group] = field_name
-
-        # Now that all the defaults are set, reset it!
-        self.__dict__["_unknown_fields"] = b""
+        self._unknown_fields = b""
 
     def __eq__(self, other) -> bool:
         if type(self) is not type(other):
