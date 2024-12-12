@@ -457,7 +457,9 @@ class FieldCompiler(ProtoContentBase):
 
     @property
     def optional(self) -> bool:
-        return self.proto_obj.proto3_optional or self.field_type == "message"
+        return self.proto_obj.proto3_optional or (
+            self.field_type == "message" and not self.repeated
+        )
 
     @property
     def field_type(self) -> str:
