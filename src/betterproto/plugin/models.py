@@ -405,7 +405,6 @@ class FieldCompiler(ProtoContentBase):
     def get_field_string(self) -> str:
         """Construct string representation of this field as a field."""
         name = f"{self.py_name}"
-        annotations = f": {self.annotation}"
         field_args = ", ".join(
             ([""] + self.betterproto_field_args) if self.betterproto_field_args else []
         )
@@ -414,7 +413,7 @@ class FieldCompiler(ProtoContentBase):
         )
         if self.py_name in dir(builtins):
             self.parent.builtins_types.add(self.py_name)
-        return f"{name}{annotations} = {betterproto_field_type}"
+        return f'{name}: "{self.annotation}" = {betterproto_field_type}'
 
     @property
     def betterproto_field_args(self) -> List[str]:
@@ -426,7 +425,7 @@ class FieldCompiler(ProtoContentBase):
         if self.repeated:
             args.append("repeated=True")
         if self.field_type == "enum":
-            t = self.py_type.strip('"')
+            t = self.py_type
             args.append(f"enum_default_value=lambda: {t}.try_value(0)")
         return args
 
@@ -702,7 +701,7 @@ class ServiceMethodCompiler(ProtoContentBase):
             request=self.request,
             unwrap=False,
             pydantic=self.output_file.pydantic_dataclasses,
-        ).strip('"')
+        )
 
     @property
     def is_input_msg_empty(self: "ServiceMethodCompiler") -> bool:
@@ -741,7 +740,7 @@ class ServiceMethodCompiler(ProtoContentBase):
             request=self.request,
             unwrap=False,
             pydantic=self.output_file.pydantic_dataclasses,
-        ).strip('"')
+        )
 
     @property
     def client_streaming(self) -> bool:

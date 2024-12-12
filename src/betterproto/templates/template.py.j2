@@ -96,8 +96,8 @@ class {{ service.py_name }}Stub(betterproto.ServiceStub):
             ,
             *
             , timeout: {{ output_file.typing_compiler.optional("float") }} = None
-            , deadline: {{ output_file.typing_compiler.optional('"Deadline"') }} = None
-            , metadata: {{ output_file.typing_compiler.optional('"MetadataLike"') }} = None
+            , deadline: "{{ output_file.typing_compiler.optional("Deadline") }}" = None
+            , metadata: "{{ output_file.typing_compiler.optional("MetadataLike") }}" = None
             ) -> "{% if method.server_streaming %}{{ output_file.typing_compiler.async_iterator(method.py_output_message_type ) }}{% else %}{{ method.py_output_message_type }}{% endif %}":
         {% if method.comment %}
         """
@@ -115,7 +115,7 @@ class {{ service.py_name }}Stub(betterproto.ServiceStub):
             "{{ method.route }}",
             {{ method.py_input_message_param }}_iterator,
             {{ method.py_input_message_type }},
-            {{ method.py_output_message_type.strip('"') }},
+            {{ method.py_output_message_type }},
             timeout=timeout,
             deadline=deadline,
             metadata=metadata,
@@ -130,7 +130,7 @@ class {{ service.py_name }}Stub(betterproto.ServiceStub):
         async for response in self._unary_stream(
             "{{ method.route }}",
             {{ method.py_input_message_param }},
-            {{ method.py_output_message_type.strip('"') }},
+            {{ method.py_output_message_type }},
             timeout=timeout,
             deadline=deadline,
             metadata=metadata,
@@ -144,7 +144,7 @@ class {{ service.py_name }}Stub(betterproto.ServiceStub):
             "{{ method.route }}",
             {{ method.py_input_message_param }}_iterator,
             {{ method.py_input_message_type }},
-            {{ method.py_output_message_type.strip('"') }},
+            {{ method.py_output_message_type }},
             timeout=timeout,
             deadline=deadline,
             metadata=metadata,
@@ -158,7 +158,7 @@ class {{ service.py_name }}Stub(betterproto.ServiceStub):
         return await self._unary_unary(
             "{{ method.route }}",
             {{ method.py_input_message_param }},
-            {{ method.py_output_message_type.strip('"') }},
+            {{ method.py_output_message_type }},
             timeout=timeout,
             deadline=deadline,
             metadata=metadata,
