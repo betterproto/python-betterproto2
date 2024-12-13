@@ -14,32 +14,32 @@ from typing import (
 
 class TypingCompiler(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def optional(self, type: str) -> str:
-        raise NotImplementedError()
+    def optional(self, type_: str) -> str:
+        raise NotImplementedError
 
     @abc.abstractmethod
-    def list(self, type: str) -> str:
-        raise NotImplementedError()
+    def list(self, type_: str) -> str:
+        raise NotImplementedError
 
     @abc.abstractmethod
     def dict(self, key: str, value: str) -> str:
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @abc.abstractmethod
     def union(self, *types: str) -> str:
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @abc.abstractmethod
-    def iterable(self, type: str) -> str:
-        raise NotImplementedError()
+    def iterable(self, type_: str) -> str:
+        raise NotImplementedError
 
     @abc.abstractmethod
-    def async_iterable(self, type: str) -> str:
-        raise NotImplementedError()
+    def async_iterable(self, type_: str) -> str:
+        raise NotImplementedError
 
     @abc.abstractmethod
-    def async_iterator(self, type: str) -> str:
-        raise NotImplementedError()
+    def async_iterator(self, type_: str) -> str:
+        raise NotImplementedError
 
     @abc.abstractmethod
     def imports(self) -> Dict[str, Optional[Set[str]]]:
@@ -47,7 +47,7 @@ class TypingCompiler(metaclass=abc.ABCMeta):
         Returns either the direct import as a key with none as value, or a set of
         values to import from the key.
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def import_lines(self) -> Iterator:
         imports = self.imports()
@@ -65,13 +65,13 @@ class TypingCompiler(metaclass=abc.ABCMeta):
 class DirectImportTypingCompiler(TypingCompiler):
     _imports: Dict[str, Set[str]] = field(default_factory=lambda: defaultdict(set))
 
-    def optional(self, type: str) -> str:
+    def optional(self, type_: str) -> str:
         self._imports["typing"].add("Optional")
-        return f"Optional[{type}]"
+        return f"Optional[{type_}]"
 
-    def list(self, type: str) -> str:
+    def list(self, type_: str) -> str:
         self._imports["typing"].add("List")
-        return f"List[{type}]"
+        return f"List[{type_}]"
 
     def dict(self, key: str, value: str) -> str:
         self._imports["typing"].add("Dict")
@@ -81,17 +81,17 @@ class DirectImportTypingCompiler(TypingCompiler):
         self._imports["typing"].add("Union")
         return f"Union[{', '.join(types)}]"
 
-    def iterable(self, type: str) -> str:
+    def iterable(self, type_: str) -> str:
         self._imports["typing"].add("Iterable")
-        return f"Iterable[{type}]"
+        return f"Iterable[{type_}]"
 
-    def async_iterable(self, type: str) -> str:
+    def async_iterable(self, type_: str) -> str:
         self._imports["typing"].add("AsyncIterable")
-        return f"AsyncIterable[{type}]"
+        return f"AsyncIterable[{type_}]"
 
-    def async_iterator(self, type: str) -> str:
+    def async_iterator(self, type_: str) -> str:
         self._imports["typing"].add("AsyncIterator")
-        return f"AsyncIterator[{type}]"
+        return f"AsyncIterator[{type_}]"
 
     def imports(self) -> Dict[str, Optional[Set[str]]]:
         return {k: v if v else None for k, v in self._imports.items()}
@@ -101,13 +101,13 @@ class DirectImportTypingCompiler(TypingCompiler):
 class TypingImportTypingCompiler(TypingCompiler):
     _imported: bool = False
 
-    def optional(self, type: str) -> str:
+    def optional(self, type_: str) -> str:
         self._imported = True
-        return f"typing.Optional[{type}]"
+        return f"typing.Optional[{type_}]"
 
-    def list(self, type: str) -> str:
+    def list(self, type_: str) -> str:
         self._imported = True
-        return f"typing.List[{type}]"
+        return f"typing.List[{type_}]"
 
     def dict(self, key: str, value: str) -> str:
         self._imported = True
@@ -117,17 +117,17 @@ class TypingImportTypingCompiler(TypingCompiler):
         self._imported = True
         return f"typing.Union[{', '.join(types)}]"
 
-    def iterable(self, type: str) -> str:
+    def iterable(self, type_: str) -> str:
         self._imported = True
-        return f"typing.Iterable[{type}]"
+        return f"typing.Iterable[{type_}]"
 
-    def async_iterable(self, type: str) -> str:
+    def async_iterable(self, type_: str) -> str:
         self._imported = True
-        return f"typing.AsyncIterable[{type}]"
+        return f"typing.AsyncIterable[{type_}]"
 
-    def async_iterator(self, type: str) -> str:
+    def async_iterator(self, type_: str) -> str:
         self._imported = True
-        return f"typing.AsyncIterator[{type}]"
+        return f"typing.AsyncIterator[{type_}]"
 
     def imports(self) -> Dict[str, Optional[Set[str]]]:
         if self._imported:
@@ -139,11 +139,11 @@ class TypingImportTypingCompiler(TypingCompiler):
 class NoTyping310TypingCompiler(TypingCompiler):
     _imports: Dict[str, Set[str]] = field(default_factory=lambda: defaultdict(set))
 
-    def optional(self, type: str) -> str:
-        return f"{type} | None"
+    def optional(self, type_: str) -> str:
+        return f"{type_} | None"
 
-    def list(self, type: str) -> str:
-        return f"list[{type}]"
+    def list(self, type_: str) -> str:
+        return f"list[{type_}]"
 
     def dict(self, key: str, value: str) -> str:
         return f"dict[{key}, {value}]"
@@ -151,17 +151,17 @@ class NoTyping310TypingCompiler(TypingCompiler):
     def union(self, *types: str) -> str:
         return f"{' | '.join(types)}"
 
-    def iterable(self, type: str) -> str:
+    def iterable(self, type_: str) -> str:
         self._imports["collections.abc"].add("Iterable")
-        return f"Iterable[{type}]"
+        return f"Iterable[{type_}]"
 
-    def async_iterable(self, type: str) -> str:
+    def async_iterable(self, type_: str) -> str:
         self._imports["collections.abc"].add("AsyncIterable")
-        return f"AsyncIterable[{type}]"
+        return f"AsyncIterable[{type_}]"
 
-    def async_iterator(self, type: str) -> str:
+    def async_iterator(self, type_: str) -> str:
         self._imports["collections.abc"].add("AsyncIterator")
-        return f"AsyncIterator[{type}]"
+        return f"AsyncIterator[{type_}]"
 
     def imports(self) -> Dict[str, Optional[Set[str]]]:
         return {k: v if v else None for k, v in self._imports.items()}

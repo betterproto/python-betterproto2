@@ -344,7 +344,7 @@ def test_infinite_messages(compile_jar, tmp_path):
 
     # Write delimited messages to file
     with open(tmp_path / "py_infinite_messages.out", "wb") as stream:
-        for x in range(num_messages):
+        for _ in range(num_messages):
             oneof_example.dump(stream, True)
 
     # Have Java read and return the messages

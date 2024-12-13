@@ -100,8 +100,8 @@ class TestCaseJsonFile:
     test_name: str
     file_name: str
 
-    def belongs_to(self, non_symmetrical_json: Dict[str, Tuple[str, ...]]):
-        return self.file_name in non_symmetrical_json.get(self.test_name, tuple())
+    def belongs_to(self, non_symmetrical_json: Dict[str, Tuple[str, ...]]) -> bool:
+        return self.file_name in non_symmetrical_json.get(self.test_name, ())
 
 
 def get_test_case_json_data(test_case_name: str, *json_file_names: str) -> List[TestCaseJsonFile]:
