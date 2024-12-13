@@ -15,7 +15,6 @@ from typing_extensions import (
     Self,
 )
 
-
 SelfT = TypeVar("SelfT")
 P = ParamSpec("P")
 HybridT = TypeVar("HybridT", covariant=True)

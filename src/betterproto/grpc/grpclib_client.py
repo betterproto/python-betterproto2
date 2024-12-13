@@ -15,15 +15,12 @@ from typing import (
 
 import grpclib.const
 
-
 if TYPE_CHECKING:
     from grpclib.client import Channel
     from grpclib.metadata import Deadline
 
     from .._types import (
-        ST,
         IProtoMessage,
-        Message,
         T,
     )
 

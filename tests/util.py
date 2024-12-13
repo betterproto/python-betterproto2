@@ -18,7 +18,6 @@ from typing import (
     Union,
 )
 
-
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
 root_path = Path(__file__).resolve().parent

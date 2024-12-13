@@ -1,9 +1,4 @@
 import json
-import sys
-from copy import (
-    copy,
-    deepcopy,
-)
 from dataclasses import dataclass
 from datetime import (
     datetime,
@@ -14,13 +9,10 @@ from inspect import (
     signature,
 )
 from typing import (
-    Dict,
     List,
     Optional,
 )
 from unittest.mock import ANY
-
-import pytest
 
 import betterproto
 

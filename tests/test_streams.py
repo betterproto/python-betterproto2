@@ -1,9 +1,7 @@
-from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
 from shutil import which
 from subprocess import run
-from typing import Optional
 
 import pytest
 
@@ -15,7 +13,6 @@ from tests.output_betterproto import (
     repeated,
     repeatedpacked,
 )
-
 
 oneof_example = oneof.Test().from_dict(
     {"pitied": 1, "just_a_regular_field": 123456789, "bar_name": "Testing"}

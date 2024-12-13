@@ -1,7 +1,5 @@
 import datetime
 
-import pytest
-
 import betterproto
 from tests.output_betterproto.oneof_default_value_serialization import (
     Message,

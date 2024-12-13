@@ -12,7 +12,6 @@ from typing_extensions import Self
 
 from betterproto import hybridmethod
 
-
 if TYPE_CHECKING:
     from dataclasses import dataclass
 else:

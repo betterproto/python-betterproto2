@@ -8,7 +8,6 @@ import pytest
 
 from tests.output_betterproto.timestamp_dict_encode import Test
 
-
 # Current World Timezone range (UTC-12 to UTC+14)
 MIN_UTC_OFFSET_MIN = -12 * 60
 MAX_UTC_OFFSET_MIN = 14 * 60

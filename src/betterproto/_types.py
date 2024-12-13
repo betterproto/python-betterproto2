@@ -3,7 +3,6 @@ from typing import (
     TypeVar,
 )
 
-
 if TYPE_CHECKING:
     from grpclib._typing import IProtoMessage
 

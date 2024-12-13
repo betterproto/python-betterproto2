@@ -10,7 +10,6 @@ from typing import (
     Dict,
     List,
     Set,
-    Tuple,
 )
 
 import pytest
@@ -24,7 +23,6 @@ from tests.util import (
     get_test_case_json_data,
     inputs_path,
 )
-
 
 # Force pure-python implementation instead of C++, otherwise imports
 # break things because we can't properly reset the symbol database.

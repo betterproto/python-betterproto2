@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import re
 from typing import (
     TYPE_CHECKING,
     Dict,
@@ -14,7 +13,6 @@ from typing import (
 from ..casing import safe_snake_case
 from ..lib.google import protobuf as google_protobuf
 from .naming import pythonize_class_name
-
 
 if TYPE_CHECKING:
     from ..plugin.models import PluginRequestCompiler

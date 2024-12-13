@@ -13,7 +13,6 @@ from tests.output_betterproto.googletypes_response import (
     TestStub,
 )
 
-
 test_cases = [
     (TestStub.get_double, protobuf.DoubleValue, 2.5),
     (TestStub.get_float, protobuf.FloatValue, 2.5),

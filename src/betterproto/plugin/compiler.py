@@ -4,7 +4,6 @@ import sys
 
 from .module_validation import ModuleValidator
 
-
 try:
     # betterproto[compiler] specific dependencies
     import jinja2

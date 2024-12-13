@@ -13,7 +13,6 @@ from typing import (
     Tuple,
 )
 
-
 if TYPE_CHECKING:
     from collections.abc import (
         Generator,

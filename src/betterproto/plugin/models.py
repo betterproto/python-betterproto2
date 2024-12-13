@@ -55,7 +55,6 @@ from betterproto.compile.naming import (
 from betterproto.lib.google.protobuf import (
     DescriptorProto,
     EnumDescriptorProto,
-    Field,
     FieldDescriptorProto,
     FieldDescriptorProtoLabel,
     FieldDescriptorProtoType,
@@ -75,7 +74,6 @@ from .typing_compiler import (
     DirectImportTypingCompiler,
     TypingCompiler,
 )
-
 
 # Create a unique placeholder to deal with
 # https://stackoverflow.com/questions/51575931/class-inheritance-in-python-3-7-dataclasses

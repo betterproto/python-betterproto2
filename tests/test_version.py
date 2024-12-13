@@ -4,7 +4,6 @@ import tomlkit
 
 from betterproto import __version__
 
-
 PROJECT_TOML = Path(__file__).joinpath("..", "..", "pyproject.toml").resolve()
 
 

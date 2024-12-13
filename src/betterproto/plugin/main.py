@@ -5,7 +5,6 @@ import sys
 
 from betterproto.lib.google.protobuf.compiler import (
     CodeGeneratorRequest,
-    CodeGeneratorResponse,
 )
 
 # from betterproto.plugin.models import monkey_patch_oneof_index

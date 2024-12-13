@@ -7,7 +7,6 @@ import pytest
 from google.protobuf import json_format
 from google.protobuf.timestamp_pb2 import Timestamp
 
-import betterproto
 from tests.output_betterproto.google_impl_behavior_equivalence import (
     Empty,
     Foo,

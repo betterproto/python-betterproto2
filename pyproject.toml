@@ -56,7 +56,6 @@ target-version = "py38"
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
-lines-after-imports = 2
 
 # Dev workflow tasks
 
