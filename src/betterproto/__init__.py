@@ -1,6 +1,6 @@
-__all__ = ["__version__"]
-
 from __future__ import annotations
+
+__all__ = ["__version__"]
 
 import dataclasses
 import enum as builtin_enum
