@@ -117,9 +117,7 @@ class AsyncChannel(AsyncIterable[T]):
         # receiver per enqueued item.
         return self._closed and self._queue.qsize() <= self._waiting_receivers
 
-    async def send_from(
-        self, source: Union[Iterable[T], AsyncIterable[T]], close: bool = False
-    ) -> "AsyncChannel[T]":
+    async def send_from(self, source: Union[Iterable[T], AsyncIterable[T]], close: bool = False) -> "AsyncChannel[T]":
         """
         Iterates the given [Async]Iterable and sends all the resulting items.
         If close is set to True then subsequent send calls will be rejected with a

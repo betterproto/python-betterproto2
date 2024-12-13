@@ -212,11 +212,7 @@ def dataclass_field(
 
     return dataclasses.field(
         default_factory=default_factory,
-        metadata={
-            "betterproto": FieldMetadata(
-                number, proto_type, map_types, group, wraps, optional
-            )
-        },
+        metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, wraps, optional)},
     )
 
 
@@ -264,9 +260,7 @@ def int32_field(
     optional: bool = False,
     repeated: bool = False,
 ) -> Any:
-    return dataclass_field(
-        number, TYPE_INT32, int, group=group, optional=optional, repeated=repeated
-    )
+    return dataclass_field(number, TYPE_INT32, int, group=group, optional=optional, repeated=repeated)
 
 
 def int64_field(
@@ -275,9 +269,7 @@ def int64_field(
     optional: bool = False,
     repeated: bool = False,
 ) -> Any:
-    return dataclass_field(
-        number, TYPE_INT64, int, group=group, optional=optional, repeated=repeated
-    )
+    return dataclass_field(number, TYPE_INT64, int, group=group, optional=optional, repeated=repeated)
 
 
 def uint32_field(
@@ -490,12 +482,8 @@ def message_field(
     )
 
 
-def map_field(
-    number: int, key_type: str, value_type: str, group: Optional[str] = None
-) -> Any:
-    return dataclass_field(
-        number, TYPE_MAP, dict, map_types=(key_type, value_type), group=group
-    )
+def map_field(number: int, key_type: str, value_type: str, group: Optional[str] = None) -> Any:
+    return dataclass_field(number, TYPE_MAP, dict, map_types=(key_type, value_type), group=group)
 
 
 def _pack_fmt(proto_type: str) -> str:
@@ -514,7 +502,7 @@ def dump_varint(value: int, stream: "SupportsWrite[bytes]") -> None:
     """Encodes a single varint and dumps it into the provided stream."""
     if value < -(1 << 63):
         raise ValueError(
-            "Negative value is not representable as a 64-bit integer - unable to encode a varint within 10 bytes."
+            "Negative value is not representable as a 64-bit integer" " - unable to encode a varint within 10 bytes."
         )
     elif value < 0:
         value += 1 << 64
@@ -729,9 +717,7 @@ def parse_fields(value: bytes) -> Generator[ParsedField, None, None]:
         elif wire_type == WIRE_FIXED_32:
             decoded, i = value[i : i + 4], i + 4
 
-        yield ParsedField(
-            number=number, wire_type=wire_type, value=decoded, raw=value[start:i]
-        )
+        yield ParsedField(number=number, wire_type=wire_type, value=decoded, raw=value[start:i])
 
 
 class ProtoClassMetadata:
@@ -776,22 +762,16 @@ class ProtoClassMetadata:
         self.oneof_field_by_group = by_group
         self.field_name_by_number = by_field_number
         self.meta_by_field_name = by_field_name
-        self.sorted_field_names = tuple(
-            by_field_number[number] for number in sorted(by_field_number)
-        )
+        self.sorted_field_names = tuple(by_field_number[number] for number in sorted(by_field_number))
         self.default_gen = self._get_default_gen(cls, fields)
         self.cls_by_field = self._get_cls_by_field(cls, fields)
 
     @staticmethod
-    def _get_default_gen(
-        cls: Type["Message"], fields: Iterable[dataclasses.Field]
-    ) -> Dict[str, Callable[[], Any]]:
+    def _get_default_gen(cls: Type["Message"], fields: Iterable[dataclasses.Field]) -> Dict[str, Callable[[], Any]]:
         return {field.name: field.default_factory for field in fields}
 
     @staticmethod
-    def _get_cls_by_field(
-        cls: Type["Message"], fields: Iterable[dataclasses.Field]
-    ) -> Dict[str, Type]:
+    def _get_cls_by_field(cls: Type["Message"], fields: Iterable[dataclasses.Field]) -> Dict[str, Type]:
         field_cls = {}
 
         for field in fields:
@@ -971,8 +951,8 @@ class Message(ABC):
                                     item,
                                     wraps=meta.wraps or "",
                                 )
-                                # if it's an empty message it still needs to be represented
-                                # as an item in the repeated list
+                                # if it's an empty message it still needs to be
+                                # represented as an item in the repeated list
                                 or b"\n\x00"
                             )
 
@@ -981,9 +961,7 @@ class Message(ABC):
                         assert meta.map_types
                         sk = _serialize_single(1, meta.map_types[0], k)
                         sv = _serialize_single(2, meta.map_types[1], v)
-                        stream.write(
-                            _serialize_single(meta.number, meta.proto_type, sk + sv)
-                        )
+                        stream.write(_serialize_single(meta.number, meta.proto_type, sk + sv))
                 else:
                     stream.write(
                         _serialize_single(
@@ -1046,9 +1024,7 @@ class Message(ABC):
             warnings.filterwarnings("ignore", category=DeprecationWarning)
             return self._betterproto.default_gen[field_name]()
 
-    def _postprocess_single(
-        self, wire_type: int, meta: FieldMetadata, field_name: str, value: Any
-    ) -> Any:
+    def _postprocess_single(self, wire_type: int, meta: FieldMetadata, field_name: str, value: Any) -> Any:
         """Adjusts values after parsing."""
         if wire_type == WIRE_VARINT:
             if meta.proto_type in (TYPE_INT32, TYPE_INT64):
@@ -1142,14 +1118,10 @@ class Message(ABC):
                     else:
                         decoded, pos = decode_varint(parsed.value, pos)
                         wire_type = WIRE_VARINT
-                    decoded = self._postprocess_single(
-                        wire_type, meta, field_name, decoded
-                    )
+                    decoded = self._postprocess_single(wire_type, meta, field_name, decoded)
                     value.append(decoded)
             else:
-                value = self._postprocess_single(
-                    parsed.wire_type, meta, field_name, parsed.value
-                )
+                value = self._postprocess_single(parsed.wire_type, meta, field_name, parsed.value)
 
             current = getattr(self, field_name)
 
@@ -1228,9 +1200,7 @@ class Message(ABC):
         """
         return cls().parse(data)
 
-    def to_dict(
-        self, casing: Casing = Casing.CAMEL, include_default_values: bool = False
-    ) -> Dict[str, Any]:
+    def to_dict(self, casing: Casing = Casing.CAMEL, include_default_values: bool = False) -> Dict[str, Any]:
         """
         Returns a JSON serializable dict representation of this object.
 
@@ -1272,9 +1242,7 @@ class Message(ABC):
                     elif cls == timedelta:
                         value = [_Duration.delta_to_json(i) for i in value]
                     else:
-                        value = [
-                            i.to_dict(casing, include_default_values) for i in value
-                        ]
+                        value = [i.to_dict(casing, include_default_values) for i in value]
                     if value or include_default_values:
                         output[cased_name] = value
                 elif value is None:
@@ -1301,9 +1269,7 @@ class Message(ABC):
                         output[cased_name] = str(value)
                 elif meta.proto_type == TYPE_BYTES:
                     if field_is_repeated:
-                        output[cased_name] = [
-                            b64encode(b).decode("utf8") for b in value
-                        ]
+                        output[cased_name] = [b64encode(b).decode("utf8") for b in value]
                     elif value is None and include_default_values:
                         output[cased_name] = value
                     else:
@@ -1311,9 +1277,7 @@ class Message(ABC):
                 elif meta.proto_type == TYPE_ENUM:
                     if field_is_repeated:
                         enum_class = field_types[field_name].__args__[0]
-                        if isinstance(value, typing.Iterable) and not isinstance(
-                            value, str
-                        ):
+                        if isinstance(value, typing.Iterable) and not isinstance(value, str):
                             output[cased_name] = [enum_class(el).name for el in value]
                         else:
                             # transparently upgrade single value to repeated
@@ -1351,11 +1315,7 @@ class Message(ABC):
             if meta.proto_type == TYPE_MESSAGE:
                 sub_cls = cls._betterproto.cls_by_field[field_name]
                 if sub_cls == datetime:
-                    value = (
-                        [isoparse(item) for item in value]
-                        if isinstance(value, list)
-                        else isoparse(value)
-                    )
+                    value = [isoparse(item) for item in value] if isinstance(value, list) else isoparse(value)
                 elif sub_cls == timedelta:
                     value = (
                         [timedelta(seconds=float(item[:-1])) for item in value]
@@ -1373,17 +1333,9 @@ class Message(ABC):
                 value = {k: sub_cls.from_dict(v) for k, v in value.items()}
             else:
                 if meta.proto_type in INT_64_TYPES:
-                    value = (
-                        [int(n) for n in value]
-                        if isinstance(value, list)
-                        else int(value)
-                    )
+                    value = [int(n) for n in value] if isinstance(value, list) else int(value)
                 elif meta.proto_type == TYPE_BYTES:
-                    value = (
-                        [b64decode(n) for n in value]
-                        if isinstance(value, list)
-                        else b64decode(value)
-                    )
+                    value = [b64decode(n) for n in value] if isinstance(value, list) else b64decode(value)
                 elif meta.proto_type == TYPE_ENUM:
                     enum_cls = cls._betterproto.cls_by_field[field_name]
                     if isinstance(value, list):
@@ -1391,11 +1343,7 @@ class Message(ABC):
                     elif isinstance(value, str):
                         value = enum_cls.from_string(value)
                 elif meta.proto_type in (TYPE_FLOAT, TYPE_DOUBLE):
-                    value = (
-                        [_parse_float(n) for n in value]
-                        if isinstance(value, list)
-                        else _parse_float(value)
-                    )
+                    value = [_parse_float(n) for n in value] if isinstance(value, list) else _parse_float(value)
 
             init_kwargs[field_name] = value
         return init_kwargs
@@ -1495,9 +1443,7 @@ class Message(ABC):
         """
         return self.from_dict(json.loads(value))
 
-    def to_pydict(
-        self, casing: Casing = Casing.CAMEL, include_default_values: bool = False
-    ) -> Dict[str, Any]:
+    def to_pydict(self, casing: Casing = Casing.CAMEL, include_default_values: bool = False) -> Dict[str, Any]:
         """
         Returns a python dict representation of this object.
 
@@ -1527,18 +1473,14 @@ class Message(ABC):
                     if (
                         value != DATETIME_ZERO
                         or include_default_values
-                        or self._include_default_value_for_oneof(
-                            field_name=field_name, meta=meta
-                        )
+                        or self._include_default_value_for_oneof(field_name=field_name, meta=meta)
                     ):
                         output[cased_name] = value
                 elif isinstance(value, timedelta):
                     if (
                         value != timedelta(0)
                         or include_default_values
-                        or self._include_default_value_for_oneof(
-                            field_name=field_name, meta=meta
-                        )
+                        or self._include_default_value_for_oneof(field_name=field_name, meta=meta)
                     ):
                         output[cased_name] = value
                 elif meta.wraps:
@@ -1640,21 +1582,16 @@ class Message(ABC):
                 field_name = field.name
                 meta = field_name_to_meta[field_name]
 
-                # This is a synthetic oneof; we should ignore it's presence and not consider it as a oneof.
+                # This is a synthetic oneof; we should ignore it's presence and not
+                # consider it as a oneof.
                 if meta.optional:
                     continue
 
-            set_fields = [
-                field.name
-                for field in field_set
-                if getattr(values, field.name, None) is not None
-            ]
+            set_fields = [field.name for field in field_set if getattr(values, field.name, None) is not None]
 
             if len(set_fields) > 1:
                 set_fields_str = ", ".join(set_fields)
-                raise ValueError(
-                    f"Group {group} has more than one value; fields {set_fields_str} are not None"
-                )
+                raise ValueError(f"Group {group} has more than one value;" f" fields {set_fields_str} are not None")
 
         return values
 
@@ -1677,9 +1614,7 @@ def which_one_of(message: Message, group_name: str) -> Tuple[str, Optional[Any]]
 
         if v is not None:
             if field_name:
-                raise RuntimeError(
-                    f"more than one field set in oneof: {field.name} and {field_name}"
-                )
+                raise RuntimeError(f"more than one field set in oneof: {field.name} and {field_name}")
             field_name, value = field.name, v
 
     return field_name, value
@@ -1704,9 +1639,7 @@ from .lib.google.protobuf import (  # noqa
 
 class _Duration(Duration):
     @classmethod
-    def from_timedelta(
-        cls, delta: timedelta, *, _1_microsecond: timedelta = timedelta(microseconds=1)
-    ) -> "_Duration":
+    def from_timedelta(cls, delta: timedelta, *, _1_microsecond: timedelta = timedelta(microseconds=1)) -> "_Duration":
         total_ms = delta // _1_microsecond
         seconds = int(total_ms / 1e6)
         nanos = int((total_ms % 1e6) * 1e3)
@@ -1733,9 +1666,7 @@ class _Timestamp(Timestamp):
         offset = dt - DATETIME_ZERO
         # below is the same as timedelta.total_seconds() but without dividing by 1e6
         # so we end up with microseconds as integers instead of seconds as float
-        offset_us = (
-            offset.days * 24 * 60 * 60 + offset.seconds
-        ) * 10**6 + offset.microseconds
+        offset_us = (offset.days * 24 * 60 * 60 + offset.seconds) * 10**6 + offset.microseconds
         seconds, us = divmod(offset_us, 10**6)
         return cls(seconds, us * 1000)
 

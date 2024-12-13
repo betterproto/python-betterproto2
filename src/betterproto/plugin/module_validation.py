@@ -17,9 +17,7 @@ class ModuleValidator:
     line_iterator: Iterator[str]
     line_number: int = field(init=False, default=0)
 
-    collisions: Dict[str, List[Tuple[int, str]]] = field(
-        init=False, default_factory=lambda: defaultdict(list)
-    )
+    collisions: Dict[str, List[Tuple[int, str]]] = field(init=False, default_factory=lambda: defaultdict(list))
 
     def add_import(self, imp: str, number: int, full_line: str):
         """

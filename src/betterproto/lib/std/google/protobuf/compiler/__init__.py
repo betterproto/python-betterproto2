@@ -46,8 +46,8 @@ class CodeGeneratorRequest(betterproto.Message):
     parameter: str = betterproto.string_field(2)
     """The generator parameter passed on the command-line."""
 
-    proto_file: List["betterproto_lib_google_protobuf.FileDescriptorProto"] = (
-        betterproto.message_field(15, repeated=True)
+    proto_file: List["betterproto_lib_google_protobuf.FileDescriptorProto"] = betterproto.message_field(
+        15, repeated=True
     )
     """
     FileDescriptorProtos for all files in files_to_generate and everything
@@ -71,9 +71,9 @@ class CodeGeneratorRequest(betterproto.Message):
      fully qualified.
     """
 
-    source_file_descriptors: List[
-        "betterproto_lib_google_protobuf.FileDescriptorProto"
-    ] = betterproto.message_field(17, repeated=True)
+    source_file_descriptors: List["betterproto_lib_google_protobuf.FileDescriptorProto"] = betterproto.message_field(
+        17, repeated=True
+    )
     """
     File descriptors with all options, including source-retention options.
      These descriptors are only provided for the files listed in
@@ -122,9 +122,7 @@ class CodeGeneratorResponse(betterproto.Message):
      effect for plugins that have FEATURE_SUPPORTS_EDITIONS set.
     """
 
-    file: List["CodeGeneratorResponseFile"] = betterproto.message_field(
-        15, repeated=True
-    )
+    file: List["CodeGeneratorResponseFile"] = betterproto.message_field(15, repeated=True)
 
 
 @dataclass(eq=False, repr=False)
@@ -190,9 +188,7 @@ class CodeGeneratorResponseFile(betterproto.Message):
     content: str = betterproto.string_field(15)
     """The file contents."""
 
-    generated_code_info: "betterproto_lib_google_protobuf.GeneratedCodeInfo" = (
-        betterproto.message_field(16)
-    )
+    generated_code_info: "betterproto_lib_google_protobuf.GeneratedCodeInfo" = betterproto.message_field(16)
     """
     Information describing the file content being inserted. If an insertion
      point is used, this information will be appropriately offset and inserted

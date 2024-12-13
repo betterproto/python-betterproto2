@@ -53,9 +53,7 @@ async def test_simple_service_call():
 
 
 @pytest.mark.asyncio
-async def test_trailer_only_error_unary_unary(
-    mocker, handler_trailer_only_unauthenticated
-):
+async def test_trailer_only_error_unary_unary(mocker, handler_trailer_only_unauthenticated):
     service = ThingService()
     mocker.patch.object(
         service,
@@ -70,9 +68,7 @@ async def test_trailer_only_error_unary_unary(
 
 
 @pytest.mark.asyncio
-async def test_trailer_only_error_stream_unary(
-    mocker, handler_trailer_only_unauthenticated
-):
+async def test_trailer_only_error_stream_unary(mocker, handler_trailer_only_unauthenticated):
     service = ThingService()
     mocker.patch.object(
         service,
@@ -105,23 +101,15 @@ async def test_service_call_with_upfront_request_params():
     # Setting deadline
     deadline = grpclib.metadata.Deadline.from_timeout(22)
     metadata = {"authorization": "12345"}
-    async with ChannelFor(
-        [ThingService(test_hook=_assert_request_meta_received(deadline, metadata))]
-    ) as channel:
-        await _test_client(
-            ThingServiceClient(channel, deadline=deadline, metadata=metadata)
-        )
+    async with ChannelFor([ThingService(test_hook=_assert_request_meta_received(deadline, metadata))]) as channel:
+        await _test_client(ThingServiceClient(channel, deadline=deadline, metadata=metadata))
 
     # Setting timeout
     timeout = 99
     deadline = grpclib.metadata.Deadline.from_timeout(timeout)
     metadata = {"authorization": "12345"}
-    async with ChannelFor(
-        [ThingService(test_hook=_assert_request_meta_received(deadline, metadata))]
-    ) as channel:
-        await _test_client(
-            ThingServiceClient(channel, timeout=timeout, metadata=metadata)
-        )
+    async with ChannelFor([ThingService(test_hook=_assert_request_meta_received(deadline, metadata))]) as channel:
+        await _test_client(ThingServiceClient(channel, timeout=timeout, metadata=metadata))
 
 
 @pytest.mark.asyncio
@@ -133,9 +121,7 @@ async def test_service_call_lower_level_with_overrides():
     metadata = {"authorization": "12345"}
     kwarg_deadline = grpclib.metadata.Deadline.from_timeout(28)
     kwarg_metadata = {"authorization": "12345"}
-    async with ChannelFor(
-        [ThingService(test_hook=_assert_request_meta_received(deadline, metadata))]
-    ) as channel:
+    async with ChannelFor([ThingService(test_hook=_assert_request_meta_received(deadline, metadata))]) as channel:
         client = ThingServiceClient(channel, deadline=deadline, metadata=metadata)
         response = await client._unary_unary(
             "/service.Test/DoThing",
@@ -195,9 +181,7 @@ async def test_service_call_high_level_with_overrides(mocker, overrides_gen):
         [
             ThingService(
                 test_hook=_assert_request_meta_received(
-                    deadline=grpclib.metadata.Deadline.from_timeout(
-                        overrides.get("timeout", 99)
-                    ),
+                    deadline=grpclib.metadata.Deadline.from_timeout(overrides.get("timeout", 99)),
                     metadata=overrides.get("metadata", defaults.get("metadata")),
                 )
             )
@@ -227,9 +211,7 @@ async def test_async_gen_for_unary_stream_request():
     async with ChannelFor([ThingService()]) as channel:
         client = ThingServiceClient(channel)
         expected_versions = [5, 4, 3, 2, 1]
-        async for response in client.get_thing_versions(
-            GetThingRequest(name=thing_name)
-        ):
+        async for response in client.get_thing_versions(GetThingRequest(name=thing_name)):
             assert response.name == thing_name
             assert response.version == expected_versions.pop()
 
@@ -264,9 +246,7 @@ async def test_async_gen_for_stream_stream_request():
             else:
                 # No more things to send make sure channel is closed
                 request_chan.close()
-        assert response_index == len(
-            expected_things
-        ), "Didn't receive all expected responses"
+        assert response_index == len(expected_things), "Didn't receive all expected responses"
 
 
 @pytest.mark.asyncio
@@ -287,7 +267,5 @@ async def test_stream_stream_with_empty_iterable():
     async with ChannelFor([ThingService()]) as channel:
         client = ThingServiceClient(channel)
         requests = [GetThingRequest(name) for name in things]
-        responses = [
-            response async for response in client.get_different_things(requests)
-        ]
+        responses = [response async for response in client.get_different_things(requests)]
         assert len(responses) == 0

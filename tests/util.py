@@ -52,9 +52,7 @@ async def protoc(
         plugin_path = Path("src/betterproto/plugin/main.py")
 
         if "Win" in platform.system():
-            with tempfile.NamedTemporaryFile(
-                "w", encoding="UTF-8", suffix=".bat", delete=False
-            ) as tf:
+            with tempfile.NamedTemporaryFile("w", encoding="UTF-8", suffix=".bat", delete=False) as tf:
                 # See https://stackoverflow.com/a/42622705
                 tf.writelines(
                     [
@@ -106,9 +104,7 @@ class TestCaseJsonFile:
         return self.file_name in non_symmetrical_json.get(self.test_name, tuple())
 
 
-def get_test_case_json_data(
-    test_case_name: str, *json_file_names: str
-) -> List[TestCaseJsonFile]:
+def get_test_case_json_data(test_case_name: str, *json_file_names: str) -> List[TestCaseJsonFile]:
     """
     :return:
         A list of all files found in "{inputs_path}/test_case_name" with names matching
@@ -127,18 +123,12 @@ def get_test_case_json_data(
         if not test_data_file_path.exists():
             continue
         with test_data_file_path.open("r") as fh:
-            result.append(
-                TestCaseJsonFile(
-                    fh.read(), test_case_name, test_data_file_path.name.split(".")[0]
-                )
-            )
+            result.append(TestCaseJsonFile(fh.read(), test_case_name, test_data_file_path.name.split(".")[0]))
 
     return result
 
 
-def find_module(
-    module: ModuleType, predicate: Callable[[ModuleType], bool]
-) -> Optional[ModuleType]:
+def find_module(module: ModuleType, predicate: Callable[[ModuleType], bool]) -> Optional[ModuleType]:
     """
     Recursively search module tree for a module that matches the search predicate.
     Assumes that the submodules are directories containing __init__.py.

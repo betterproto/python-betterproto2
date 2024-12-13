@@ -41,9 +41,7 @@ class TestCases:
         _all = set(get_directories(path)) - {"__pycache__"}
         _services = services
         _messages = (_all - services) - {"__pycache__"}
-        _messages_with_json = {
-            test for test in _messages if get_test_case_json_data(test)
-        }
+        _messages_with_json = {test for test in _messages if get_test_case_json_data(test)}
 
         unknown_xfail_tests = xfail - _all
         if unknown_xfail_tests:
@@ -56,10 +54,7 @@ class TestCases:
 
     @staticmethod
     def apply_xfail_marks(test_set: Set[str], xfail: Set[str]):
-        return [
-            pytest.param(test, marks=pytest.mark.xfail) if test in xfail else test
-            for test in test_set
-        ]
+        return [pytest.param(test, marks=pytest.mark.xfail) if test in xfail else test for test in test_set]
 
 
 test_cases = TestCases(
@@ -131,9 +126,7 @@ def dict_replace_nans(input_dict: Dict[Any, Any]) -> Dict[Any, Any]:
 def test_data(request, reset_sys_path):
     test_case_name = request.param
 
-    reference_module_root = os.path.join(
-        *reference_output_package.split("."), test_case_name
-    )
+    reference_module_root = os.path.join(*reference_output_package.split("."), test_case_name)
     sys.path.append(reference_module_root)
 
     plugin_module = importlib.import_module(f"{plugin_output_package}.{test_case_name}")
@@ -184,9 +177,7 @@ def test_message_json(test_data: TestData) -> None:
         message.from_json(sample.json)
         message_json = message.to_json(indent=0)
 
-        assert dict_replace_nans(json.loads(message_json)) == dict_replace_nans(
-            json.loads(sample.json)
-        )
+        assert dict_replace_nans(json.loads(message_json)) == dict_replace_nans(json.loads(sample.json))
 
 
 @pytest.mark.parametrize("test_data", test_cases.services, indirect=True)
@@ -202,12 +193,8 @@ def test_binary_compatibility(test_data: TestData) -> None:
         reference_instance = Parse(sample.json, reference_module().Test())
         reference_binary_output = reference_instance.SerializeToString()
 
-        plugin_instance_from_json: betterproto.Message = plugin_module.Test().from_json(
-            sample.json
-        )
-        plugin_instance_from_binary = plugin_module.Test.FromString(
-            reference_binary_output
-        )
+        plugin_instance_from_json: betterproto.Message = plugin_module.Test().from_json(sample.json)
+        plugin_instance_from_binary = plugin_module.Test.FromString(reference_binary_output)
 
         # Generally this can't be relied on, but here we are aiming to match the
         # existing Python implementation and aren't doing anything tricky.
@@ -216,6 +203,6 @@ def test_binary_compatibility(test_data: TestData) -> None:
         assert bytes(plugin_instance_from_binary) == reference_binary_output
 
         assert plugin_instance_from_json == plugin_instance_from_binary
-        assert dict_replace_nans(
-            plugin_instance_from_json.to_dict()
-        ) == dict_replace_nans(plugin_instance_from_binary.to_dict())
+        assert dict_replace_nans(plugin_instance_from_json.to_dict()) == dict_replace_nans(
+            plugin_instance_from_binary.to_dict()
+        )

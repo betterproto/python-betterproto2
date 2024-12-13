@@ -45,29 +45,19 @@ from .typing_compiler import (
 
 def traverse(
     proto_file: FileDescriptorProto,
-) -> Generator[
-    Tuple[Union[EnumDescriptorProto, DescriptorProto], List[int]], None, None
-]:
+) -> Generator[Tuple[Union[EnumDescriptorProto, DescriptorProto], List[int]], None, None]:
     # Todo: Keep information about nested hierarchy
     def _traverse(
         path: List[int],
         items: Union[List[EnumDescriptorProto], List[DescriptorProto]],
         prefix: str = "",
-    ) -> Generator[
-        Tuple[Union[EnumDescriptorProto, DescriptorProto], List[int]], None, None
-    ]:
+    ) -> Generator[Tuple[Union[EnumDescriptorProto, DescriptorProto], List[int]], None, None]:
         for i, item in enumerate(items):
             # Adjust the name since we flatten the hierarchy.
             # Todo: don't change the name, but include full name in returned tuple
-            should_rename = (
-                not isinstance(item, DescriptorProto)
-                or not item.options
-                or not item.options.map_entry
-            )
+            should_rename = not isinstance(item, DescriptorProto) or not item.options or not item.options.map_entry
 
-            item.name = next_prefix = (
-                f"{prefix}.{item.name}" if prefix and should_rename else item.name
-            )
+            item.name = next_prefix = f"{prefix}.{item.name}" if prefix and should_rename else item.name
             yield item, [*path, i]
 
             if isinstance(item, DescriptorProto):
@@ -97,40 +87,27 @@ def generate_code(request: CodeGeneratorRequest) -> CodeGeneratorResponse:
         # Add this input file to the output corresponding to this package
         request_data.output_packages[output_package_name].input_files.append(proto_file)
 
-        if (
-            proto_file.package == "google.protobuf"
-            and "INCLUDE_GOOGLE" not in plugin_options
-        ):
+        if proto_file.package == "google.protobuf" and "INCLUDE_GOOGLE" not in plugin_options:
             # If not INCLUDE_GOOGLE,
             # skip outputting Google's well-known types
             request_data.output_packages[output_package_name].output = False
 
         if "pydantic_dataclasses" in plugin_options:
-            request_data.output_packages[
-                output_package_name
-            ].pydantic_dataclasses = True
+            request_data.output_packages[output_package_name].pydantic_dataclasses = True
 
         # Gather any typing generation options.
-        typing_opts = [
-            opt[len("typing.") :] for opt in plugin_options if opt.startswith("typing.")
-        ]
+        typing_opts = [opt[len("typing.") :] for opt in plugin_options if opt.startswith("typing.")]
 
         if len(typing_opts) > 1:
             raise ValueError("Multiple typing options provided")
         # Set the compiler type.
         typing_opt = typing_opts[0] if typing_opts else "direct"
         if typing_opt == "direct":
-            request_data.output_packages[
-                output_package_name
-            ].typing_compiler = DirectImportTypingCompiler()
+            request_data.output_packages[output_package_name].typing_compiler = DirectImportTypingCompiler()
         elif typing_opt == "root":
-            request_data.output_packages[
-                output_package_name
-            ].typing_compiler = TypingImportTypingCompiler()
+            request_data.output_packages[output_package_name].typing_compiler = TypingImportTypingCompiler()
         elif typing_opt == "310":
-            request_data.output_packages[
-                output_package_name
-            ].typing_compiler = NoTyping310TypingCompiler()
+            request_data.output_packages[output_package_name].typing_compiler = NoTyping310TypingCompiler()
 
     # Read Messages and Enums
     # We need to read Messages before Services in so that we can
@@ -245,9 +222,7 @@ def read_protobuf_type(
                     typing_compiler=output_package.typing_compiler,
                 )
             elif is_oneof(field):
-                _make_one_of_field_compiler(
-                    output_package, source_file, message_data, field, path + [2, index]
-                )
+                _make_one_of_field_compiler(output_package, source_file, message_data, field, path + [2, index])
             else:
                 FieldCompiler(
                     source_file=source_file,

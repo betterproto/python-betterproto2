@@ -40,9 +40,7 @@ def test_enum_as_int_json():
 
     @dataclass
     class Foo(betterproto.Message):
-        bar: TestEnum = betterproto.enum_field(
-            1, enum_default_value=lambda: TestEnum.try_value(0)
-        )
+        bar: TestEnum = betterproto.enum_field(1, enum_default_value=lambda: TestEnum.try_value(0))
 
     # JSON strings are supported, but ints should still be supported too.
     foo = Foo().from_dict({"bar": 1})
@@ -134,9 +132,7 @@ def test_json_casing():
         kabob_case: int = betterproto.int32_field(4)
 
     # Parsing should accept almost any input
-    test = CasingTest().from_dict(
-        {"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4}
-    )
+    test = CasingTest().from_dict({"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4})
 
     assert test == CasingTest(1, 2, 3, 4)
 
@@ -165,9 +161,7 @@ def test_dict_casing():
         kabob_case: int = betterproto.int32_field(4)
 
     # Parsing should accept almost any input
-    test = CasingTest().from_dict(
-        {"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4}
-    )
+    test = CasingTest().from_dict({"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4})
 
     assert test == CasingTest(1, 2, 3, 4)
 
@@ -222,22 +216,14 @@ def test_optional_datetime_to_dict():
     # Check dict serialization
     assert Request().to_dict() == {}
     assert Request().to_dict(include_default_values=True) == {"date": None}
-    assert Request(date=datetime(2020, 1, 1)).to_dict() == {
-        "date": "2020-01-01T00:00:00Z"
-    }
-    assert Request(date=datetime(2020, 1, 1)).to_dict(include_default_values=True) == {
-        "date": "2020-01-01T00:00:00Z"
-    }
+    assert Request(date=datetime(2020, 1, 1)).to_dict() == {"date": "2020-01-01T00:00:00Z"}
+    assert Request(date=datetime(2020, 1, 1)).to_dict(include_default_values=True) == {"date": "2020-01-01T00:00:00Z"}
 
     # Check pydict serialization
     assert Request().to_pydict() == {}
     assert Request().to_pydict(include_default_values=True) == {"date": None}
-    assert Request(date=datetime(2020, 1, 1)).to_pydict() == {
-        "date": datetime(2020, 1, 1)
-    }
-    assert Request(date=datetime(2020, 1, 1)).to_pydict(
-        include_default_values=True
-    ) == {"date": datetime(2020, 1, 1)}
+    assert Request(date=datetime(2020, 1, 1)).to_pydict() == {"date": datetime(2020, 1, 1)}
+    assert Request(date=datetime(2020, 1, 1)).to_pydict(include_default_values=True) == {"date": datetime(2020, 1, 1)}
 
 
 def test_to_json_default_values():
@@ -259,9 +245,7 @@ def test_to_json_default_values():
     }
 
     # All default values
-    test = TestMessage().from_dict(
-        {"someInt": 0, "someDouble": 0.0, "someStr": "", "someBool": False}
-    )
+    test = TestMessage().from_dict({"someInt": 0, "someDouble": 0.0, "someStr": "", "someBool": False})
 
     assert json.loads(test.to_json(include_default_values=True)) == {
         "someInt": 0,
@@ -390,15 +374,11 @@ def test_to_dict_datetime_values():
         bar: datetime = betterproto.message_field(1)
         baz: timedelta = betterproto.message_field(2)
 
-    test = TestDatetimeMessage().from_dict(
-        {"bar": "2020-01-01T00:00:00Z", "baz": "86400.000s"}
-    )
+    test = TestDatetimeMessage().from_dict({"bar": "2020-01-01T00:00:00Z", "baz": "86400.000s"})
 
     assert test.to_dict() == {"bar": "2020-01-01T00:00:00Z", "baz": "86400.000s"}
 
-    test = TestDatetimeMessage().from_pydict(
-        {"bar": datetime(year=2020, month=1, day=1), "baz": timedelta(days=1)}
-    )
+    test = TestDatetimeMessage().from_pydict({"bar": datetime(year=2020, month=1, day=1), "baz": timedelta(days=1)})
 
     assert test.to_pydict() == {
         "bar": datetime(year=2020, month=1, day=1),

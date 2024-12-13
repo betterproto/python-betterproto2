@@ -17,13 +17,9 @@ def test_direct_import_typing_compiler():
     assert compiler.union("str", "int") == "Union[str, int]"
     assert compiler.imports() == {"typing": {"Optional", "List", "Dict", "Union"}}
     assert compiler.iterable("str") == "Iterable[str]"
-    assert compiler.imports() == {
-        "typing": {"Optional", "List", "Dict", "Union", "Iterable"}
-    }
+    assert compiler.imports() == {"typing": {"Optional", "List", "Dict", "Union", "Iterable"}}
     assert compiler.async_iterable("str") == "AsyncIterable[str]"
-    assert compiler.imports() == {
-        "typing": {"Optional", "List", "Dict", "Union", "Iterable", "AsyncIterable"}
-    }
+    assert compiler.imports() == {"typing": {"Optional", "List", "Dict", "Union", "Iterable", "AsyncIterable"}}
     assert compiler.async_iterator("str") == "AsyncIterator[str]"
     assert compiler.imports() == {
         "typing": {
@@ -71,6 +67,4 @@ def test_no_typing_311_typing_compiler():
     assert compiler.iterable("str") == "Iterable[str]"
     assert compiler.async_iterable("str") == "AsyncIterable[str]"
     assert compiler.async_iterator("str") == "AsyncIterator[str]"
-    assert compiler.imports() == {
-        "collections.abc": {"Iterable", "AsyncIterable", "AsyncIterator"}
-    }
+    assert compiler.imports() == {"collections.abc": {"Iterable", "AsyncIterable", "AsyncIterator"}}

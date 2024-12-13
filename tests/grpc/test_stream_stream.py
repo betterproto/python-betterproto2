@@ -40,27 +40,19 @@ def client():
 
 
 @pytest.mark.asyncio
-async def test_send_from_before_connect_and_close_automatically(
-    client, expected_responses
-):
+async def test_send_from_before_connect_and_close_automatically(client, expected_responses):
     requests = AsyncChannel()
-    await requests.send_from(
-        [Message(body="Hello world 1"), Message(body="Hello world 2")], close=True
-    )
+    await requests.send_from([Message(body="Hello world 1"), Message(body="Hello world 2")], close=True)
     responses = client.connect(requests)
 
     assert await to_list(responses) == expected_responses
 
 
 @pytest.mark.asyncio
-async def test_send_from_after_connect_and_close_automatically(
-    client, expected_responses
-):
+async def test_send_from_after_connect_and_close_automatically(client, expected_responses):
     requests = AsyncChannel()
     responses = client.connect(requests)
-    await requests.send_from(
-        [Message(body="Hello world 1"), Message(body="Hello world 2")], close=True
-    )
+    await requests.send_from([Message(body="Hello world 1"), Message(body="Hello world 2")], close=True)
 
     assert await to_list(responses) == expected_responses
 
@@ -69,9 +61,7 @@ async def test_send_from_after_connect_and_close_automatically(
 async def test_send_from_close_manually_immediately(client, expected_responses):
     requests = AsyncChannel()
     responses = client.connect(requests)
-    await requests.send_from(
-        [Message(body="Hello world 1"), Message(body="Hello world 2")], close=False
-    )
+    await requests.send_from([Message(body="Hello world 1"), Message(body="Hello world 2")], close=False)
     requests.close()
 
     assert await to_list(responses) == expected_responses

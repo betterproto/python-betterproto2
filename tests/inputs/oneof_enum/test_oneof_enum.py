@@ -12,9 +12,7 @@ def test_which_one_of_returns_enum_with_default_value():
     returns first field when it is enum and set with default value
     """
     message = Test()
-    message.from_json(
-        get_test_case_json_data("oneof_enum", "oneof_enum-enum-0.json")[0].json
-    )
+    message.from_json(get_test_case_json_data("oneof_enum", "oneof_enum-enum-0.json")[0].json)
 
     assert message.move is None
     assert message.signal == Signal.PASS
@@ -26,9 +24,7 @@ def test_which_one_of_returns_enum_with_non_default_value():
     returns first field when it is enum and set with non default value
     """
     message = Test()
-    message.from_json(
-        get_test_case_json_data("oneof_enum", "oneof_enum-enum-1.json")[0].json
-    )
+    message.from_json(get_test_case_json_data("oneof_enum", "oneof_enum-enum-1.json")[0].json)
 
     assert message.move is None
     assert message.signal == Signal.RESIGN

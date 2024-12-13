@@ -16,45 +16,33 @@ class ThingService:
         # This lets us pass assertions to the servicer ;)
         self.test_hook = test_hook
 
-    async def do_thing(
-        self, stream: "grpclib.server.Stream[DoThingRequest, DoThingResponse]"
-    ):
+    async def do_thing(self, stream: "grpclib.server.Stream[DoThingRequest, DoThingResponse]"):
         request = await stream.recv_message()
         if self.test_hook is not None:
             self.test_hook(stream)
         await stream.send_message(DoThingResponse([request.name]))
 
-    async def do_many_things(
-        self, stream: "grpclib.server.Stream[DoThingRequest, DoThingResponse]"
-    ):
+    async def do_many_things(self, stream: "grpclib.server.Stream[DoThingRequest, DoThingResponse]"):
         thing_names = [request.name async for request in stream]
         if self.test_hook is not None:
             self.test_hook(stream)
         await stream.send_message(DoThingResponse(thing_names))
 
-    async def get_thing_versions(
-        self, stream: "grpclib.server.Stream[GetThingRequest, GetThingResponse]"
-    ):
+    async def get_thing_versions(self, stream: "grpclib.server.Stream[GetThingRequest, GetThingResponse]"):
         request = await stream.recv_message()
         if self.test_hook is not None:
             self.test_hook(stream)
         for version_num in range(1, 6):
-            await stream.send_message(
-                GetThingResponse(name=request.name, version=version_num)
-            )
+            await stream.send_message(GetThingResponse(name=request.name, version=version_num))
 
-    async def get_different_things(
-        self, stream: "grpclib.server.Stream[GetThingRequest, GetThingResponse]"
-    ):
+    async def get_different_things(self, stream: "grpclib.server.Stream[GetThingRequest, GetThingResponse]"):
         if self.test_hook is not None:
             self.test_hook(stream)
         #  Respond to each input item immediately
         response_num = 0
         async for request in stream:
             response_num += 1
-            await stream.send_message(
-                GetThingResponse(name=request.name, version=response_num)
-            )
+            await stream.send_message(GetThingResponse(name=request.name, version=response_num))
 
     def __mapping__(self) -> Dict[str, "grpclib.const.Handler"]:
         return {

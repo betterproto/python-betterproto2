@@ -27,13 +27,8 @@ def test_enum_is_comparable_with_int():
 
 
 def test_enum_to_dict():
-    assert (
-        "choice" not in Test(choice=Choice.ZERO).to_dict()
-    ), "Default enum value is not serialized"
-    assert (
-        Test(choice=Choice.ZERO).to_dict(include_default_values=True)["choice"]
-        == "ZERO"
-    )
+    assert "choice" not in Test(choice=Choice.ZERO).to_dict(), "Default enum value is not serialized"
+    assert Test(choice=Choice.ZERO).to_dict(include_default_values=True)["choice"] == "ZERO"
     assert Test(choice=Choice.ONE).to_dict()["choice"] == "ONE"
     assert Test(choice=Choice.THREE).to_dict()["choice"] == "THREE"
     assert Test(choice=Choice.FOUR).to_dict()["choice"] == "FOUR"
@@ -59,9 +54,7 @@ def test_repeated_enum_to_dict():
     assert Test(choices=[Choice.THREE]).to_dict()["choices"] == ["THREE"]
     assert Test(choices=[Choice.FOUR]).to_dict()["choices"] == ["FOUR"]
 
-    all_enums_dict = Test(
-        choices=[Choice.ZERO, Choice.ONE, Choice.THREE, Choice.FOUR]
-    ).to_dict()
+    all_enums_dict = Test(choices=[Choice.ZERO, Choice.ONE, Choice.THREE, Choice.FOUR]).to_dict()
     assert (all_enums_dict["choices"]) == ["ZERO", "ONE", "THREE", "FOUR"]
 
 

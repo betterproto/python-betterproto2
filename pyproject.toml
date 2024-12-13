@@ -53,6 +53,16 @@ rust-codec = ["betterproto-rust-codec"]
 [tool.ruff]
 extend-exclude = ["tests/output_*"]
 target-version = "py38"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "F401",  # Unused imports
+    "F841",  # Unused local variables
+    "F821",  # Undefined names
+    "E501",  # Line length violations
+]
+
 
 [tool.ruff.lint.isort]
 combine-as-imports = true

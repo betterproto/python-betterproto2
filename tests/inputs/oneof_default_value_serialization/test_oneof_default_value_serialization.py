@@ -58,11 +58,7 @@ def test_oneof_nested_oneof_messages_are_serialized_with_defaults():
     """
     Nested messages with oneofs should also be handled
     """
-    message = Test(
-        wrapped_nested_message_value=NestedMessage(
-            id=0, wrapped_message_value=Message(value=0)
-        )
-    )
+    message = Test(wrapped_nested_message_value=NestedMessage(id=0, wrapped_message_value=Message(value=0)))
     assert (
         betterproto.which_one_of(message, "value_type")
         == betterproto.which_one_of(Test().from_json(message.to_json()), "value_type")

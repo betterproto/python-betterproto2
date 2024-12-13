@@ -162,9 +162,7 @@ def get_comment(
                 lines.append("")
 
             # Remove consecutive empty lines
-            lines = [
-                line for i, line in enumerate(lines) if line or (i == 0 or lines[i - 1])
-            ]
+            lines = [line for i, line in enumerate(lines) if line or (i == 0 or lines[i - 1])]
 
             if lines and not lines[-1]:
                 lines.pop()  # Remove the last empty line
@@ -237,11 +235,7 @@ class PluginRequestCompiler:
         List[MessageCompiler]
             List of all of the messages in this request.
         """
-        return [
-            msg
-            for output in self.output_packages.values()
-            for msg in output.messages.values()
-        ]
+        return [msg for output in self.output_packages.values() for msg in output.messages.values()]
 
 
 @dataclass
@@ -296,9 +290,7 @@ class MessageCompiler(ProtoContentBase):
     parent: Union["MessageCompiler", OutputTemplate] = PLACEHOLDER
     proto_obj: DescriptorProto = PLACEHOLDER
     path: List[int] = PLACEHOLDER
-    fields: List[Union["FieldCompiler", "MessageCompiler"]] = field(
-        default_factory=list
-    )
+    fields: List[Union["FieldCompiler", "MessageCompiler"]] = field(default_factory=list)
     builtins_types: Set[str] = field(default_factory=set)
 
     def __post_init__(self) -> None:
@@ -343,9 +335,7 @@ class MessageCompiler(ProtoContentBase):
         )
 
 
-def is_map(
-    proto_field_obj: FieldDescriptorProto, parent_message: DescriptorProto
-) -> bool:
+def is_map(proto_field_obj: FieldDescriptorProto, parent_message: DescriptorProto) -> bool:
     """True if proto_field_obj is a map, otherwise False."""
     if proto_field_obj.type == FieldDescriptorProtoType.TYPE_MESSAGE:
         if not hasattr(parent_message, "nested_type"):
@@ -356,10 +346,7 @@ def is_map(
         map_entry = f"{proto_field_obj.name.replace('_', '').lower()}entry"
         if message_type == map_entry:
             for nested in parent_message.nested_type:  # parent message
-                if (
-                    nested.name.replace("_", "").lower() == map_entry
-                    and nested.options.map_entry
-                ):
+                if nested.name.replace("_", "").lower() == map_entry and nested.options.map_entry:
                     return True
     return False
 
@@ -379,9 +366,7 @@ def is_oneof(proto_field_obj: FieldDescriptorProto) -> bool:
         us to tell whether it was set, via the which_one_of interface.
     """
 
-    return (
-        not proto_field_obj.proto3_optional and proto_field_obj.oneof_index is not None
-    )
+    return not proto_field_obj.proto3_optional and proto_field_obj.oneof_index is not None
 
 
 @dataclass
@@ -403,12 +388,8 @@ class FieldCompiler(ProtoContentBase):
     def get_field_string(self) -> str:
         """Construct string representation of this field as a field."""
         name = f"{self.py_name}"
-        field_args = ", ".join(
-            ([""] + self.betterproto_field_args) if self.betterproto_field_args else []
-        )
-        betterproto_field_type = (
-            f"betterproto.{self.field_type}_field({self.proto_obj.number}{field_args})"
-        )
+        field_args = ", ".join(([""] + self.betterproto_field_args) if self.betterproto_field_args else [])
+        betterproto_field_type = f"betterproto.{self.field_type}_field({self.proto_obj.number}{field_args})"
         if self.py_name in dir(builtins):
             self.parent.builtins_types.add(self.py_name)
         return f'{name}: "{self.annotation}" = {betterproto_field_type}'
@@ -436,9 +417,7 @@ class FieldCompiler(ProtoContentBase):
     @property
     def field_wraps(self) -> Optional[str]:
         """Returns betterproto wrapped field type or None."""
-        match_wrapper = re.match(
-            r"\.google\.protobuf\.(.+)Value$", self.proto_obj.type_name
-        )
+        match_wrapper = re.match(r"\.google\.protobuf\.(.+)Value$", self.proto_obj.type_name)
         if match_wrapper:
             wrapped_type = "TYPE_" + match_wrapper.group(1).upper()
             if hasattr(betterproto, wrapped_type):
@@ -447,25 +426,18 @@ class FieldCompiler(ProtoContentBase):
 
     @property
     def repeated(self) -> bool:
-        return (
-            self.proto_obj.label == FieldDescriptorProtoLabel.LABEL_REPEATED
-            and not is_map(self.proto_obj, self.parent)
+        return self.proto_obj.label == FieldDescriptorProtoLabel.LABEL_REPEATED and not is_map(
+            self.proto_obj, self.parent
         )
 
     @property
     def optional(self) -> bool:
-        return self.proto_obj.proto3_optional or (
-            self.field_type == "message" and not self.repeated
-        )
+        return self.proto_obj.proto3_optional or (self.field_type == "message" and not self.repeated)
 
     @property
     def field_type(self) -> str:
         """String representation of proto field type."""
-        return (
-            FieldDescriptorProtoType(self.proto_obj.type)
-            .name.lower()
-            .replace("type_", "")
-        )
+        return FieldDescriptorProtoType(self.proto_obj.type).name.lower().replace("type_", "")
 
     @property
     def packed(self) -> bool:
@@ -544,10 +516,7 @@ class MapEntryCompiler(FieldCompiler):
     def __post_init__(self):
         map_entry = f"{self.proto_obj.name.replace('_', '').lower()}entry"
         for nested in self.parent.proto_obj.nested_type:
-            if (
-                nested.name.replace("_", "").lower() == map_entry
-                and nested.options.map_entry
-            ):
+            if nested.name.replace("_", "").lower() == map_entry and nested.options.map_entry:
                 pass
         return super().__post_init__()
 
@@ -555,10 +524,7 @@ class MapEntryCompiler(FieldCompiler):
         """Explore nested types and set k_type and v_type if unset."""
         map_entry = f"{self.proto_obj.name.replace('_', '').lower()}entry"
         for nested in self.parent.proto_obj.nested_type:
-            if (
-                nested.name.replace("_", "").lower() == map_entry
-                and nested.options.map_entry
-            ):
+            if nested.name.replace("_", "").lower() == map_entry and nested.options.map_entry:
                 # Get Python types
                 self.py_k_type = FieldCompiler(
                     source_file=self.source_file,
@@ -616,13 +582,9 @@ class EnumDefinitionCompiler(MessageCompiler):
         # Get entries/allowed values for this Enum
         self.entries = [
             self.EnumEntry(
-                name=pythonize_enum_member_name(
-                    entry_proto_value.name, self.proto_obj.name
-                ),
+                name=pythonize_enum_member_name(entry_proto_value.name, self.proto_obj.name),
                 value=entry_proto_value.number,
-                comment=get_comment(
-                    proto_file=self.source_file, path=self.path + [2, entry_number]
-                ),
+                comment=get_comment(proto_file=self.source_file, path=self.path + [2, entry_number]),
             )
             for entry_number, entry_proto_value in enumerate(self.proto_obj.value)
         ]
@@ -676,9 +638,7 @@ class ServiceMethodCompiler(ProtoContentBase):
 
     @property
     def route(self) -> str:
-        package_part = (
-            f"{self.output_file.package}." if self.output_file.package else ""
-        )
+        package_part = f"{self.output_file.package}." if self.output_file.package else ""
         return f"/{package_part}{self.parent.proto_name}/{self.proto_name}"
 
     @property

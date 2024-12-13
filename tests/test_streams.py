@@ -14,9 +14,7 @@ from tests.output_betterproto import (
     repeatedpacked,
 )
 
-oneof_example = oneof.Test().from_dict(
-    {"pitied": 1, "just_a_regular_field": 123456789, "bar_name": "Testing"}
-)
+oneof_example = oneof.Test().from_dict({"pitied": 1, "just_a_regular_field": 123456789, "bar_name": "Testing"})
 
 len_oneof = len(bytes(oneof_example))
 
@@ -43,9 +41,7 @@ java = which("java")
 
 
 def test_load_varint_too_long():
-    with BytesIO(
-        b"\x80\x80\x80\x80\x80\x80\x80\x80\x80\x80\x01"
-    ) as stream, pytest.raises(ValueError):
+    with BytesIO(b"\x80\x80\x80\x80\x80\x80\x80\x80\x80\x80\x01") as stream, pytest.raises(ValueError):
         betterproto.load_varint(stream)
 
     with BytesIO(b"\x80\x80\x80\x80\x80\x80\x80\x80\x80\x01") as stream:
@@ -83,13 +79,9 @@ def test_dump_varint_file(tmp_path):
     with open(tmp_path / "dump_varint_file.out", "rb") as test_stream, open(
         streams_path / "message_dump_file_single.expected", "rb"
     ) as exp_stream:
-        assert betterproto.load_varint(test_stream) == betterproto.load_varint(
-            exp_stream
-        )
+        assert betterproto.load_varint(test_stream) == betterproto.load_varint(exp_stream)
         exp_stream.read(2)
-        assert betterproto.load_varint(test_stream) == betterproto.load_varint(
-            exp_stream
-        )
+        assert betterproto.load_varint(test_stream) == betterproto.load_varint(exp_stream)
 
 
 def test_parse_fields():
@@ -157,9 +149,7 @@ def test_message_load_file_multiple():
 
 
 def test_message_load_too_small():
-    with open(
-        streams_path / "message_dump_file_single.expected", "rb"
-    ) as stream, pytest.raises(ValueError):
+    with open(streams_path / "message_dump_file_single.expected", "rb") as stream, pytest.raises(ValueError):
         oneof.Test().load(stream, len_oneof - 1)
 
 
@@ -172,9 +162,7 @@ def test_message_load_delimited():
 
 
 def test_message_load_too_large():
-    with open(
-        streams_path / "message_dump_file_single.expected", "rb"
-    ) as stream, pytest.raises(ValueError):
+    with open(streams_path / "message_dump_file_single.expected", "rb") as stream, pytest.raises(ValueError):
         oneof.Test().load(stream, len_oneof + 1)
 
 
@@ -249,9 +237,7 @@ def compile_jar():
     # Compile the JAR
     proc_maven = run([mvn, "clean", "install", "-f", "tests/streams/java/pom.xml"])
     if proc_maven.returncode != 0:
-        pytest.skip(
-            "Maven compatibility-test.jar build failed (maybe Java version <11?)"
-        )
+        pytest.skip("Maven compatibility-test.jar build failed (maybe Java version <11?)")
 
 
 jar = "tests/streams/java/target/compatibility-test.jar"

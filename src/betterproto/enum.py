@@ -26,36 +26,27 @@ if TYPE_CHECKING:
 
 
 def _is_descriptor(obj: object) -> bool:
-    return (
-        hasattr(obj, "__get__") or hasattr(obj, "__set__") or hasattr(obj, "__delete__")
-    )
+    return hasattr(obj, "__get__") or hasattr(obj, "__set__") or hasattr(obj, "__delete__")
 
 
 class EnumType(EnumMeta if TYPE_CHECKING else type):
     _value_map_: Mapping[int, Enum]
     _member_map_: Mapping[str, Enum]
 
-    def __new__(
-        mcs, name: str, bases: Tuple[type, ...], namespace: Dict[str, Any]
-    ) -> Self:
+    def __new__(mcs, name: str, bases: Tuple[type, ...], namespace: Dict[str, Any]) -> Self:
         value_map = {}
         member_map = {}
 
         new_mcs = type(
             f"{name}Type",
             tuple(
-                dict.fromkeys(
-                    [base.__class__ for base in bases if base.__class__ is not type]
-                    + [EnumType, type]
-                )
+                dict.fromkeys([base.__class__ for base in bases if base.__class__ is not type] + [EnumType, type])
             ),  # reorder the bases so EnumType and type are last to avoid conflicts
             {"_value_map_": value_map, "_member_map_": member_map},
         )
 
         members = {
-            name: value
-            for name, value in namespace.items()
-            if not _is_descriptor(value) and not name.startswith("__")
+            name: value for name, value in namespace.items() if not _is_descriptor(value) and not name.startswith("__")
         }
 
         cls = type.__new__(
@@ -138,14 +129,10 @@ class Enum(IntEnum if TYPE_CHECKING else int, metaclass=EnumType):
         return f"{self.__class__.__name__}.{self.name}"
 
     def __setattr__(self, key: str, value: Any) -> Never:
-        raise AttributeError(
-            f"{self.__class__.__name__} Cannot reassign a member's attributes."
-        )
+        raise AttributeError(f"{self.__class__.__name__} Cannot reassign a member's attributes.")
 
     def __delattr__(self, item: Any) -> Never:
-        raise AttributeError(
-            f"{self.__class__.__name__} Cannot delete a member's attributes."
-        )
+        raise AttributeError(f"{self.__class__.__name__} Cannot delete a member's attributes.")
 
     def __copy__(self) -> Self:
         return self

@@ -36,9 +36,7 @@ class Fo(betterproto.Message):
 
 @dataclass(eq=False, repr=False)
 class NestedData(betterproto.Message):
-    struct_foo: Dict[str, "google.Struct"] = betterproto.map_field(
-        1, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
-    )
+    struct_foo: Dict[str, "google.Struct"] = betterproto.map_field(1, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE)
     map_str_any_bar: Dict[str, "google.Any"] = betterproto.map_field(
         2, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
     )
@@ -51,9 +49,7 @@ class Complex(betterproto.Message):
     fi: "Fi" = betterproto.message_field(4, group="grp")
     fo: "Fo" = betterproto.message_field(5, group="grp")
     nested_data: "NestedData" = betterproto.message_field(6)
-    mapping: Dict[str, "google.Any"] = betterproto.map_field(
-        7, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
-    )
+    mapping: Dict[str, "google.Any"] = betterproto.map_field(7, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE)
 
 
 def complex_msg():
@@ -64,11 +60,7 @@ def complex_msg():
             struct_foo={
                 "foo": google.Struct(
                     fields={
-                        "hello": google.Value(
-                            list_value=google.ListValue(
-                                values=[google.Value(string_value="world")]
-                            )
-                        )
+                        "hello": google.Value(list_value=google.ListValue(values=[google.Value(string_value="world")]))
                     }
                 ),
             },
@@ -91,13 +83,7 @@ def test_pickling_complex_message():
     assert msg.is_set("fi") is not True
     assert msg.mapping["message"] == google.Any(value=bytes(Fi(abc="hi")))
     assert msg.mapping["string"].value.decode() == "howdy"
-    assert (
-        msg.nested_data.struct_foo["foo"]
-        .fields["hello"]
-        .list_value.values[0]
-        .string_value
-        == "world"
-    )
+    assert msg.nested_data.struct_foo["foo"].fields["hello"].list_value.values[0].string_value == "world"
 
 
 def test_recursive_message_defaults():
@@ -113,9 +99,7 @@ def test_recursive_message_defaults():
     assert msg == RecursiveMessage(name="bob", intermediate=Intermediate(42))
 
     # lazy initialized works modifies the message
-    assert msg != RecursiveMessage(
-        name="bob", intermediate=Intermediate(42), child=RecursiveMessage(name="jude")
-    )
+    assert msg != RecursiveMessage(name="bob", intermediate=Intermediate(42), child=RecursiveMessage(name="jude"))
     msg.child = RecursiveMessage(child=RecursiveMessage(name="jude"))
     assert msg == RecursiveMessage(
         name="bob",
@@ -174,10 +158,4 @@ def test_message_can_be_cached():
         assert msg.is_set("fi") is not True
         assert msg.mapping["message"] == google.Any(value=bytes(Fi(abc="hi")))
         assert msg.mapping["string"].value.decode() == "howdy"
-        assert (
-            msg.nested_data.struct_foo["foo"]
-            .fields["hello"]
-            .list_value.values[0]
-            .string_value
-            == "world"
-        )
+        assert msg.nested_data.struct_foo["foo"].fields["hello"].list_value.values[0].string_value == "world"

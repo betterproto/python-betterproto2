@@ -42,37 +42,25 @@ async def generate(whitelist: Set[str], verbose: bool):
     generation_tasks = []
     for test_case_name in sorted(test_case_names):
         test_case_input_path = inputs_path.joinpath(test_case_name).resolve()
-        if (
-            whitelist
-            and str(test_case_input_path) not in path_whitelist
-            and test_case_name not in name_whitelist
-        ):
+        if whitelist and str(test_case_input_path) not in path_whitelist and test_case_name not in name_whitelist:
             continue
-        generation_tasks.append(
-            generate_test_case_output(test_case_input_path, test_case_name, verbose)
-        )
+        generation_tasks.append(generate_test_case_output(test_case_input_path, test_case_name, verbose))
 
     failed_test_cases = []
     # Wait for all subprocs and match any failures to names to report
-    for test_case_name, result in zip(
-        sorted(test_case_names), await asyncio.gather(*generation_tasks)
-    ):
+    for test_case_name, result in zip(sorted(test_case_names), await asyncio.gather(*generation_tasks)):
         if result != 0:
             failed_test_cases.append(test_case_name)
 
     if len(failed_test_cases) > 0:
-        sys.stderr.write(
-            "\n\033[31;1;4mFailed to generate the following test cases:\033[0m\n"
-        )
+        sys.stderr.write("\n\033[31;1;4mFailed to generate the following test cases:\033[0m\n")
         for failed_test_case in failed_test_cases:
             sys.stderr.write(f"- {failed_test_case}\n")
 
         sys.exit(1)
 
 
-async def generate_test_case_output(
-    test_case_input_path: Path, test_case_name: str, verbose: bool
-) -> int:
+async def generate_test_case_output(test_case_input_path: Path, test_case_name: str, verbose: bool) -> int:
     """
     Returns the max of the subprocess return values
     """
@@ -95,17 +83,13 @@ async def generate_test_case_output(
     ) = await asyncio.gather(
         protoc(test_case_input_path, test_case_output_path_reference, True),
         protoc(test_case_input_path, test_case_output_path_betterproto, False),
-        protoc(
-            test_case_input_path, test_case_output_path_betterproto_pyd, False, True
-        ),
+        protoc(test_case_input_path, test_case_output_path_betterproto_pyd, False, True),
     )
 
     if ref_code == 0:
         print(f"\033[31;1;4mGenerated reference output for {test_case_name!r}\033[0m")
     else:
-        print(
-            f"\033[31;1;4mFailed to generate reference output for {test_case_name!r}\033[0m"
-        )
+        print(f"\033[31;1;4mFailed to generate reference output for {test_case_name!r}\033[0m")
         print(ref_err.decode())
 
     if verbose:
@@ -122,9 +106,7 @@ async def generate_test_case_output(
     if plg_code == 0:
         print(f"\033[31;1;4mGenerated plugin output for {test_case_name!r}\033[0m")
     else:
-        print(
-            f"\033[31;1;4mFailed to generate plugin output for {test_case_name!r}\033[0m"
-        )
+        print(f"\033[31;1;4mFailed to generate plugin output for {test_case_name!r}\033[0m")
         print(plg_err.decode())
 
     if verbose:
@@ -139,13 +121,9 @@ async def generate_test_case_output(
             sys.stderr.buffer.flush()
 
     if plg_code_pyd == 0:
-        print(
-            f"\033[31;1;4mGenerated plugin (pydantic compatible) output for {test_case_name!r}\033[0m"
-        )
+        print(f"\033[31;1;4mGenerated plugin (pydantic compatible) output for {test_case_name!r}\033[0m")
     else:
-        print(
-            f"\033[31;1;4mFailed to generate plugin (pydantic compatible) output for {test_case_name!r}\033[0m"
-        )
+        print(f"\033[31;1;4mFailed to generate plugin (pydantic compatible) output for {test_case_name!r}\033[0m")
         print(plg_err_pyd.decode())
 
     if verbose:
@@ -167,7 +145,7 @@ HELP = "\n".join(
         "Usage: python generate.py [-h] [-v] [DIRECTORIES or NAMES]",
         "Generate python classes for standard tests.",
         "",
-        "DIRECTORIES    One or more relative or absolute directories of test-cases to generate classes for.",
+        "DIRECTORIES    One or more relative or absolute directories of test-cases to generate" "classes for.",
         "               python generate.py inputs/bool inputs/double inputs/enum",
         "",
         "NAMES          One or more test-case names to generate classes for.",

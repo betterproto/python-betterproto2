@@ -22,9 +22,7 @@ from .models import OutputTemplate
 
 
 def outputfile_compiler(output_file: OutputTemplate) -> str:
-    templates_folder = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "templates")
-    )
+    templates_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "templates"))
 
     env = jinja2.Environment(
         trim_blocks=True,
@@ -47,9 +45,7 @@ def outputfile_compiler(output_file: OutputTemplate) -> str:
     )
 
     # Format the code
-    code = subprocess.check_output(
-        ["ruff", "format", "-"], input=code, encoding="utf-8"
-    )
+    code = subprocess.check_output(["ruff", "format", "-"], input=code, encoding="utf-8")
 
     # Validate the generated code.
     validator = ModuleValidator(iter(code.splitlines()))

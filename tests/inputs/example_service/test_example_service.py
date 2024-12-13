@@ -14,17 +14,13 @@ from tests.output_betterproto.example_service import (
 
 
 class ExampleService(TestBase):
-    async def example_unary_unary(
-        self, example_request: ExampleRequest
-    ) -> "ExampleResponse":
+    async def example_unary_unary(self, example_request: ExampleRequest) -> "ExampleResponse":
         return ExampleResponse(
             example_string=example_request.example_string,
             example_integer=example_request.example_integer,
         )
 
-    async def example_unary_stream(
-        self, example_request: ExampleRequest
-    ) -> AsyncIterator["ExampleResponse"]:
+    async def example_unary_stream(self, example_request: ExampleRequest) -> AsyncIterator["ExampleResponse"]:
         response = ExampleResponse(
             example_string=example_request.example_string,
             example_integer=example_request.example_integer,

@@ -23,9 +23,7 @@ HybridT = TypeVar("HybridT", covariant=True)
 class hybridmethod(Generic[SelfT, P, HybridT]):
     def __init__(
         self,
-        func: Callable[
-            Concatenate[type[SelfT], P], HybridT
-        ],  # Must be the classmethod version
+        func: Callable[Concatenate[type[SelfT], P], HybridT],  # Must be the classmethod version
     ):
         self.cls_func = func
         self.__doc__ = func.__doc__
@@ -34,9 +32,7 @@ class hybridmethod(Generic[SelfT, P, HybridT]):
         self.instance_func = func
         return self
 
-    def __get__(
-        self, instance: Optional[SelfT], owner: Type[SelfT]
-    ) -> Callable[P, HybridT]:
+    def __get__(self, instance: Optional[SelfT], owner: Type[SelfT]) -> Callable[P, HybridT]:
         if instance is None or self.instance_func is None:
             # either bound to the class, or no instance method available
             return self.cls_func.__get__(owner, None)

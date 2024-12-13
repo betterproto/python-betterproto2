@@ -31,16 +31,14 @@ WRAPPER_TYPES: Dict[str, Type] = {
 }
 
 
-def parse_source_type_name(
-    field_type_name: str, request: "PluginRequestCompiler"
-) -> Tuple[str, str]:
+def parse_source_type_name(field_type_name: str, request: "PluginRequestCompiler") -> Tuple[str, str]:
     """
     Split full source type name into package and type name.
     E.g. 'root.package.Message' -> ('root.package', 'Message')
          'root.Message.SomeEnum' -> ('root', 'Message.SomeEnum')
 
-    The function goes through the symbols that have been defined (names, enums, packages) to find the actual package and
-    name of the object that is referenced.
+    The function goes through the symbols that have been defined (names, enums,
+    packages) to find the actual package and name of the object that is referenced.
     """
     if field_type_name[0] != ".":
         raise RuntimeError("relative names are not supported")
@@ -103,9 +101,7 @@ def get_type_reference(
     compiling_google_protobuf = current_package == ["google", "protobuf"]
     importing_google_protobuf = py_package == ["google", "protobuf"]
     if importing_google_protobuf and not compiling_google_protobuf:
-        py_package = (
-            ["betterproto", "lib"] + (["pydantic"] if pydantic else []) + py_package
-        )
+        py_package = ["betterproto", "lib"] + (["pydantic"] if pydantic else []) + py_package
 
     if py_package[:1] == ["betterproto"]:
         return reference_absolute(imports, py_package, py_type)
@@ -139,9 +135,7 @@ def reference_sibling(py_type: str) -> str:
     return f"{py_type}"
 
 
-def reference_descendent(
-    current_package: List[str], imports: Set[str], py_package: List[str], py_type: str
-) -> str:
+def reference_descendent(current_package: List[str], imports: Set[str], py_package: List[str], py_type: str) -> str:
     """
     Returns a reference to a python type in a package that is a descendent of the
     current package, and adds the required import that is aliased to avoid name
@@ -159,9 +153,7 @@ def reference_descendent(
         return f"{string_import}.{py_type}"
 
 
-def reference_ancestor(
-    current_package: List[str], imports: Set[str], py_package: List[str], py_type: str
-) -> str:
+def reference_ancestor(current_package: List[str], imports: Set[str], py_package: List[str], py_type: str) -> str:
     """
     Returns a reference to a python type in a package which is an ancestor to the
     current package, and adds the required import that is aliased (if possible) to avoid
@@ -182,24 +174,16 @@ def reference_ancestor(
         return string_alias
 
 
-def reference_cousin(
-    current_package: List[str], imports: Set[str], py_package: List[str], py_type: str
-) -> str:
+def reference_cousin(current_package: List[str], imports: Set[str], py_package: List[str], py_type: str) -> str:
     """
     Returns a reference to a python type in a package that is not descendent, ancestor
     or sibling, and adds the required import that is aliased to avoid name conflicts.
     """
     shared_ancestry = os.path.commonprefix([current_package, py_package])  # type: ignore
     distance_up = len(current_package) - len(shared_ancestry)
-    string_from = f".{'.' * distance_up}" + ".".join(
-        py_package[len(shared_ancestry) : -1]
-    )
+    string_from = f".{'.' * distance_up}" + ".".join(py_package[len(shared_ancestry) : -1])
     string_import = py_package[-1]
     # Add trailing __ to avoid name mangling (python.org/dev/peps/pep-0008/#id34)
-    string_alias = (
-        f"{'_' * distance_up}"
-        + safe_snake_case(".".join(py_package[len(shared_ancestry) :]))
-        + "__"
-    )
+    string_alias = f"{'_' * distance_up}" + safe_snake_case(".".join(py_package[len(shared_ancestry) :])) + "__"
     imports.add(f"from {string_from} import {string_import} as {string_alias}")
     return f"{string_alias}.{py_type}"
