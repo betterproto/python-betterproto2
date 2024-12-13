@@ -12,7 +12,6 @@ import pathlib
 
 import toml
 
-
 # -- Project information -----------------------------------------------------
 
 project = "betterproto"

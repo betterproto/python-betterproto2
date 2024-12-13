@@ -8,7 +8,7 @@ repos:
       - id: ruff-format
         args: ["--diff", "src", "tests"]
       - id: ruff
-        args: ["--select", "I", "src", "tests"]
+        args: ["src", "tests"]
 
   - repo: https://github.com/PyCQA/doc8
     rev: 0.10.1
@@ -16,10 +16,3 @@ repos:
       - id: doc8
         additional_dependencies:
           - toml
-
-  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-    rev: v2.10.0
-    hooks:
-      - id: pretty-format-java
-        args: [--autofix, --aosp]
-        files: ^.*\.java$
