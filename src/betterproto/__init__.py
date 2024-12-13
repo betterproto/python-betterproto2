@@ -1,3 +1,5 @@
+__all__ = ["__version__"]
+
 from __future__ import annotations
 
 import dataclasses
