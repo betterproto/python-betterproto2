@@ -54,12 +54,16 @@ def parse_source_type_name(field_type_name: str, request: "PluginRequestCompiler
     for i in range(len(parts)):
         package_name, object_name = ".".join(parts[:i]), ".".join(parts[i:])
 
-        if package := request.output_packages.get(package_name):
-            if object_name in package.messages or object_name in package.enums:
-                if answer:
-                    # This should have already been handeled by protoc
-                    raise ValueError(f"ambiguous definition: {field_type_name}")
-                answer = package_name, object_name
+        package = request.output_packages.get(package_name)
+
+        if not package:
+            continue
+
+        if object_name in package.messages or object_name in package.enums:
+            if answer:
+                # This should have already been handeled by protoc
+                raise ValueError(f"ambiguous definition: {field_type_name}")
+            answer = package_name, object_name
 
     if answer:
         return answer

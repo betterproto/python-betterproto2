@@ -1013,9 +1013,8 @@ class Message(ABC):
     def _cls_for(cls, field: dataclasses.Field, index: int = 0) -> Type:
         """Get the message class for a field from the type hints."""
         field_cls = cls._type_hint(field.name)
-        if hasattr(field_cls, "__args__") and index >= 0:
-            if field_cls.__args__ is not None:
-                field_cls = field_cls.__args__[index]
+        if hasattr(field_cls, "__args__") and index >= 0 and field_cls.__args__ is not None:
+            field_cls = field_cls.__args__[index]
         return field_cls
 
     def _get_field_default(self, field_name: str) -> Any:
