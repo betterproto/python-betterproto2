@@ -1,5 +1,5 @@
 site_name: Betterproto2
-# site_url: 
+site_url: https://betterproto.github.io/python-betterproto2/
 theme:
   name: material
   palette:
