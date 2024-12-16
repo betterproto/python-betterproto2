@@ -9,10 +9,3 @@ repos:
         args: ["--diff", "src", "tests"]
       - id: ruff
         args: ["src", "tests"]
-
-  - repo: https://github.com/PyCQA/doc8
-    rev: 0.10.1
-    hooks:
-      - id: doc8
-        additional_dependencies:
-          - toml
