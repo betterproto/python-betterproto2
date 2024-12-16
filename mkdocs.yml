@@ -1,0 +1,7 @@
+site_name: Betterproto2
+# site_url: 
+theme:
+  name: material
+  palette:
+    primary: deep orange
+    accent: deep orange
