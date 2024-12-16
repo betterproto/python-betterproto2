@@ -47,4 +47,4 @@ jobs:
         shell: bash
         run: poetry install
 
-      - run: mkdocs gh-deploy --force
+      - run: poetry run mkdocs gh-deploy --force
