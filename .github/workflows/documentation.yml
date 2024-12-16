@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - fix-mkdocs
 permissions:
   contents: write
 jobs:
@@ -14,15 +15,36 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
         with:
           python-version: 3.12
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
-      - uses: actions/cache@v4
+
+      - name: Install poetry
+        shell: bash
+        run: |
+          python -m pip install poetry
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
+      - name: Configure poetry
+        shell: bash
+        run: poetry config virtualenvs.in-project true
+
+      - name: Set up cache
+        uses: actions/cache@v3
+        id: cache
         with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: .cache
-          restore-keys: |
-            mkdocs-material-
-      - run: pip install mkdocs-material mkdocstrings[python]
+          path: .venv
+          key: venv-documentation-${{ hashFiles('**/poetry.lock') }}
+      
+      - name: Ensure cache is healthy
+        if: steps.cache.outputs.cache-hit == 'true'
+        shell: bash
+        run: poetry run pip --version >/dev/null 2>&1 || rm -rf .venv
+
+      - name: Install dependencies
+        shell: bash
+        run: poetry install
+
       - run: mkdocs gh-deploy --force
