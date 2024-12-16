@@ -6,6 +6,9 @@ theme:
     primary: deep orange
     accent: deep orange
 
+plugins:
+- mkdocstrings
+
 markdown_extensions:
   - admonition
   - pymdownx.highlight:

@@ -30,6 +30,7 @@ pre-commit = "^2.17.0"
 grpcio-tools = "^1.54.2"
 tox = "^4.0.0"
 mkdocs-material = {version = "^9.5.49", python = ">=3.10"}
+mkdocstrings = {version = "^0.27.0", python = ">=3.10", extras = ["python"]}
 
 [tool.poetry.group.test.dependencies]
 poethepoet = ">=0.9.0"
