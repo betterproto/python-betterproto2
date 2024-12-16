@@ -7,6 +7,7 @@ betterproto is a protobuf compiler and interpreter. It improves the experience o
 Protobuf and gRPC in Python, by generating readable, understandable, and idiomatic
 Python code, using modern language features.
 
+
 ## Features
 
 - Generated messages are both binary & JSON serializable
