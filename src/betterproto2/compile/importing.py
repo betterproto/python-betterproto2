@@ -105,9 +105,7 @@ def get_type_reference(
     compiling_google_protobuf = current_package == ["google", "protobuf"]
     importing_google_protobuf = py_package == ["google", "protobuf"]
     if importing_google_protobuf and not compiling_google_protobuf:
-        py_package = (
-            ["betterproto2", "lib"] + (["pydantic"] if pydantic else []) + py_package
-        )
+        py_package = ["betterproto2", "lib"] + (["pydantic"] if pydantic else []) + py_package
 
     if py_package[:1] == ["betterproto2"]:
         return reference_absolute(imports, py_package, py_type)

@@ -1491,7 +1491,9 @@ class FieldOptions(betterproto2.Message):
     false will avoid using packed encoding.
     """
 
-    jstype: "FieldOptionsJsType" = betterproto2.enum_field(6, enum_default_value=lambda: FieldOptionsJsType.try_value(0))
+    jstype: "FieldOptionsJsType" = betterproto2.enum_field(
+        6, enum_default_value=lambda: FieldOptionsJsType.try_value(0)
+    )
     """
     The jstype option determines the JavaScript type used for values of the
     field.  The option is permitted only for 64 bit integral and fixed types
@@ -2277,7 +2279,9 @@ class Value(betterproto2.Message):
     The JSON representation for `Value` is JSON value.
     """
 
-    null_value: "NullValue" = betterproto2.enum_field(1, enum_default_value=lambda: NullValue.try_value(0), group="kind")
+    null_value: "NullValue" = betterproto2.enum_field(
+        1, enum_default_value=lambda: NullValue.try_value(0), group="kind"
+    )
     """Represents a null value."""
 
     number_value: float = betterproto2.double_field(2, group="kind")

@@ -1536,7 +1536,9 @@ class FieldOptions(betterproto2.Message):
      the behavior.
     """
 
-    jstype: "FieldOptionsJsType" = betterproto2.enum_field(6, enum_default_value=lambda: FieldOptionsJsType.try_value(0))
+    jstype: "FieldOptionsJsType" = betterproto2.enum_field(
+        6, enum_default_value=lambda: FieldOptionsJsType.try_value(0)
+    )
     """
     The jstype option determines the JavaScript type used for values of the
      field.  The option is permitted only for 64 bit integral and fixed types

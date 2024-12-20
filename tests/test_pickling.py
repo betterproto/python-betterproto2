@@ -36,7 +36,9 @@ class Fo(betterproto2.Message):
 
 @dataclass(eq=False, repr=False)
 class NestedData(betterproto2.Message):
-    struct_foo: Dict[str, "google.Struct"] = betterproto2.map_field(1, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE)
+    struct_foo: Dict[str, "google.Struct"] = betterproto2.map_field(
+        1, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE
+    )
     map_str_any_bar: Dict[str, "google.Any"] = betterproto2.map_field(
         2, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE
     )
@@ -49,9 +51,7 @@ class Complex(betterproto2.Message):
     fi: "Fi" = betterproto2.message_field(4, group="grp")
     fo: "Fo" = betterproto2.message_field(5, group="grp")
     nested_data: "NestedData" = betterproto2.message_field(6)
-    mapping: Dict[str, "google.Any"] = betterproto2.map_field(
-        7, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE
-    )
+    mapping: Dict[str, "google.Any"] = betterproto2.map_field(7, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE)
 
 
 def complex_msg():
