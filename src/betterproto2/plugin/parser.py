@@ -8,14 +8,14 @@ from typing import (
     Union,
 )
 
-from betterproto.lib.google.protobuf import (
+from betterproto2.lib.google.protobuf import (
     DescriptorProto,
     EnumDescriptorProto,
     FieldDescriptorProto,
     FileDescriptorProto,
     ServiceDescriptorProto,
 )
-from betterproto.lib.google.protobuf.compiler import (
+from betterproto2.lib.google.protobuf.compiler import (
     CodeGeneratorRequest,
     CodeGeneratorResponse,
     CodeGeneratorResponseFeature,

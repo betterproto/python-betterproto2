@@ -6,7 +6,7 @@ from typing import (
 
 import pytest
 
-from betterproto.plugin.module_validation import ModuleValidator
+from betterproto2.plugin.module_validation import ModuleValidator
 
 
 @pytest.mark.parametrize(

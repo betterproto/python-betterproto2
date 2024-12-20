@@ -1,7 +1,7 @@
 import json
 
-from betterproto.lib.google.protobuf import Struct
-from betterproto.lib.pydantic.google.protobuf import Struct as StructPydantic
+from betterproto2.lib.google.protobuf import Struct
+from betterproto2.lib.pydantic.google.protobuf import Struct as StructPydantic
 
 
 def test_struct_roundtrip():

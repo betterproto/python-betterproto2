@@ -3,12 +3,12 @@
 import os
 import sys
 
-from betterproto.lib.google.protobuf.compiler import (
+from betterproto2.lib.google.protobuf.compiler import (
     CodeGeneratorRequest,
 )
 
 # from betterproto.plugin.models import monkey_patch_oneof_index
-from betterproto.plugin.parser import generate_code
+from betterproto2.plugin.parser import generate_code
 
 
 def main() -> None:

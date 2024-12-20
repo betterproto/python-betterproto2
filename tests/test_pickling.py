@@ -11,8 +11,8 @@ from typing import (
 
 import cachelib
 
-import betterproto
-from betterproto.lib.google import protobuf as google
+import betterproto2
+from betterproto2.lib.google import protobuf as google
 
 
 def unpickled(message):
@@ -20,36 +20,38 @@ def unpickled(message):
 
 
 @dataclass(eq=False, repr=False)
-class Fe(betterproto.Message):
-    abc: str = betterproto.string_field(1)
+class Fe(betterproto2.Message):
+    abc: str = betterproto2.string_field(1)
 
 
 @dataclass(eq=False, repr=False)
-class Fi(betterproto.Message):
-    abc: str = betterproto.string_field(1)
+class Fi(betterproto2.Message):
+    abc: str = betterproto2.string_field(1)
 
 
 @dataclass(eq=False, repr=False)
-class Fo(betterproto.Message):
-    abc: str = betterproto.string_field(1)
+class Fo(betterproto2.Message):
+    abc: str = betterproto2.string_field(1)
 
 
 @dataclass(eq=False, repr=False)
-class NestedData(betterproto.Message):
-    struct_foo: Dict[str, "google.Struct"] = betterproto.map_field(1, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE)
-    map_str_any_bar: Dict[str, "google.Any"] = betterproto.map_field(
-        2, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
+class NestedData(betterproto2.Message):
+    struct_foo: Dict[str, "google.Struct"] = betterproto2.map_field(1, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE)
+    map_str_any_bar: Dict[str, "google.Any"] = betterproto2.map_field(
+        2, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE
     )
 
 
 @dataclass(eq=False, repr=False)
-class Complex(betterproto.Message):
-    foo_str: str = betterproto.string_field(1)
-    fe: "Fe" = betterproto.message_field(3, group="grp")
-    fi: "Fi" = betterproto.message_field(4, group="grp")
-    fo: "Fo" = betterproto.message_field(5, group="grp")
-    nested_data: "NestedData" = betterproto.message_field(6)
-    mapping: Dict[str, "google.Any"] = betterproto.map_field(7, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE)
+class Complex(betterproto2.Message):
+    foo_str: str = betterproto2.string_field(1)
+    fe: "Fe" = betterproto2.message_field(3, group="grp")
+    fi: "Fi" = betterproto2.message_field(4, group="grp")
+    fo: "Fo" = betterproto2.message_field(5, group="grp")
+    nested_data: "NestedData" = betterproto2.message_field(6)
+    mapping: Dict[str, "google.Any"] = betterproto2.map_field(
+        7, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE
+    )
 
 
 def complex_msg():
@@ -109,10 +111,10 @@ def test_recursive_message_defaults():
 
 
 @dataclass
-class PickledMessage(betterproto.Message):
-    foo: bool = betterproto.bool_field(1)
-    bar: int = betterproto.int32_field(2)
-    baz: List[str] = betterproto.string_field(3, repeated=True)
+class PickledMessage(betterproto2.Message):
+    foo: bool = betterproto2.bool_field(1)
+    bar: int = betterproto2.int32_field(2)
+    baz: List[str] = betterproto2.string_field(3, repeated=True)
 
 
 def test_copyability():

@@ -3,20 +3,20 @@ from typing import Optional
 
 import pytest
 
-import betterproto
+import betterproto2
 
 
 def test_oneof_pattern_matching():
     @dataclass
-    class Sub(betterproto.Message):
-        val: int = betterproto.int32_field(1)
+    class Sub(betterproto2.Message):
+        val: int = betterproto2.int32_field(1)
 
     @dataclass
-    class Foo(betterproto.Message):
-        bar: Optional[int] = betterproto.int32_field(1, group="group1")
-        baz: Optional[str] = betterproto.string_field(2, group="group1")
-        sub: Optional[Sub] = betterproto.message_field(3, group="group2")
-        abc: Optional[str] = betterproto.string_field(4, group="group2")
+    class Foo(betterproto2.Message):
+        bar: Optional[int] = betterproto2.int32_field(1, group="group1")
+        baz: Optional[str] = betterproto2.string_field(2, group="group1")
+        sub: Optional[Sub] = betterproto2.message_field(3, group="group2")
+        abc: Optional[str] = betterproto2.string_field(4, group="group2")
 
     foo = Foo(baz="test1", abc="test2")
 

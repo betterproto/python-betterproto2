@@ -49,7 +49,7 @@ async def protoc(
     python_out_option: str = "python_betterproto_out" if not reference else "python_out"
 
     if pydantic_dataclasses:
-        plugin_path = Path("src/betterproto/plugin/main.py")
+        plugin_path = Path("src/betterproto2/plugin/main.py")
 
         if "Win" in platform.system():
             with tempfile.NamedTemporaryFile("w", encoding="UTF-8", suffix=".bat", delete=False) as tf:

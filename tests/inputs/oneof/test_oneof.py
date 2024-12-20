@@ -1,6 +1,6 @@
 import pytest
 
-import betterproto
+import betterproto2
 from tests.output_betterproto.oneof import (
     MixedDrink,
     Test,
@@ -12,23 +12,23 @@ from tests.util import get_test_case_json_data
 def test_which_count():
     message = Test()
     message.from_json(get_test_case_json_data("oneof")[0].json)
-    assert betterproto.which_one_of(message, "foo") == ("pitied", 100)
+    assert betterproto2.which_one_of(message, "foo") == ("pitied", 100)
 
 
 def test_which_name():
     message = Test()
     message.from_json(get_test_case_json_data("oneof", "oneof_name.json")[0].json)
-    assert betterproto.which_one_of(message, "foo") == ("pitier", "Mr. T")
+    assert betterproto2.which_one_of(message, "foo") == ("pitier", "Mr. T")
 
 
 def test_which_count_pyd():
     message = TestPyd(pitier="Mr. T", just_a_regular_field=2, bar_name="a_bar")
-    assert betterproto.which_one_of(message, "foo") == ("pitier", "Mr. T")
+    assert betterproto2.which_one_of(message, "foo") == ("pitier", "Mr. T")
 
 
 def test_oneof_constructor_assign():
     message = Test(mixed_drink=MixedDrink(shots=42))
-    field, value = betterproto.which_one_of(message, "bar")
+    field, value = betterproto2.which_one_of(message, "bar")
     assert field == "mixed_drink"
     assert value.shots == 42
 
@@ -38,6 +38,6 @@ def test_oneof_constructor_assign():
 def test_oneof_nested_assign():
     message = Test()
     message.mixed_drink.shots = 42
-    field, value = betterproto.which_one_of(message, "bar")
+    field, value = betterproto2.which_one_of(message, "bar")
     assert field == "mixed_drink"
     assert value.shots == 42

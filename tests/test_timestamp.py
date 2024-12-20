@@ -5,7 +5,7 @@ from datetime import (
 
 import pytest
 
-from betterproto import _Timestamp
+from betterproto2 import _Timestamp
 
 
 @pytest.mark.parametrize(

@@ -8,7 +8,7 @@ repository = "https://github.com/betterproto/python-betterproto2"
 keywords = ["protobuf", "gRPC"]
 license = "MIT"
 packages = [
-    { include = "betterproto", from = "src" }
+    { include = "betterproto2", from = "src" }
 ]
 
 [tool.poetry.dependencies]
@@ -44,7 +44,7 @@ cachelib = "^0.10.2"
 tomlkit = ">=0.7.0"
 
 [tool.poetry.scripts]
-protoc-gen-python_betterproto = "betterproto.plugin:main"
+protoc-gen-python_betterproto = "betterproto2.plugin:main"
 
 [tool.poetry.extras]
 compiler = ["ruff", "jinja2"]
@@ -130,7 +130,7 @@ help = "Clean out generated files from the workspace"
 [tool.poe.tasks.generate_lib]
 cmd = """
 protoc
-    --plugin=protoc-gen-custom=src/betterproto/plugin/main.py
+    --plugin=protoc-gen-custom=src/betterproto2/plugin/main.py
     --custom_opt=INCLUDE_GOOGLE
     --custom_out=src/betterproto/lib/std
     -I /usr/local/include/

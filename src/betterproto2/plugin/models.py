@@ -46,13 +46,13 @@ from typing import (
     Union,
 )
 
-import betterproto
-from betterproto.compile.naming import (
+import betterproto2
+from betterproto2.compile.naming import (
     pythonize_class_name,
     pythonize_field_name,
     pythonize_method_name,
 )
-from betterproto.lib.google.protobuf import (
+from betterproto2.lib.google.protobuf import (
     DescriptorProto,
     EnumDescriptorProto,
     FieldDescriptorProto,
@@ -61,7 +61,7 @@ from betterproto.lib.google.protobuf import (
     FileDescriptorProto,
     MethodDescriptorProto,
 )
-from betterproto.lib.google.protobuf.compiler import CodeGeneratorRequest
+from betterproto2.lib.google.protobuf.compiler import CodeGeneratorRequest
 
 from ..compile.importing import get_type_reference, parse_source_type_name
 from ..compile.naming import (
@@ -182,7 +182,7 @@ class ProtoContentBase:
     source_file: FileDescriptorProto
     typing_compiler: TypingCompiler
     path: List[int]
-    parent: Union["betterproto.Message", "OutputTemplate"]
+    parent: Union["betterproto2.Message", "OutputTemplate"]
 
     __dataclass_fields__: Dict[str, object]
 
@@ -389,7 +389,7 @@ class FieldCompiler(ProtoContentBase):
         """Construct string representation of this field as a field."""
         name = f"{self.py_name}"
         field_args = ", ".join(([""] + self.betterproto_field_args) if self.betterproto_field_args else [])
-        betterproto_field_type = f"betterproto.{self.field_type}_field({self.proto_obj.number}{field_args})"
+        betterproto_field_type = f"betterproto2.{self.field_type}_field({self.proto_obj.number}{field_args})"
         if self.py_name in dir(builtins):
             self.parent.builtins_types.add(self.py_name)
         return f'{name}: "{self.annotation}" = {betterproto_field_type}'
@@ -420,8 +420,8 @@ class FieldCompiler(ProtoContentBase):
         match_wrapper = re.match(r"\.google\.protobuf\.(.+)Value$", self.proto_obj.type_name)
         if match_wrapper:
             wrapped_type = "TYPE_" + match_wrapper.group(1).upper()
-            if hasattr(betterproto, wrapped_type):
-                return f"betterproto.{wrapped_type}"
+            if hasattr(betterproto2, wrapped_type):
+                return f"betterproto2.{wrapped_type}"
         return None
 
     @property
@@ -548,7 +548,7 @@ class MapEntryCompiler(FieldCompiler):
 
     @property
     def betterproto_field_args(self) -> List[str]:
-        return [f"betterproto.{self.proto_k_type}", f"betterproto.{self.proto_v_type}"]
+        return [f"betterproto2.{self.proto_k_type}", f"betterproto2.{self.proto_v_type}"]
 
     @property
     def field_type(self) -> str:

@@ -36,9 +36,9 @@ from dataclasses import dataclass
 {% endfor %}
 {% endif %}
 
-import betterproto
+import betterproto2
 {% if output_file.services %}
-from betterproto.grpc.grpclib_server import ServiceBase
+from betterproto2.grpc.grpclib_server import ServiceBase
 import grpclib
 {% endif %}
 
@@ -46,5 +46,5 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import grpclib.server
-    from betterproto.grpc.grpclib_client import MetadataLike
+    from betterproto2.grpc.grpclib_client import MetadataLike
     from grpclib.metadata import Deadline

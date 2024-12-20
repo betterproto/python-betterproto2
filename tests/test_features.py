@@ -14,18 +14,18 @@ from typing import (
 )
 from unittest.mock import ANY
 
-import betterproto
+import betterproto2
 
 
 def test_class_init():
     @dataclass
-    class Bar(betterproto.Message):
-        name: str = betterproto.string_field(1)
+    class Bar(betterproto2.Message):
+        name: str = betterproto2.string_field(1)
 
     @dataclass
-    class Foo(betterproto.Message):
-        name: str = betterproto.string_field(1)
-        child: Bar = betterproto.message_field(2)
+    class Foo(betterproto2.Message):
+        name: str = betterproto2.string_field(1)
+        child: Bar = betterproto2.message_field(2)
 
     foo = Foo(name="foo", child=Bar(name="bar"))
 
@@ -34,13 +34,13 @@ def test_class_init():
 
 
 def test_enum_as_int_json():
-    class TestEnum(betterproto.Enum):
+    class TestEnum(betterproto2.Enum):
         ZERO = 0
         ONE = 1
 
     @dataclass
-    class Foo(betterproto.Message):
-        bar: TestEnum = betterproto.enum_field(1, enum_default_value=lambda: TestEnum.try_value(0))
+    class Foo(betterproto2.Message):
+        bar: TestEnum = betterproto2.enum_field(1, enum_default_value=lambda: TestEnum.try_value(0))
 
     # JSON strings are supported, but ints should still be supported too.
     foo = Foo().from_dict({"bar": 1})
@@ -58,14 +58,14 @@ def test_enum_as_int_json():
 
 def test_unknown_fields():
     @dataclass
-    class Newer(betterproto.Message):
-        foo: bool = betterproto.bool_field(1)
-        bar: int = betterproto.int32_field(2)
-        baz: str = betterproto.string_field(3)
+    class Newer(betterproto2.Message):
+        foo: bool = betterproto2.bool_field(1)
+        bar: int = betterproto2.int32_field(2)
+        baz: str = betterproto2.string_field(3)
 
     @dataclass
-    class Older(betterproto.Message):
-        foo: bool = betterproto.bool_field(1)
+    class Older(betterproto2.Message):
+        foo: bool = betterproto2.bool_field(1)
 
     newer = Newer(foo=True, bar=1, baz="Hello")
     serialized_newer = bytes(newer)
@@ -80,56 +80,56 @@ def test_unknown_fields():
 
 def test_oneof_support():
     @dataclass
-    class Sub(betterproto.Message):
-        val: int = betterproto.int32_field(1)
+    class Sub(betterproto2.Message):
+        val: int = betterproto2.int32_field(1)
 
     @dataclass
-    class Foo(betterproto.Message):
-        bar: int = betterproto.int32_field(1, optional=True, group="group1")
-        baz: str = betterproto.string_field(2, optional=True, group="group1")
-        sub: Sub = betterproto.message_field(3, optional=True, group="group2")
-        abc: str = betterproto.string_field(4, optional=True, group="group2")
+    class Foo(betterproto2.Message):
+        bar: int = betterproto2.int32_field(1, optional=True, group="group1")
+        baz: str = betterproto2.string_field(2, optional=True, group="group1")
+        sub: Sub = betterproto2.message_field(3, optional=True, group="group2")
+        abc: str = betterproto2.string_field(4, optional=True, group="group2")
 
     foo = Foo()
 
-    assert betterproto.which_one_of(foo, "group1")[0] == ""
+    assert betterproto2.which_one_of(foo, "group1")[0] == ""
 
     foo.bar = 1
-    assert betterproto.which_one_of(foo, "group1")[0] == "bar"
+    assert betterproto2.which_one_of(foo, "group1")[0] == "bar"
 
     foo.bar = None
     foo.baz = "test"
-    assert betterproto.which_one_of(foo, "group1")[0] == "baz"
+    assert betterproto2.which_one_of(foo, "group1")[0] == "baz"
 
     foo.sub = Sub(val=1)
-    assert betterproto.which_one_of(foo, "group2")[0] == "sub"
+    assert betterproto2.which_one_of(foo, "group2")[0] == "sub"
 
     foo.sub = None
     foo.abc = "test"
-    assert betterproto.which_one_of(foo, "group2")[0] == "abc"
+    assert betterproto2.which_one_of(foo, "group2")[0] == "abc"
 
     # Group 1 shouldn't be touched
-    assert betterproto.which_one_of(foo, "group1")[0] == "baz"
+    assert betterproto2.which_one_of(foo, "group1")[0] == "baz"
 
     # Zero value should always serialize for one-of
     foo = Foo(bar=0)
-    assert betterproto.which_one_of(foo, "group1")[0] == "bar"
+    assert betterproto2.which_one_of(foo, "group1")[0] == "bar"
     assert bytes(foo) == b"\x08\x00"
 
     # Round trip should also work
     foo2 = Foo().parse(bytes(foo))
-    assert betterproto.which_one_of(foo2, "group1")[0] == "bar"
+    assert betterproto2.which_one_of(foo2, "group1")[0] == "bar"
     assert foo.bar == 0
-    assert betterproto.which_one_of(foo2, "group2")[0] == ""
+    assert betterproto2.which_one_of(foo2, "group2")[0] == ""
 
 
 def test_json_casing():
     @dataclass
-    class CasingTest(betterproto.Message):
-        pascal_case: int = betterproto.int32_field(1)
-        camel_case: int = betterproto.int32_field(2)
-        snake_case: int = betterproto.int32_field(3)
-        kabob_case: int = betterproto.int32_field(4)
+    class CasingTest(betterproto2.Message):
+        pascal_case: int = betterproto2.int32_field(1)
+        camel_case: int = betterproto2.int32_field(2)
+        snake_case: int = betterproto2.int32_field(3)
+        kabob_case: int = betterproto2.int32_field(4)
 
     # Parsing should accept almost any input
     test = CasingTest().from_dict({"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4})
@@ -144,7 +144,7 @@ def test_json_casing():
         "kabobCase": 4,
     }
 
-    assert json.loads(test.to_json(casing=betterproto.Casing.SNAKE)) == {
+    assert json.loads(test.to_json(casing=betterproto2.Casing.SNAKE)) == {
         "pascal_case": 1,
         "camel_case": 2,
         "snake_case": 3,
@@ -154,11 +154,11 @@ def test_json_casing():
 
 def test_dict_casing():
     @dataclass
-    class CasingTest(betterproto.Message):
-        pascal_case: int = betterproto.int32_field(1)
-        camel_case: int = betterproto.int32_field(2)
-        snake_case: int = betterproto.int32_field(3)
-        kabob_case: int = betterproto.int32_field(4)
+    class CasingTest(betterproto2.Message):
+        pascal_case: int = betterproto2.int32_field(1)
+        camel_case: int = betterproto2.int32_field(2)
+        snake_case: int = betterproto2.int32_field(3)
+        kabob_case: int = betterproto2.int32_field(4)
 
     # Parsing should accept almost any input
     test = CasingTest().from_dict({"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4})
@@ -179,13 +179,13 @@ def test_dict_casing():
         "kabobCase": 4,
     }
 
-    assert test.to_dict(casing=betterproto.Casing.SNAKE) == {
+    assert test.to_dict(casing=betterproto2.Casing.SNAKE) == {
         "pascal_case": 1,
         "camel_case": 2,
         "snake_case": 3,
         "kabob_case": 4,
     }
-    assert test.to_pydict(casing=betterproto.Casing.SNAKE) == {
+    assert test.to_pydict(casing=betterproto2.Casing.SNAKE) == {
         "pascal_case": 1,
         "camel_case": 2,
         "snake_case": 3,
@@ -195,8 +195,8 @@ def test_dict_casing():
 
 def test_optional_flag():
     @dataclass
-    class Request(betterproto.Message):
-        flag: Optional[bool] = betterproto.message_field(1, wraps=betterproto.TYPE_BOOL)
+    class Request(betterproto2.Message):
+        flag: Optional[bool] = betterproto2.message_field(1, wraps=betterproto2.TYPE_BOOL)
 
     # Serialization of not passed vs. set vs. zero-value.
     assert bytes(Request()) == b""
@@ -210,8 +210,8 @@ def test_optional_flag():
 
 def test_optional_datetime_to_dict():
     @dataclass
-    class Request(betterproto.Message):
-        date: Optional[datetime] = betterproto.message_field(1, optional=True)
+    class Request(betterproto2.Message):
+        date: Optional[datetime] = betterproto2.message_field(1, optional=True)
 
     # Check dict serialization
     assert Request().to_dict() == {}
@@ -228,11 +228,11 @@ def test_optional_datetime_to_dict():
 
 def test_to_json_default_values():
     @dataclass
-    class TestMessage(betterproto.Message):
-        some_int: int = betterproto.int32_field(1)
-        some_double: float = betterproto.double_field(2)
-        some_str: str = betterproto.string_field(3)
-        some_bool: bool = betterproto.bool_field(4)
+    class TestMessage(betterproto2.Message):
+        some_int: int = betterproto2.int32_field(1)
+        some_double: float = betterproto2.double_field(2)
+        some_str: str = betterproto2.string_field(3)
+        some_bool: bool = betterproto2.bool_field(4)
 
     # Empty dict
     test = TestMessage().from_dict({})
@@ -257,11 +257,11 @@ def test_to_json_default_values():
 
 def test_to_dict_default_values():
     @dataclass
-    class TestMessage(betterproto.Message):
-        some_int: int = betterproto.int32_field(1)
-        some_double: float = betterproto.double_field(2)
-        some_str: str = betterproto.string_field(3)
-        some_bool: bool = betterproto.bool_field(4)
+    class TestMessage(betterproto2.Message):
+        some_int: int = betterproto2.int32_field(1)
+        some_double: float = betterproto2.double_field(2)
+        some_str: str = betterproto2.string_field(3)
+        some_bool: bool = betterproto2.bool_field(4)
 
     # Empty dict
     test = TestMessage()
@@ -282,15 +282,15 @@ def test_to_dict_default_values():
 
     # Some default and some other values
     @dataclass
-    class TestMessage2(betterproto.Message):
-        some_int: int = betterproto.int32_field(1)
-        some_double: float = betterproto.double_field(2)
-        some_str: str = betterproto.string_field(3)
-        some_bool: bool = betterproto.bool_field(4)
-        some_default_int: int = betterproto.int32_field(5)
-        some_default_double: float = betterproto.double_field(6)
-        some_default_str: str = betterproto.string_field(7)
-        some_default_bool: bool = betterproto.bool_field(8)
+    class TestMessage2(betterproto2.Message):
+        some_int: int = betterproto2.int32_field(1)
+        some_double: float = betterproto2.double_field(2)
+        some_str: str = betterproto2.string_field(3)
+        some_bool: bool = betterproto2.bool_field(4)
+        some_default_int: int = betterproto2.int32_field(5)
+        some_default_double: float = betterproto2.double_field(6)
+        some_default_str: str = betterproto2.string_field(7)
+        some_default_bool: bool = betterproto2.bool_field(8)
 
     test = TestMessage2().from_dict(
         {
@@ -342,14 +342,14 @@ def test_to_dict_default_values():
 
     # Nested messages
     @dataclass
-    class TestChildMessage(betterproto.Message):
-        some_other_int: int = betterproto.int32_field(1)
+    class TestChildMessage(betterproto2.Message):
+        some_other_int: int = betterproto2.int32_field(1)
 
     @dataclass
-    class TestParentMessage(betterproto.Message):
-        some_int: int = betterproto.int32_field(1)
-        some_double: float = betterproto.double_field(2)
-        some_message: Optional[TestChildMessage] = betterproto.message_field(3)
+    class TestParentMessage(betterproto2.Message):
+        some_int: int = betterproto2.int32_field(1)
+        some_double: float = betterproto2.double_field(2)
+        some_message: Optional[TestChildMessage] = betterproto2.message_field(3)
 
     test = TestParentMessage().from_dict({"someInt": 0, "someDouble": 1.2})
 
@@ -370,9 +370,9 @@ def test_to_dict_default_values():
 
 def test_to_dict_datetime_values():
     @dataclass
-    class TestDatetimeMessage(betterproto.Message):
-        bar: datetime = betterproto.message_field(1)
-        baz: timedelta = betterproto.message_field(2)
+    class TestDatetimeMessage(betterproto2.Message):
+        bar: datetime = betterproto2.message_field(1)
+        baz: timedelta = betterproto2.message_field(2)
 
     test = TestDatetimeMessage().from_dict({"bar": "2020-01-01T00:00:00Z", "baz": "86400.000s"})
 
@@ -388,14 +388,14 @@ def test_to_dict_datetime_values():
 
 def test_oneof_default_value_set_causes_writes_wire():
     @dataclass
-    class Empty(betterproto.Message):
+    class Empty(betterproto2.Message):
         pass
 
     @dataclass
-    class Foo(betterproto.Message):
-        bar: int = betterproto.int32_field(1, optional=True, group="group1")
-        baz: str = betterproto.string_field(2, optional=True, group="group1")
-        qux: Empty = betterproto.message_field(3, optional=True, group="group1")
+    class Foo(betterproto2.Message):
+        bar: int = betterproto2.int32_field(1, optional=True, group="group1")
+        baz: str = betterproto2.string_field(2, optional=True, group="group1")
+        qux: Empty = betterproto2.message_field(3, optional=True, group="group1")
 
     def _round_trip_serialization(foo: Foo) -> Foo:
         return Foo().parse(bytes(foo))
@@ -407,29 +407,29 @@ def test_oneof_default_value_set_causes_writes_wire():
 
     assert bytes(foo1) == b"\x08\x00"
     assert (
-        betterproto.which_one_of(foo1, "group1")
-        == betterproto.which_one_of(_round_trip_serialization(foo1), "group1")
+        betterproto2.which_one_of(foo1, "group1")
+        == betterproto2.which_one_of(_round_trip_serialization(foo1), "group1")
         == ("bar", 0)
     )
 
     assert bytes(foo2) == b"\x12\x00"  # Baz is just an empty string
     assert (
-        betterproto.which_one_of(foo2, "group1")
-        == betterproto.which_one_of(_round_trip_serialization(foo2), "group1")
+        betterproto2.which_one_of(foo2, "group1")
+        == betterproto2.which_one_of(_round_trip_serialization(foo2), "group1")
         == ("baz", "")
     )
 
     assert bytes(foo3) == b"\x1a\x00"
     assert (
-        betterproto.which_one_of(foo3, "group1")
-        == betterproto.which_one_of(_round_trip_serialization(foo3), "group1")
+        betterproto2.which_one_of(foo3, "group1")
+        == betterproto2.which_one_of(_round_trip_serialization(foo3), "group1")
         == ("qux", Empty())
     )
 
     assert bytes(foo4) == b""
     assert (
-        betterproto.which_one_of(foo4, "group1")
-        == betterproto.which_one_of(_round_trip_serialization(foo4), "group1")
+        betterproto2.which_one_of(foo4, "group1")
+        == betterproto2.which_one_of(_round_trip_serialization(foo4), "group1")
         == ("", None)
     )
 
@@ -455,12 +455,12 @@ def test_bool():
     """
 
     @dataclass
-    class Falsy(betterproto.Message):
+    class Falsy(betterproto2.Message):
         pass
 
     @dataclass
-    class Truthy(betterproto.Message):
-        bar: int = betterproto.int32_field(1)
+    class Truthy(betterproto2.Message):
+        bar: int = betterproto2.int32_field(1)
 
     assert not Falsy()
     t = Truthy()
@@ -515,8 +515,8 @@ iso_candidates = """2009-12-12T12:34
 
 def test_iso_datetime():
     @dataclass
-    class Envelope(betterproto.Message):
-        ts: datetime = betterproto.message_field(1)
+    class Envelope(betterproto2.Message):
+        ts: datetime = betterproto2.message_field(1)
 
     msg = Envelope()
 
@@ -527,8 +527,8 @@ def test_iso_datetime():
 
 def test_iso_datetime_list():
     @dataclass
-    class Envelope(betterproto.Message):
-        timestamps: List[datetime] = betterproto.message_field(1, repeated=True)
+    class Envelope(betterproto2.Message):
+        timestamps: List[datetime] = betterproto2.message_field(1, repeated=True)
 
     msg = Envelope()
 
@@ -547,9 +547,9 @@ def test_service_argument__expected_parameter():
 
 def test_is_set():
     @dataclass
-    class Spam(betterproto.Message):
-        foo: bool = betterproto.bool_field(1)
-        bar: Optional[int] = betterproto.int32_field(2, optional=True)
+    class Spam(betterproto2.Message):
+        foo: bool = betterproto2.bool_field(1)
+        bar: Optional[int] = betterproto2.int32_field(2, optional=True)
 
     assert not Spam().is_set("foo")
     assert not Spam().is_set("bar")

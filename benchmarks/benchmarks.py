@@ -1,37 +1,37 @@
 from dataclasses import dataclass
 from typing import List
 
-import betterproto
+import betterproto2
 
 
 @dataclass
-class TestMessage(betterproto.Message):
-    foo: int = betterproto.uint32_field(1)
-    bar: str = betterproto.string_field(2)
-    baz: float = betterproto.float_field(3)
+class TestMessage(betterproto2.Message):
+    foo: int = betterproto2.uint32_field(1)
+    bar: str = betterproto2.string_field(2)
+    baz: float = betterproto2.float_field(3)
 
 
 @dataclass
-class TestNestedChildMessage(betterproto.Message):
-    str_key: str = betterproto.string_field(1)
-    bytes_key: bytes = betterproto.bytes_field(2)
-    bool_key: bool = betterproto.bool_field(3)
-    float_key: float = betterproto.float_field(4)
-    int_key: int = betterproto.uint64_field(5)
+class TestNestedChildMessage(betterproto2.Message):
+    str_key: str = betterproto2.string_field(1)
+    bytes_key: bytes = betterproto2.bytes_field(2)
+    bool_key: bool = betterproto2.bool_field(3)
+    float_key: float = betterproto2.float_field(4)
+    int_key: int = betterproto2.uint64_field(5)
 
 
 @dataclass
-class TestNestedMessage(betterproto.Message):
-    foo: TestNestedChildMessage = betterproto.message_field(1)
-    bar: TestNestedChildMessage = betterproto.message_field(2)
-    baz: TestNestedChildMessage = betterproto.message_field(3)
+class TestNestedMessage(betterproto2.Message):
+    foo: TestNestedChildMessage = betterproto2.message_field(1)
+    bar: TestNestedChildMessage = betterproto2.message_field(2)
+    baz: TestNestedChildMessage = betterproto2.message_field(3)
 
 
 @dataclass
-class TestRepeatedMessage(betterproto.Message):
-    foo_repeat: List[str] = betterproto.string_field(1)
-    bar_repeat: List[int] = betterproto.int64_field(2)
-    baz_repeat: List[bool] = betterproto.bool_field(3)
+class TestRepeatedMessage(betterproto2.Message):
+    foo_repeat: List[str] = betterproto2.string_field(1)
+    bar_repeat: List[int] = betterproto2.int64_field(2)
+    baz_repeat: List[bool] = betterproto2.bool_field(3)
 
 
 class BenchMessage:
@@ -59,10 +59,10 @@ class BenchMessage:
         """Overhead in class definition."""
 
         @dataclass
-        class Message(betterproto.Message):
-            foo: int = betterproto.uint32_field(1)
-            bar: str = betterproto.string_field(2)
-            baz: float = betterproto.float_field(3)
+        class Message(betterproto2.Message):
+            foo: int = betterproto2.uint32_field(1)
+            bar: str = betterproto2.string_field(2)
+            baz: float = betterproto2.float_field(3)
 
     def time_instantiation(self):
         """Time instantiation"""

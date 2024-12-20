@@ -1,6 +1,6 @@
 import datetime
 
-import betterproto
+import betterproto2
 from tests.output_betterproto.oneof_default_value_serialization import (
     Message,
     NestedMessage,
@@ -9,7 +9,7 @@ from tests.output_betterproto.oneof_default_value_serialization import (
 
 
 def assert_round_trip_serialization_works(message: Test) -> None:
-    assert betterproto.which_one_of(message, "value_type") == betterproto.which_one_of(
+    assert betterproto2.which_one_of(message, "value_type") == betterproto2.which_one_of(
         Test().from_json(message.to_json()), "value_type"
     )
 
@@ -48,8 +48,8 @@ def test_oneof_default_value_serialization_works_for_all_values():
 def test_oneof_no_default_values_passed():
     message = Test()
     assert (
-        betterproto.which_one_of(message, "value_type")
-        == betterproto.which_one_of(Test().from_json(message.to_json()), "value_type")
+        betterproto2.which_one_of(message, "value_type")
+        == betterproto2.which_one_of(Test().from_json(message.to_json()), "value_type")
         == ("", None)
     )
 
@@ -60,8 +60,8 @@ def test_oneof_nested_oneof_messages_are_serialized_with_defaults():
     """
     message = Test(wrapped_nested_message_value=NestedMessage(id=0, wrapped_message_value=Message(value=0)))
     assert (
-        betterproto.which_one_of(message, "value_type")
-        == betterproto.which_one_of(Test().from_json(message.to_json()), "value_type")
+        betterproto2.which_one_of(message, "value_type")
+        == betterproto2.which_one_of(Test().from_json(message.to_json()), "value_type")
         == (
             "wrapped_nested_message_value",
             NestedMessage(id=0, wrapped_message_value=Message(value=0)),

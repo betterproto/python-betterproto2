@@ -5,10 +5,10 @@ from typing import (
 
 import pytest
 
-import betterproto
+import betterproto2
 
 
-class Colour(betterproto.Enum):
+class Colour(betterproto2.Enum):
     RED = 1
     GREEN = 2
     BLUE = 3

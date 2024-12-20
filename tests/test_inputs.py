@@ -14,7 +14,7 @@ from typing import (
 
 import pytest
 
-import betterproto
+import betterproto2
 from tests.inputs import config as test_input_config
 from tests.mocks import MockChannel
 from tests.util import (
@@ -93,7 +93,7 @@ def list_replace_nans(items: List) -> List[Any]:
         elif isinstance(item, dict):
             result.append(dict_replace_nans(item))
         elif isinstance(item, float) and math.isnan(item):
-            result.append(betterproto.NAN)
+            result.append(betterproto2.NAN)
     return result
 
 
@@ -117,7 +117,7 @@ def dict_replace_nans(input_dict: Dict[Any, Any]) -> Dict[Any, Any]:
         elif isinstance(value, list):
             value = list_replace_nans(value)
         elif isinstance(value, float) and math.isnan(value):
-            value = betterproto.NAN
+            value = betterproto2.NAN
         result[key] = value
     return result
 
@@ -172,7 +172,7 @@ def test_message_json(test_data: TestData) -> None:
         if sample.belongs_to(test_input_config.non_symmetrical_json):
             continue
 
-        message: betterproto.Message = plugin_module.Test()
+        message: betterproto2.Message = plugin_module.Test()
 
         message.from_json(sample.json)
         message_json = message.to_json(indent=0)
@@ -193,7 +193,7 @@ def test_binary_compatibility(test_data: TestData) -> None:
         reference_instance = Parse(sample.json, reference_module().Test())
         reference_binary_output = reference_instance.SerializeToString()
 
-        plugin_instance_from_json: betterproto.Message = plugin_module.Test().from_json(sample.json)
+        plugin_instance_from_json: betterproto2.Message = plugin_module.Test().from_json(sample.json)
         plugin_instance_from_binary = plugin_module.Test.FromString(reference_binary_output)
 
         # Generally this can't be relied on, but here we are aiming to match the
