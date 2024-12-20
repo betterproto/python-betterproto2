@@ -12,6 +12,7 @@ on:
 
 jobs:
   packaging:
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     name: Distribution
     runs-on: ubuntu-latest
 
@@ -37,5 +38,4 @@ jobs:
         run: poetry build
 
       - name: Publish package distributions to PyPI
-        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1.12
