@@ -127,16 +127,16 @@ rm -rf .asv .coverage .mypy_cache .pytest_cache
 """
 help = "Clean out generated files from the workspace"
 
-[tool.poe.tasks.generate_lib]
-cmd = """
-protoc
-    --plugin=protoc-gen-custom=src/betterproto2/plugin/main.py
-    --custom_opt=INCLUDE_GOOGLE
-    --custom_out=src/betterproto/lib/std
-    -I /usr/local/include/
-    /usr/local/include/google/protobuf/**/*.proto
+[tool.poe.tasks.pull-compiled-tests]
+shell  = """
+rm -rf tests/output_* &&
+git clone https://github.com/betterproto/python-betterproto2-compiler --branch compiled-test-files --single-branch compiled_files &&
+mv compiled_files/tests_betterproto tests/output_betterproto &&
+mv compiled_files/tests_betterproto_pydantic tests/output_betterproto_pydantic &&
+mv compiled_files/tests_reference tests/output_reference &&
+rm -rf compiled_files
 """
-help = "Regenerate the types in betterproto.lib.std.google"
+help = "Pulls the compiled test files from the betterproto2-compiler repository"
 
 # CI tasks
 
