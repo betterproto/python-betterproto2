@@ -6,13 +6,13 @@ The following document outlines betterproto's api. These classes should not be e
 
 ## Message
 
-::: betterproto.Message
+::: betterproto2.Message
 
-::: betterproto.which_one_of
+::: betterproto2.which_one_of
 
 
 ## Enumerations
 
-::: betterproto.Enum
+::: betterproto2.Enum
 
-::: betterproto.Casing
+::: betterproto2.Casing
