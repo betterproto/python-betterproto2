@@ -2168,10 +2168,9 @@ files = [
 ]
 
 [extras]
-compiler = []
 rust-codec = ["betterproto-rust-codec"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "23a5f8f41250e51082db92702029107f03bb93c74818250e789f53168e413e0d"
+content-hash = "f063eb8e950cafbb46d3c25b3c0244f0133ee38e603c6c3fdcf82cb6d18228e5"
