@@ -54,11 +54,11 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: poetry install -E compiler
+        run: poetry install
 
-      - name: Generate code from proto files
+      - name: Download compiled test files
         shell: bash
-        run: poetry run python -m tests.generate -v
+        run: poetry run poe pull-compiled-tests
 
       - name: Execute test suite
         shell: bash
