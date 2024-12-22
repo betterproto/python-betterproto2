@@ -5,6 +5,17 @@ theme:
   palette:
     primary: deep orange
     accent: deep orange
+  
+  features:
+   - navigation.tabs
+
+nav:
+  - Betterproto2: 
+     - index.md
+     - Quick start: quick-start.md
+     - API: api.md
+     - Migrating: migrating.md
+  - Betterproto2 compiler: https://betterproto.github.io/python-betterproto2-compiler/
 
 plugins:
 - search
