@@ -16,5 +16,29 @@ notion of whether a protobuf field has a value". The presence of a field can be 
 The [documentation](https://protobuf.dev/programming-guides/field_presence/#presence-in-proto3-apis) of protobuf shows
 when field presence is explicitly tracked.
 
+For example, given the following `proto` file:
+
+```proto
+syntax = "proto3";
+
+message Message {
+    int32 x = 1;
+    optional int32 y = 2;
+}
+```
+
+We can see that the default values are not the same:
+
+```python
+>>> msg = Message()
+>>> print(msg.x)
+0
+>>> print(msg.y)
+None
+```
+
 !!! warning
-    When a field is a message, its presence is always tracked explicitly even if it is not marked as optional.
+    When a field is a message, its presence is always tracked explicitly even if it is not marked as optional. Marking a
+    message field as optional has no effect: the default value of such a field is always `None`, not an empty message.
+
+## Oneof support

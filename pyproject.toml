@@ -29,6 +29,7 @@ mkdocs-material = {version = "^9.5.49", python = ">=3.10"}
 mkdocstrings = {version = "^0.27.0", python = ">=3.10", extras = ["python"]}
 # The Ruff version is pinned. To update it, also update it in .pre-commit-config.yaml
 ruff = { version = "~0.7.4" }
+ipykernel = "^6.29.5"
 
 [tool.poetry.group.test.dependencies]
 poethepoet = ">=0.9.0"
