@@ -806,18 +806,8 @@ class ProtoClassMetadata:
 class Message(ABC):
     """
     The base class for protobuf messages, all generated messages will inherit from
-    this. This class registers the message fields which are used by the serializers and
+    it. This class registers the message fields which are used by the serializers and
     parsers to go between the Python, binary and JSON representations of the message.
-
-    .. container:: operations
-
-        .. describe:: bytes(x)
-
-            Calls :meth:`__bytes__`.
-
-        .. describe:: bool(x)
-
-            Calls :meth:`__bool__`.
     """
 
     _unknown_fields: bytes
@@ -864,7 +854,7 @@ class Message(ABC):
     #         yield field_name, self.__getattribute__(field_name), PLACEHOLDER
 
     def __bool__(self) -> bool:
-        """True if the Message has any fields with non-default values."""
+        """True if the message has any fields with non-default values."""
         return any(
             self.__getattribute__(field_name) != self._get_field_default(field_name)
             for field_name in self._betterproto.meta_by_field_name
