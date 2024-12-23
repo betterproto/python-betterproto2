@@ -42,3 +42,47 @@ None
     message field as optional has no effect: the default value of such a field is always `None`, not an empty message.
 
 ## Oneof support
+
+Protobuf supports grouping fields in a `oneof` clause: at most one of the fields in the group can be set at the same
+time. Let's use the following `proto`:
+
+```proto
+syntax = "proto3";
+
+message Test {
+    oneof group {
+        bool a = 1;
+        int32 b = 2;
+        string c = 3;
+    }
+}
+```
+
+The `betterproto2.which_one_of` function allows finding which one of the fields of the `oneof` group is set. The
+function returns the name of the field that is set, and the value of the field.
+
+```python
+>>> betterproto2.which_one_of(Message(a=True), group_name="group")
+('a', True)
+>>> betterproto2.which_one_of(Message(), group_name="group")
+('', None)
+```
+
+On Python 3.10 and later, it is also possible to use a `match` statement to find which item in a `oneof` group is active.
+
+```python
+>>> def find(m: Message) -> str:
+...     match m:
+...         case Message(a=bool(value)):
+...             return f"a is set to {value}"
+...         case Message(b=int(value)):
+...             return f"b is set to {value}"
+...     return "No field set"
+...
+>>> find(Message(a=True))
+'a is set to True'
+>>> find(Message(b=12))
+'b is set to 12'
+>>> find(Message())
+'No field set'
+```
