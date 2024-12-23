@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://betterproto.github.io/python-betterproto2/</loc>
+         <lastmod>2024-12-23</lastmod>
+    </url>
+    <url>
+         <loc>https://betterproto.github.io/python-betterproto2/api/</loc>
+         <lastmod>2024-12-23</lastmod>
+    </url>
+    <url>
+         <loc>https://betterproto.github.io/python-betterproto2/migrating/</loc>
+         <lastmod>2024-12-23</lastmod>
+    </url>
+    <url>
+         <loc>https://betterproto.github.io/python-betterproto2/quick-start/</loc>
+         <lastmod>2024-12-23</lastmod>
+    </url>
+    <url>
+         <loc>https://betterproto.github.io/python-betterproto2/tutorial/messages/</loc>
+         <lastmod>2024-12-23</lastmod>
+    </url>
+</urlset>
