@@ -19,7 +19,11 @@ nav:
 
 plugins:
 - search
-- mkdocstrings
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          show_source: false
 
 markdown_extensions:
   - admonition
