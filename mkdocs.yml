@@ -13,6 +13,8 @@ nav:
   - Betterproto2: 
      - index.md
      - Quick start: quick-start.md
+     - Tutorial:
+        - Messages: tutorial/messages.md
      - API: api.md
      - Migrating: migrating.md
   - Betterproto2 compiler: https://betterproto.github.io/python-betterproto2-compiler/
