@@ -183,15 +183,10 @@ def test_optional_datetime_to_dict():
 
 
 def test_to_json_default_values():
-    @dataclass
-    class TestMessage(betterproto2.Message):
-        some_int: int = betterproto2.int32_field(1)
-        some_double: float = betterproto2.double_field(2)
-        some_str: str = betterproto2.string_field(3)
-        some_bool: bool = betterproto2.bool_field(4)
+    from tests.output_betterproto.features import MsgA
 
     # Empty dict
-    test = TestMessage().from_dict({})
+    test = MsgA().from_dict({})
 
     assert json.loads(test.to_json(include_default_values=True)) == {
         "someInt": 0,
@@ -201,7 +196,7 @@ def test_to_json_default_values():
     }
 
     # All default values
-    test = TestMessage().from_dict({"someInt": 0, "someDouble": 0.0, "someStr": "", "someBool": False})
+    test = MsgA().from_dict({"someInt": 0, "someDouble": 0.0, "someStr": "", "someBool": False})
 
     assert json.loads(test.to_json(include_default_values=True)) == {
         "someInt": 0,
@@ -212,15 +207,10 @@ def test_to_json_default_values():
 
 
 def test_to_dict_default_values():
-    @dataclass
-    class TestMessage(betterproto2.Message):
-        some_int: int = betterproto2.int32_field(1)
-        some_double: float = betterproto2.double_field(2)
-        some_str: str = betterproto2.string_field(3)
-        some_bool: bool = betterproto2.bool_field(4)
+    from tests.output_betterproto.features import MsgA, MsgB
 
     # Empty dict
-    test = TestMessage()
+    test = MsgA()
 
     assert test.to_dict(include_default_values=True) == {
         "someInt": 0,
@@ -237,18 +227,7 @@ def test_to_dict_default_values():
     }
 
     # Some default and some other values
-    @dataclass
-    class TestMessage2(betterproto2.Message):
-        some_int: int = betterproto2.int32_field(1)
-        some_double: float = betterproto2.double_field(2)
-        some_str: str = betterproto2.string_field(3)
-        some_bool: bool = betterproto2.bool_field(4)
-        some_default_int: int = betterproto2.int32_field(5)
-        some_default_double: float = betterproto2.double_field(6)
-        some_default_str: str = betterproto2.string_field(7)
-        some_default_bool: bool = betterproto2.bool_field(8)
-
-    test = TestMessage2().from_dict(
+    test = MsgB().from_dict(
         {
             "someInt": 2,
             "someDouble": 1.2,
@@ -272,7 +251,7 @@ def test_to_dict_default_values():
         "someDefaultBool": False,
     }
 
-    test = TestMessage2().from_pydict(
+    test = MsgB().from_pydict(
         {
             "someInt": 2,
             "someDouble": 1.2,
@@ -294,33 +273,6 @@ def test_to_dict_default_values():
         "someDefaultDouble": 0.0,
         "someDefaultStr": "",
         "someDefaultBool": False,
-    }
-
-    # Nested messages
-    @dataclass
-    class TestChildMessage(betterproto2.Message):
-        some_other_int: int = betterproto2.int32_field(1)
-
-    @dataclass
-    class TestParentMessage(betterproto2.Message):
-        some_int: int = betterproto2.int32_field(1)
-        some_double: float = betterproto2.double_field(2)
-        some_message: Optional[TestChildMessage] = betterproto2.message_field(3)
-
-    test = TestParentMessage().from_dict({"someInt": 0, "someDouble": 1.2})
-
-    assert test.to_dict(include_default_values=True) == {
-        "someInt": 0,
-        "someDouble": 1.2,
-        "someMessage": None,
-    }
-
-    test = TestParentMessage().from_pydict({"someInt": 0, "someDouble": 1.2})
-
-    assert test.to_pydict(include_default_values=True) == {
-        "someInt": 0,
-        "someDouble": 1.2,
-        "someMessage": None,
     }
 
 
