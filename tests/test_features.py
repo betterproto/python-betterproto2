@@ -1,5 +1,4 @@
 import json
-from dataclasses import dataclass
 from datetime import (
     datetime,
     timedelta,
@@ -7,10 +6,6 @@ from datetime import (
 from inspect import (
     Parameter,
     signature,
-)
-from typing import (
-    List,
-    Optional,
 )
 from unittest.mock import ANY
 
@@ -173,13 +168,17 @@ def test_optional_datetime_to_dict():
     assert OptionalDatetimeMsg().to_dict() == {}
     assert OptionalDatetimeMsg().to_dict(include_default_values=True) == {"field": None}
     assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_dict() == {"field": "2020-01-01T00:00:00Z"}
-    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_dict(include_default_values=True) == {"field": "2020-01-01T00:00:00Z"}
+    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_dict(include_default_values=True) == {
+        "field": "2020-01-01T00:00:00Z"
+    }
 
     # Check pydict serialization
     assert OptionalDatetimeMsg().to_pydict() == {}
     assert OptionalDatetimeMsg().to_pydict(include_default_values=True) == {"field": None}
     assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_pydict() == {"field": datetime(2020, 1, 1)}
-    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_pydict(include_default_values=True) == {"field": datetime(2020, 1, 1)}
+    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_pydict(include_default_values=True) == {
+        "field": datetime(2020, 1, 1)
+    }
 
 
 def test_to_json_default_values():

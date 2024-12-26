@@ -48,7 +48,7 @@ protoc-gen-python_betterproto = "betterproto2.plugin:main"
 rust-codec = ["betterproto-rust-codec"]
 
 [tool.ruff]
-extend-exclude = ["tests/output_*"]
+extend-exclude = ["tests/output_*", "src/betterproto2/lib"]
 target-version = "py38"
 line-length = 120
 
