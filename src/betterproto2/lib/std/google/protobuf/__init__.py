@@ -2695,7 +2695,7 @@ class Struct(betterproto2.Message):
     """
 
     fields: "Dict[str, Value]" = betterproto2.field(
-        1, betterproto2.TYPE_MESSAGE, map_types=(betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE)
+        1, betterproto2.TYPE_MAP, map_types=(betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE)
     )
     """
     Unordered map of dynamically typed values.

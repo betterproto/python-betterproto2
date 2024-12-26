@@ -3,55 +3,15 @@ from copy import (
     copy,
     deepcopy,
 )
-from dataclasses import dataclass
-from typing import (
-    Dict,
-    List,
-)
 
 import cachelib
 
-import betterproto2
 from betterproto2.lib.google import protobuf as google
+from tests.output_betterproto.pickling import Complex, Fe, Fi, NestedData, PickledMessage
 
 
 def unpickled(message):
     return pickle.loads(pickle.dumps(message))
-
-
-@dataclass(eq=False, repr=False)
-class Fe(betterproto2.Message):
-    abc: str = betterproto2.string_field(1)
-
-
-@dataclass(eq=False, repr=False)
-class Fi(betterproto2.Message):
-    abc: str = betterproto2.string_field(1)
-
-
-@dataclass(eq=False, repr=False)
-class Fo(betterproto2.Message):
-    abc: str = betterproto2.string_field(1)
-
-
-@dataclass(eq=False, repr=False)
-class NestedData(betterproto2.Message):
-    struct_foo: Dict[str, "google.Struct"] = betterproto2.map_field(
-        1, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE
-    )
-    map_str_any_bar: Dict[str, "google.Any"] = betterproto2.map_field(
-        2, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE
-    )
-
-
-@dataclass(eq=False, repr=False)
-class Complex(betterproto2.Message):
-    foo_str: str = betterproto2.string_field(1)
-    fe: "Fe" = betterproto2.message_field(3, group="grp")
-    fi: "Fi" = betterproto2.message_field(4, group="grp")
-    fo: "Fo" = betterproto2.message_field(5, group="grp")
-    nested_data: "NestedData" = betterproto2.message_field(6)
-    mapping: Dict[str, "google.Any"] = betterproto2.map_field(7, betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE)
 
 
 def complex_msg():
@@ -108,13 +68,6 @@ def test_recursive_message_defaults():
         intermediate=Intermediate(42),
         child=RecursiveMessage(child=RecursiveMessage(name="jude")),
     )
-
-
-@dataclass
-class PickledMessage(betterproto2.Message):
-    foo: bool = betterproto2.bool_field(1)
-    bar: int = betterproto2.int32_field(2)
-    baz: List[str] = betterproto2.string_field(3, repeated=True)
 
 
 def test_copyability():
