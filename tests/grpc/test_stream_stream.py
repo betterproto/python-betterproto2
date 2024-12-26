@@ -1,16 +1,10 @@
 import asyncio
-from dataclasses import dataclass
 from typing import AsyncIterator
 
 import pytest
 
-import betterproto2
 from tests.grpc.async_channel import AsyncChannel
-
-
-@dataclass
-class Message(betterproto2.Message):
-    body: str = betterproto2.string_field(1)
+from tests.output_betterproto.stream_stream import Message
 
 
 @pytest.fixture
