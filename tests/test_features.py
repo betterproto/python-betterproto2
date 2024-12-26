@@ -404,23 +404,19 @@ iso_candidates = """2009-12-12T12:34
 
 
 def test_iso_datetime():
-    @dataclass
-    class Envelope(betterproto2.Message):
-        ts: datetime = betterproto2.message_field(1)
+    from tests.output_betterproto.features import TimeMsg
 
-    msg = Envelope()
+    msg = TimeMsg()
 
     for _, candidate in enumerate(iso_candidates):
-        msg.from_dict({"ts": candidate})
-        assert isinstance(msg.ts, datetime)
+        msg.from_dict({"timestamp": candidate})
+        assert isinstance(msg.timestamp, datetime)
 
 
 def test_iso_datetime_list():
-    @dataclass
-    class Envelope(betterproto2.Message):
-        timestamps: List[datetime] = betterproto2.message_field(1, repeated=True)
+    from tests.output_betterproto.features import MsgD
 
-    msg = Envelope()
+    msg = MsgD()
 
     msg.from_dict({"timestamps": iso_candidates})
     assert all([isinstance(item, datetime) for item in msg.timestamps])
@@ -436,15 +432,12 @@ def test_service_argument__expected_parameter():
 
 
 def test_is_set():
-    @dataclass
-    class Spam(betterproto2.Message):
-        foo: bool = betterproto2.bool_field(1)
-        bar: Optional[int] = betterproto2.int32_field(2, optional=True)
+    from tests.output_betterproto.features import MsgE
 
-    assert not Spam().is_set("foo")
-    assert not Spam().is_set("bar")
-    assert Spam(foo=True).is_set("foo")
-    assert Spam(foo=True, bar=0).is_set("bar")
+    assert not MsgE().is_set("bool_field")
+    assert not MsgE().is_set("int_field")
+    assert MsgE(bool_field=True).is_set("bool_field")
+    assert MsgE(bool_field=True, int_field=0).is_set("int_field")
 
 
 def test_equality_comparison():
