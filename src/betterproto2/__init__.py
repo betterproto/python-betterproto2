@@ -192,17 +192,17 @@ class FieldMetadata:
         return field.metadata["betterproto"]
 
 
-def dataclass_field(
+def field(
     number: int,
     proto_type: str,
-    default_factory: Callable[[], Any],
     *,
+    default_factory: Callable[[], Any] | None = None,
     map_types: Optional[Tuple[str, str]] = None,
     group: Optional[str] = None,
     wraps: Optional[str] = None,
     optional: bool = False,
     repeated: bool = False,
-) -> dataclasses.Field:
+) -> Any:  # Return type is Any to pass type checking
     """Creates a dataclass field with attached protobuf metadata."""
     if repeated:
         default_factory = list
@@ -210,280 +210,32 @@ def dataclass_field(
     elif optional or group:
         default_factory = type(None)
 
+    else:
+        default_factory = {
+            TYPE_ENUM: default_factory,
+            TYPE_BOOL: bool,
+            TYPE_INT32: int,
+            TYPE_INT64: int,
+            TYPE_UINT32: int,
+            TYPE_UINT64: int,
+            TYPE_SINT32: int,
+            TYPE_SINT64: int,
+            TYPE_FLOAT: float,
+            TYPE_DOUBLE: float,
+            TYPE_FIXED32: int,
+            TYPE_SFIXED32: int,
+            TYPE_FIXED64: int,
+            TYPE_SFIXED64: int,
+            TYPE_STRING: str,
+            TYPE_BYTES: bytes,
+            TYPE_MESSAGE: type(None),
+            TYPE_MAP: dict,
+        }[proto_type]
+
     return dataclasses.field(
         default_factory=default_factory,
         metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, wraps, optional)},
     )
-
-
-# Note: the fields below return `Any` to prevent type errors in the generated
-# data classes since the types won't match with `Field` and they get swapped
-# out at runtime. The generated dataclass variables are still typed correctly.
-
-
-def enum_field(
-    number: int,
-    enum_default_value: Callable[[], Enum],
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_ENUM,
-        enum_default_value,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def bool_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_BOOL,
-        bool,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def int32_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(number, TYPE_INT32, int, group=group, optional=optional, repeated=repeated)
-
-
-def int64_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(number, TYPE_INT64, int, group=group, optional=optional, repeated=repeated)
-
-
-def uint32_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_UINT32,
-        int,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def uint64_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_UINT64,
-        int,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def sint32_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_SINT32,
-        int,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def sint64_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_SINT64,
-        int,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def float_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_FLOAT,
-        float,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def double_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_DOUBLE,
-        float,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def fixed32_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_FIXED32,
-        float,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def fixed64_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_FIXED64,
-        float,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def sfixed32_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_SFIXED32,
-        float,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def sfixed64_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_SFIXED64,
-        float,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def string_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_STRING,
-        str,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def bytes_field(
-    number: int,
-    group: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_BYTES,
-        bytes,
-        group=group,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def message_field(
-    number: int,
-    group: Optional[str] = None,
-    wraps: Optional[str] = None,
-    optional: bool = False,
-    repeated: bool = False,
-) -> Any:
-    return dataclass_field(
-        number,
-        TYPE_MESSAGE,
-        type(None),
-        group=group,
-        wraps=wraps,
-        optional=optional,
-        repeated=repeated,
-    )
-
-
-def map_field(number: int, key_type: str, value_type: str, group: Optional[str] = None) -> Any:
-    return dataclass_field(number, TYPE_MAP, dict, map_types=(key_type, value_type), group=group)
 
 
 def _pack_fmt(proto_type: str) -> str:
@@ -774,31 +526,31 @@ class ProtoClassMetadata:
     def _get_cls_by_field(cls: Type["Message"], fields: Iterable[dataclasses.Field]) -> Dict[str, Type]:
         field_cls = {}
 
-        for field in fields:
-            meta = FieldMetadata.get(field)
+        for field_ in fields:
+            meta = FieldMetadata.get(field_)
             if meta.proto_type == TYPE_MAP:
                 assert meta.map_types
-                kt = cls._cls_for(field, index=0)
-                vt = cls._cls_for(field, index=1)
-                field_cls[field.name] = dataclasses.make_dataclass(
+                kt = cls._cls_for(field_, index=0)
+                vt = cls._cls_for(field_, index=1)
+                field_cls[field_.name] = dataclasses.make_dataclass(
                     "Entry",
                     [
                         (
                             "key",
                             kt,
-                            dataclass_field(1, meta.map_types[0], default_factory=kt),
+                            field(1, meta.map_types[0], default_factory=kt),
                         ),
                         (
                             "value",
                             vt,
-                            dataclass_field(2, meta.map_types[1], default_factory=vt),
+                            field(2, meta.map_types[1], default_factory=vt),
                         ),
                     ],
                     bases=(Message,),
                 )
-                field_cls[f"{field.name}.value"] = vt
+                field_cls[f"{field_.name}.value"] = vt
             else:
-                field_cls[field.name] = cls._cls_for(field)
+                field_cls[field_.name] = cls._cls_for(field_)
 
         return field_cls
 
