@@ -18,14 +18,7 @@ import betterproto2
 
 
 def test_class_init():
-    @dataclass
-    class Bar(betterproto2.Message):
-        name: str = betterproto2.string_field(1)
-
-    @dataclass
-    class Foo(betterproto2.Message):
-        name: str = betterproto2.string_field(1)
-        child: Bar = betterproto2.message_field(2)
+    from tests.output_betterproto.features import Bar, Foo
 
     foo = Foo(name="foo", child=Bar(name="bar"))
 
@@ -34,40 +27,26 @@ def test_class_init():
 
 
 def test_enum_as_int_json():
-    class TestEnum(betterproto2.Enum):
-        ZERO = 0
-        ONE = 1
-
-    @dataclass
-    class Foo(betterproto2.Message):
-        bar: TestEnum = betterproto2.enum_field(1, enum_default_value=lambda: TestEnum.try_value(0))
+    from tests.output_betterproto.features import Enum, EnumMsg
 
     # JSON strings are supported, but ints should still be supported too.
-    foo = Foo().from_dict({"bar": 1})
-    assert foo.bar == TestEnum.ONE
+    enum_msg = EnumMsg().from_dict({"enum": 1})
+    assert enum_msg.enum == Enum.ONE
 
     # Plain-ol'-ints should serialize properly too.
-    foo.bar = 1
-    assert foo.to_dict() == {"bar": "ONE"}
+    enum_msg.enum = 1
+    assert enum_msg.to_dict() == {"enum": "ONE"}
 
     # Similar expectations for pydict
-    foo = Foo().from_pydict({"bar": 1})
-    assert foo.bar == TestEnum.ONE
-    assert foo.to_pydict() == {"bar": TestEnum.ONE}
+    enum_msg = EnumMsg().from_dict({"enum": 1})
+    assert enum_msg.enum == Enum.ONE
+    assert enum_msg.to_pydict() == {"enum": Enum.ONE}
 
 
 def test_unknown_fields():
-    @dataclass
-    class Newer(betterproto2.Message):
-        foo: bool = betterproto2.bool_field(1)
-        bar: int = betterproto2.int32_field(2)
-        baz: str = betterproto2.string_field(3)
+    from tests.output_betterproto.features import Newer, Older
 
-    @dataclass
-    class Older(betterproto2.Message):
-        foo: bool = betterproto2.bool_field(1)
-
-    newer = Newer(foo=True, bar=1, baz="Hello")
+    newer = Newer(x=True, y=1, z="Hello")
     serialized_newer = bytes(newer)
 
     # Unknown fields in `Newer` should round trip with `Older`
@@ -79,48 +58,39 @@ def test_unknown_fields():
 
 
 def test_oneof_support():
-    @dataclass
-    class Sub(betterproto2.Message):
-        val: int = betterproto2.int32_field(1)
+    from tests.output_betterproto.features import IntMsg, OneofMsg
 
-    @dataclass
-    class Foo(betterproto2.Message):
-        bar: int = betterproto2.int32_field(1, optional=True, group="group1")
-        baz: str = betterproto2.string_field(2, optional=True, group="group1")
-        sub: Sub = betterproto2.message_field(3, optional=True, group="group2")
-        abc: str = betterproto2.string_field(4, optional=True, group="group2")
+    msg = OneofMsg()
 
-    foo = Foo()
+    assert betterproto2.which_one_of(msg, "group1")[0] == ""
 
-    assert betterproto2.which_one_of(foo, "group1")[0] == ""
+    msg.x = 1
+    assert betterproto2.which_one_of(msg, "group1")[0] == "x"
 
-    foo.bar = 1
-    assert betterproto2.which_one_of(foo, "group1")[0] == "bar"
+    msg.x = None
+    msg.y = "test"
+    assert betterproto2.which_one_of(msg, "group1")[0] == "y"
 
-    foo.bar = None
-    foo.baz = "test"
-    assert betterproto2.which_one_of(foo, "group1")[0] == "baz"
+    msg.a = IntMsg(val=1)
+    assert betterproto2.which_one_of(msg, "group2")[0] == "a"
 
-    foo.sub = Sub(val=1)
-    assert betterproto2.which_one_of(foo, "group2")[0] == "sub"
-
-    foo.sub = None
-    foo.abc = "test"
-    assert betterproto2.which_one_of(foo, "group2")[0] == "abc"
+    msg.a = None
+    msg.b = "test"
+    assert betterproto2.which_one_of(msg, "group2")[0] == "b"
 
     # Group 1 shouldn't be touched
-    assert betterproto2.which_one_of(foo, "group1")[0] == "baz"
+    assert betterproto2.which_one_of(msg, "group1")[0] == "y"
 
     # Zero value should always serialize for one-of
-    foo = Foo(bar=0)
-    assert betterproto2.which_one_of(foo, "group1")[0] == "bar"
-    assert bytes(foo) == b"\x08\x00"
+    msg = OneofMsg(x=0)
+    assert betterproto2.which_one_of(msg, "group1")[0] == "x"
+    assert bytes(msg) == b"\x08\x00"
 
     # Round trip should also work
-    foo2 = Foo().parse(bytes(foo))
-    assert betterproto2.which_one_of(foo2, "group1")[0] == "bar"
-    assert foo.bar == 0
-    assert betterproto2.which_one_of(foo2, "group2")[0] == ""
+    msg = OneofMsg().parse(bytes(msg))
+    assert betterproto2.which_one_of(msg, "group1")[0] == "x"
+    assert msg.x == 0
+    assert betterproto2.which_one_of(msg, "group2")[0] == ""
 
 
 def test_json_casing():
