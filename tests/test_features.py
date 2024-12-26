@@ -154,36 +154,32 @@ def test_dict_casing():
 
 
 def test_optional_flag():
-    @dataclass
-    class Request(betterproto2.Message):
-        flag: Optional[bool] = betterproto2.message_field(1, wraps=betterproto2.TYPE_BOOL)
+    from tests.output_betterproto.features import OptionalBoolMsg
 
     # Serialization of not passed vs. set vs. zero-value.
-    assert bytes(Request()) == b""
-    assert bytes(Request(flag=True)) == b"\n\x02\x08\x01"
-    assert bytes(Request(flag=False)) == b"\n\x00"
+    assert bytes(OptionalBoolMsg()) == b""
+    assert bytes(OptionalBoolMsg(field=True)) == b"\n\x02\x08\x01"
+    assert bytes(OptionalBoolMsg(field=False)) == b"\n\x00"
 
     # Differentiate between not passed and the zero-value.
-    assert Request().parse(b"").flag is None
-    assert Request().parse(b"\n\x00").flag is False
+    assert OptionalBoolMsg().parse(b"").field is None
+    assert OptionalBoolMsg().parse(b"\n\x00").field is False
 
 
 def test_optional_datetime_to_dict():
-    @dataclass
-    class Request(betterproto2.Message):
-        date: Optional[datetime] = betterproto2.message_field(1, optional=True)
+    from tests.output_betterproto.features import OptionalDatetimeMsg
 
     # Check dict serialization
-    assert Request().to_dict() == {}
-    assert Request().to_dict(include_default_values=True) == {"date": None}
-    assert Request(date=datetime(2020, 1, 1)).to_dict() == {"date": "2020-01-01T00:00:00Z"}
-    assert Request(date=datetime(2020, 1, 1)).to_dict(include_default_values=True) == {"date": "2020-01-01T00:00:00Z"}
+    assert OptionalDatetimeMsg().to_dict() == {}
+    assert OptionalDatetimeMsg().to_dict(include_default_values=True) == {"field": None}
+    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_dict() == {"field": "2020-01-01T00:00:00Z"}
+    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_dict(include_default_values=True) == {"field": "2020-01-01T00:00:00Z"}
 
     # Check pydict serialization
-    assert Request().to_pydict() == {}
-    assert Request().to_pydict(include_default_values=True) == {"date": None}
-    assert Request(date=datetime(2020, 1, 1)).to_pydict() == {"date": datetime(2020, 1, 1)}
-    assert Request(date=datetime(2020, 1, 1)).to_pydict(include_default_values=True) == {"date": datetime(2020, 1, 1)}
+    assert OptionalDatetimeMsg().to_pydict() == {}
+    assert OptionalDatetimeMsg().to_pydict(include_default_values=True) == {"field": None}
+    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_pydict() == {"field": datetime(2020, 1, 1)}
+    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_pydict(include_default_values=True) == {"field": datetime(2020, 1, 1)}
 
 
 def test_to_json_default_values():
