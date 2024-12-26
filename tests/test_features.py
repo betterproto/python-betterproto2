@@ -277,67 +277,56 @@ def test_to_dict_default_values():
 
 
 def test_to_dict_datetime_values():
-    @dataclass
-    class TestDatetimeMessage(betterproto2.Message):
-        bar: datetime = betterproto2.message_field(1)
-        baz: timedelta = betterproto2.message_field(2)
+    from tests.output_betterproto.features import TimeMsg
 
-    test = TestDatetimeMessage().from_dict({"bar": "2020-01-01T00:00:00Z", "baz": "86400.000s"})
+    test = TimeMsg().from_dict({"timestamp": "2020-01-01T00:00:00Z", "duration": "86400.000s"})
 
-    assert test.to_dict() == {"bar": "2020-01-01T00:00:00Z", "baz": "86400.000s"}
+    assert test.to_dict() == {"timestamp": "2020-01-01T00:00:00Z", "duration": "86400.000s"}
 
-    test = TestDatetimeMessage().from_pydict({"bar": datetime(year=2020, month=1, day=1), "baz": timedelta(days=1)})
+    test = TimeMsg().from_pydict({"timestamp": datetime(year=2020, month=1, day=1), "duration": timedelta(days=1)})
 
     assert test.to_pydict() == {
-        "bar": datetime(year=2020, month=1, day=1),
-        "baz": timedelta(days=1),
+        "timestamp": datetime(year=2020, month=1, day=1),
+        "duration": timedelta(days=1),
     }
 
 
 def test_oneof_default_value_set_causes_writes_wire():
-    @dataclass
-    class Empty(betterproto2.Message):
-        pass
+    from tests.output_betterproto.features import Empty, MsgC
 
-    @dataclass
-    class Foo(betterproto2.Message):
-        bar: int = betterproto2.int32_field(1, optional=True, group="group1")
-        baz: str = betterproto2.string_field(2, optional=True, group="group1")
-        qux: Empty = betterproto2.message_field(3, optional=True, group="group1")
+    def _round_trip_serialization(msg: MsgC) -> MsgC:
+        return MsgC().parse(bytes(msg))
 
-    def _round_trip_serialization(foo: Foo) -> Foo:
-        return Foo().parse(bytes(foo))
+    int_msg = MsgC(int_field=0)
+    str_msg = MsgC(string_field="")
+    empty_msg = MsgC(empty_field=Empty())
+    msg = MsgC()
 
-    foo1 = Foo(bar=0)
-    foo2 = Foo(baz="")
-    foo3 = Foo(qux=Empty())
-    foo4 = Foo()
-
-    assert bytes(foo1) == b"\x08\x00"
+    assert bytes(int_msg) == b"\x08\x00"
     assert (
-        betterproto2.which_one_of(foo1, "group1")
-        == betterproto2.which_one_of(_round_trip_serialization(foo1), "group1")
-        == ("bar", 0)
+        betterproto2.which_one_of(int_msg, "group1")
+        == betterproto2.which_one_of(_round_trip_serialization(int_msg), "group1")
+        == ("int_field", 0)
     )
 
-    assert bytes(foo2) == b"\x12\x00"  # Baz is just an empty string
+    assert bytes(str_msg) == b"\x12\x00"  # Baz is just an empty string
     assert (
-        betterproto2.which_one_of(foo2, "group1")
-        == betterproto2.which_one_of(_round_trip_serialization(foo2), "group1")
-        == ("baz", "")
+        betterproto2.which_one_of(str_msg, "group1")
+        == betterproto2.which_one_of(_round_trip_serialization(str_msg), "group1")
+        == ("string_field", "")
     )
 
-    assert bytes(foo3) == b"\x1a\x00"
+    assert bytes(empty_msg) == b"\x1a\x00"
     assert (
-        betterproto2.which_one_of(foo3, "group1")
-        == betterproto2.which_one_of(_round_trip_serialization(foo3), "group1")
-        == ("qux", Empty())
+        betterproto2.which_one_of(empty_msg, "group1")
+        == betterproto2.which_one_of(_round_trip_serialization(empty_msg), "group1")
+        == ("empty_field", Empty())
     )
 
-    assert bytes(foo4) == b""
+    assert bytes(msg) == b""
     assert (
-        betterproto2.which_one_of(foo4, "group1")
-        == betterproto2.which_one_of(_round_trip_serialization(foo4), "group1")
+        betterproto2.which_one_of(msg, "group1")
+        == betterproto2.which_one_of(_round_trip_serialization(msg), "group1")
         == ("", None)
     )
 
@@ -361,21 +350,14 @@ def test_bool():
     >>> bool(test)
     ... False
     """
+    from tests.output_betterproto.features import Empty, IntMsg
 
-    @dataclass
-    class Falsy(betterproto2.Message):
-        pass
-
-    @dataclass
-    class Truthy(betterproto2.Message):
-        bar: int = betterproto2.int32_field(1)
-
-    assert not Falsy()
-    t = Truthy()
+    assert not Empty()
+    t = IntMsg()
     assert not t
-    t.bar = 1
+    t.val = 1
     assert t
-    t.bar = 0
+    t.val = 0
     assert not t
 
 
