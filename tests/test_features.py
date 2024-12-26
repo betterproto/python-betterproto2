@@ -94,27 +94,22 @@ def test_oneof_support():
 
 
 def test_json_casing():
-    @dataclass
-    class CasingTest(betterproto2.Message):
-        pascal_case: int = betterproto2.int32_field(1)
-        camel_case: int = betterproto2.int32_field(2)
-        snake_case: int = betterproto2.int32_field(3)
-        kabob_case: int = betterproto2.int32_field(4)
+    from tests.output_betterproto.features import JsonCasingMsg
 
     # Parsing should accept almost any input
-    test = CasingTest().from_dict({"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4})
+    msg = JsonCasingMsg().from_dict({"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4})
 
-    assert test == CasingTest(1, 2, 3, 4)
+    assert msg == JsonCasingMsg(1, 2, 3, 4)
 
     # Serializing should be strict.
-    assert json.loads(test.to_json()) == {
+    assert json.loads(msg.to_json()) == {
         "pascalCase": 1,
         "camelCase": 2,
         "snakeCase": 3,
         "kabobCase": 4,
     }
 
-    assert json.loads(test.to_json(casing=betterproto2.Casing.SNAKE)) == {
+    assert json.loads(msg.to_json(casing=betterproto2.Casing.SNAKE)) == {
         "pascal_case": 1,
         "camel_case": 2,
         "snake_case": 3,
@@ -123,39 +118,34 @@ def test_json_casing():
 
 
 def test_dict_casing():
-    @dataclass
-    class CasingTest(betterproto2.Message):
-        pascal_case: int = betterproto2.int32_field(1)
-        camel_case: int = betterproto2.int32_field(2)
-        snake_case: int = betterproto2.int32_field(3)
-        kabob_case: int = betterproto2.int32_field(4)
+    from tests.output_betterproto.features import JsonCasingMsg
 
     # Parsing should accept almost any input
-    test = CasingTest().from_dict({"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4})
+    msg = JsonCasingMsg().from_dict({"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4})
 
-    assert test == CasingTest(1, 2, 3, 4)
+    assert msg == JsonCasingMsg(1, 2, 3, 4)
 
     # Serializing should be strict.
-    assert test.to_dict() == {
+    assert msg.to_dict() == {
         "pascalCase": 1,
         "camelCase": 2,
         "snakeCase": 3,
         "kabobCase": 4,
     }
-    assert test.to_pydict() == {
+    assert msg.to_pydict() == {
         "pascalCase": 1,
         "camelCase": 2,
         "snakeCase": 3,
         "kabobCase": 4,
     }
 
-    assert test.to_dict(casing=betterproto2.Casing.SNAKE) == {
+    assert msg.to_dict(casing=betterproto2.Casing.SNAKE) == {
         "pascal_case": 1,
         "camel_case": 2,
         "snake_case": 3,
         "kabob_case": 4,
     }
-    assert test.to_pydict(casing=betterproto2.Casing.SNAKE) == {
+    assert msg.to_pydict(casing=betterproto2.Casing.SNAKE) == {
         "pascal_case": 1,
         "camel_case": 2,
         "snake_case": 3,
