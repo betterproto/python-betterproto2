@@ -22,6 +22,13 @@ e.g.
 python3 -m pip install -U "betterproto[compiler]"
 ```
 
+!!! warning
+    Make sure that the proto files were generated with a version of `betterproto2_compiler` that is compatible with your
+    version of `betterproto2`.
+
+    The version `x.y.z` of `betterproto` is compatible with the version `a.b.c` of the compiler if and only if `a=x` and
+    `b=y`.
+
 ## Compiling proto files
 
 
