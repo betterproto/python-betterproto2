@@ -19,6 +19,7 @@ def test_documentation() -> None:
     )
 
     check(Test.__doc__, "message")
+    check(Test.__doc__, "oneof")
 
     source = inspect.getsource(Test)
     tree = ast.parse(source)
