@@ -68,6 +68,12 @@ select = [
 [tool.ruff.lint.isort]
 combine-as-imports = true
 
+[tool.pytest.ini_options]
+python_files = "test_*.py"
+python_classes = ""
+norecursedirs = "**/output_*"
+addopts = "-p no:warnings"
+
 # Dev workflow tasks
 
 [tool.poe.tasks.test]
