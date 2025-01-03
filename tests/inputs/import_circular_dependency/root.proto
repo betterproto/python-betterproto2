@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package import_circular_dependency;
-
-message RootPackageMessage {
-
-}

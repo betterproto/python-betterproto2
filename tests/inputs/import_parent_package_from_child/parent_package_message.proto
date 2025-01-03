@@ -1,6 +1,0 @@
-syntax = "proto3";
-
-package import_parent_package_from_child.parent;
-
-message ParentPackageMessage {
-}
