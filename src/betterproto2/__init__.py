@@ -185,6 +185,8 @@ class FieldMetadata:
     wraps: Optional[str] = None
     # Is the field optional
     optional: Optional[bool] = False
+    # Is the field repeated
+    repeated: Optional[bool] = False
 
     @staticmethod
     def get(field: dataclasses.Field) -> "FieldMetadata":
@@ -234,7 +236,7 @@ def field(
 
     return dataclasses.field(
         default_factory=default_factory,
-        metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, wraps, optional)},
+        metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, wraps, optional, repeated)},
     )
 
 
@@ -962,9 +964,8 @@ class Message(ABC):
         """
         output: Dict[str, Any] = {}
         field_types = self._type_hints()
-        defaults = self._betterproto.default_gen
         for field_name, meta in self._betterproto.meta_by_field_name.items():
-            field_is_repeated = defaults[field_name] is list
+            field_is_repeated = meta.repeated
             value = getattr(self, field_name)
             cased_name = casing(field_name).rstrip("_")  # type: ignore
             if meta.proto_type == TYPE_MESSAGE:
@@ -1204,9 +1205,8 @@ class Message(ABC):
             The python dict representation of this object.
         """
         output: Dict[str, Any] = {}
-        defaults = self._betterproto.default_gen
         for field_name, meta in self._betterproto.meta_by_field_name.items():
-            field_is_repeated = defaults[field_name] is list
+            field_is_repeated = meta.repeated
             value = getattr(self, field_name)
             cased_name = casing(field_name).rstrip("_")  # type: ignore
             if meta.proto_type == TYPE_MESSAGE:
