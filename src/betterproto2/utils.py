@@ -49,3 +49,24 @@ class classproperty(Generic[TT_co, T_co]):
 
     def __get__(self, instance: Any, type: TT_co) -> T_co:
         return self.__func__(type)
+
+
+T = TypeVar("T")
+
+
+def unwrap[T](x: T | None) -> T:
+    """
+    Unwraps an optional value, returning the value if it exists, or raises a ValueError if the value is None.
+
+    Args:
+        value (Optional[T]): The optional value to unwrap.
+
+    Returns:
+        T: The unwrapped value if it exists.
+
+    Raises:
+        ValueError: If the value is None.
+    """
+    if x is None:
+        raise ValueError("Can't unwrap a None value")
+    return x

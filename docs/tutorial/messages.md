@@ -86,3 +86,24 @@ On Python 3.10 and later, it is also possible to use a `match` statement to find
 >>> find(Message())
 'No field set'
 ```
+
+## Unwrapping optional values
+
+In protobuf, fields are often marked as optional, either manually or because it is the default behavior of the protocol.
+If you care about type-checking, this can be tedious to handle as you need to make sure each field is not `None` before
+using, even when you know that the field will never be `None` is your application.
+
+```python
+# typing error: item "None" of "Message | None" has no attribute "field"
+message.msg_field.field
+```
+
+To simplify this, betterproto provides a convenience function: `unwrap`. This function takes an optional value, and
+returns the same value if it is not `None`. If the value is `None`, an error is raised.
+
+```python
+from betterproto2 import unwrap
+
+# no typing error!
+unwrap(message.msg_field).field
+```

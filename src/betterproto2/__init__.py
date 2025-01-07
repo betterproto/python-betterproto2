@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-__all__ = ["__version__", "check_compiler_version"]
+__all__ = ["__version__", "check_compiler_version", "unwrap"]
 
 import dataclasses
 import enum as builtin_enum
@@ -42,6 +42,8 @@ from typing import (
 
 from dateutil.parser import isoparse
 from typing_extensions import Self
+
+from betterproto2.utils import unwrap
 
 from ._types import T
 from ._version import __version__, check_compiler_version
