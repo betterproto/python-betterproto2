@@ -54,7 +54,7 @@ class classproperty(Generic[TT_co, T_co]):
 T = TypeVar("T")
 
 
-def unwrap[T](x: T | None) -> T:
+def unwrap(x: T | None) -> T:
     """
     Unwraps an optional value, returning the value if it exists, or raises a ValueError if the value is None.
 
