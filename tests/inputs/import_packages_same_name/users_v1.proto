@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package import_packages_same_name.users.v1;
-
-message User {
-
-}
