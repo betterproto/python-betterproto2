@@ -135,6 +135,10 @@ rm -rf compiled_files
 """
 help = "Pulls the compiled test files from the betterproto2-compiler repository"
 
+[tool.poe.tasks.serve-docs]
+cmd = "mkdocs serve"
+help = "Serve the documentation locally"
+
 # CI tasks
 
 [tool.poe.tasks.full-test]

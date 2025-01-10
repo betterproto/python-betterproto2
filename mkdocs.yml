@@ -12,7 +12,7 @@ theme:
 nav:
   - Betterproto2: 
      - index.md
-     - Quick start: quick-start.md
+     - Getting Started: getting-started.md
      - Tutorial:
         - Messages: tutorial/messages.md
      - API: api.md
