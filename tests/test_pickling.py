@@ -6,7 +6,7 @@ from copy import (
 
 import cachelib
 
-from betterproto2.lib.google import protobuf as google
+from tests.output_betterproto.google import protobuf as google
 from tests.output_betterproto.pickling import Complex, Fe, Fi, NestedData, PickledMessage
 
 

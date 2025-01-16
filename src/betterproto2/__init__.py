@@ -55,6 +55,8 @@ from .casing import (
 )
 from .enum import Enum as Enum
 from .grpc.grpclib_client import ServiceStub as ServiceStub
+from .internal_lib.google import protobuf as internal_lib_protobuf
+from .internal_lib.google.protobuf import Duration as _Duration, Timestamp as _Timestamp
 from .utils import (
     classproperty,
     hybridmethod,
@@ -1364,98 +1366,19 @@ def which_one_of(message: Message, group_name: str) -> Tuple[str, Optional[Any]]
     return field_name, value
 
 
-# Circular import workaround: google.protobuf depends on base classes defined above.
-from .lib.google.protobuf import (  # noqa
-    BoolValue,
-    BytesValue,
-    DoubleValue,
-    Duration,
-    EnumValue,
-    FloatValue,
-    Int32Value,
-    Int64Value,
-    StringValue,
-    Timestamp,
-    UInt32Value,
-    UInt64Value,
-)
-
-
-class _Duration(Duration):
-    @classmethod
-    def from_timedelta(cls, delta: timedelta, *, _1_microsecond: timedelta = timedelta(microseconds=1)) -> "_Duration":
-        total_ms = delta // _1_microsecond
-        seconds = int(total_ms / 1e6)
-        nanos = int((total_ms % 1e6) * 1e3)
-        return cls(seconds, nanos)
-
-    def to_timedelta(self) -> timedelta:
-        return timedelta(seconds=self.seconds, microseconds=self.nanos / 1e3)
-
-    @staticmethod
-    def delta_to_json(delta: timedelta) -> str:
-        parts = str(delta.total_seconds()).split(".")
-        if len(parts) > 1:
-            while len(parts[1]) not in (3, 6, 9):
-                parts[1] = f"{parts[1]}0"
-        return f"{'.'.join(parts)}s"
-
-
-class _Timestamp(Timestamp):
-    @classmethod
-    def from_datetime(cls, dt: datetime) -> "_Timestamp":
-        # manual epoch offset calulation to avoid rounding errors,
-        # to support negative timestamps (before 1970) and skirt
-        # around datetime bugs (apparently 0 isn't a year in [0, 9999]??)
-        offset = dt - DATETIME_ZERO
-        # below is the same as timedelta.total_seconds() but without dividing by 1e6
-        # so we end up with microseconds as integers instead of seconds as float
-        offset_us = (offset.days * 24 * 60 * 60 + offset.seconds) * 10**6 + offset.microseconds
-        seconds, us = divmod(offset_us, 10**6)
-        return cls(seconds, us * 1000)
-
-    def to_datetime(self) -> datetime:
-        # datetime.fromtimestamp() expects a timestamp in seconds, not microseconds
-        # if we pass it as a floating point number, we will run into rounding errors
-        # see also #407
-        offset = timedelta(seconds=self.seconds, microseconds=self.nanos // 1000)
-        return DATETIME_ZERO + offset
-
-    @staticmethod
-    def timestamp_to_json(dt: datetime) -> str:
-        nanos = dt.microsecond * 1e3
-        if dt.tzinfo is not None:
-            # change timezone aware datetime objects to utc
-            dt = dt.astimezone(timezone.utc)
-        copy = dt.replace(microsecond=0, tzinfo=None)
-        result = copy.isoformat()
-        if (nanos % 1e9) == 0:
-            # If there are 0 fractional digits, the fractional
-            # point '.' should be omitted when serializing.
-            return f"{result}Z"
-        if (nanos % 1e6) == 0:
-            # Serialize 3 fractional digits.
-            return f"{result}.{int(nanos // 1e6) :03d}Z"
-        if (nanos % 1e3) == 0:
-            # Serialize 6 fractional digits.
-            return f"{result}.{int(nanos // 1e3) :06d}Z"
-        # Serialize 9 fractional digits.
-        return f"{result}.{nanos:09d}"
-
-
 def _get_wrapper(proto_type: str) -> Type:
     """Get the wrapper message class for a wrapped type."""
 
     # TODO: include ListValue and NullValue?
     return {
-        TYPE_BOOL: BoolValue,
-        TYPE_BYTES: BytesValue,
-        TYPE_DOUBLE: DoubleValue,
-        TYPE_FLOAT: FloatValue,
-        TYPE_ENUM: EnumValue,
-        TYPE_INT32: Int32Value,
-        TYPE_INT64: Int64Value,
-        TYPE_STRING: StringValue,
-        TYPE_UINT32: UInt32Value,
-        TYPE_UINT64: UInt64Value,
+        TYPE_BOOL: internal_lib_protobuf.BoolValue,
+        TYPE_BYTES: internal_lib_protobuf.BytesValue,
+        TYPE_DOUBLE: internal_lib_protobuf.DoubleValue,
+        TYPE_FLOAT: internal_lib_protobuf.FloatValue,
+        TYPE_ENUM: internal_lib_protobuf.EnumValue,
+        TYPE_INT32: internal_lib_protobuf.Int32Value,
+        TYPE_INT64: internal_lib_protobuf.Int64Value,
+        TYPE_STRING: internal_lib_protobuf.StringValue,
+        TYPE_UINT32: internal_lib_protobuf.UInt32Value,
+        TYPE_UINT64: internal_lib_protobuf.UInt64Value,
     }[proto_type]
