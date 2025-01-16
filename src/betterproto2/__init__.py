@@ -55,8 +55,6 @@ from .casing import (
 )
 from .enum import Enum as Enum
 from .grpc.grpclib_client import ServiceStub as ServiceStub
-from .internal_lib.google import protobuf as internal_lib_protobuf
-from .internal_lib.google.protobuf import Duration as _Duration, Timestamp as _Timestamp
 from .utils import (
     classproperty,
     hybridmethod,
@@ -1364,6 +1362,11 @@ def which_one_of(message: Message, group_name: str) -> Tuple[str, Optional[Any]]
             field_name, value = field.name, v
 
     return field_name, value
+
+
+# Avoid circular imports
+from .internal_lib.google import protobuf as internal_lib_protobuf
+from .internal_lib.google.protobuf import Duration as _Duration, Timestamp as _Timestamp
 
 
 def _get_wrapper(proto_type: str) -> Type:
