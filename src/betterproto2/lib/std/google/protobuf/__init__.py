@@ -46,6 +46,8 @@ from typing import (
 
 import betterproto2
 
+from ...message_pool import default_message_pool
+
 betterproto2.check_compiler_version("0.1.1")
 
 
@@ -345,7 +347,7 @@ class Any(betterproto2.Message):
         The message type must be registered in the message pool, which is done automatically when the module defining
         the message type is imported.
         """
-        message_pool = message_pool or betterproto2.default_message_pool
+        message_pool = message_pool or default_message_pool
 
         self.type_url = message_pool.type_to_url[type(message)]
         self.value = bytes(message)
@@ -357,17 +359,18 @@ class Any(betterproto2.Message):
         The target message type must be registered in the message pool, which is done automatically when the module
         defining the message type is imported.
         """
-        message_pool = message_pool or betterproto2.default_message_pool
+        message_pool = message_pool or default_message_pool
 
         message_type = message_pool.url_to_type[self.type_url]
 
         return message_type().parse(self.value)
 
-    def to_dict(self) -> dict:  # TOOO improve when dict is updated
+    def to_dict(self) -> dict:  # pyright: ignore [reportIncompatibleMethodOverride]
+        # TOOO improve when dict is updated
         return {"@type": self.type_url, "value": self.unpack().to_dict()}
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Any", Any)
+default_message_pool.register_message("google.protobuf", "Any", Any)
 
 
 @dataclass(eq=False, repr=False)
@@ -440,7 +443,7 @@ class Api(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Api", Api)
+default_message_pool.register_message("google.protobuf", "Api", Api)
 
 
 @dataclass(eq=False, repr=False)
@@ -457,7 +460,7 @@ class BoolValue(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "BoolValue", BoolValue)
+default_message_pool.register_message("google.protobuf", "BoolValue", BoolValue)
 
 
 @dataclass(eq=False, repr=False)
@@ -474,7 +477,7 @@ class BytesValue(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "BytesValue", BytesValue)
+default_message_pool.register_message("google.protobuf", "BytesValue", BytesValue)
 
 
 @dataclass(eq=False, repr=False)
@@ -491,7 +494,7 @@ class DoubleValue(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "DoubleValue", DoubleValue)
+default_message_pool.register_message("google.protobuf", "DoubleValue", DoubleValue)
 
 
 @dataclass(eq=False, repr=False)
@@ -575,7 +578,7 @@ class Duration(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Duration", Duration)
+default_message_pool.register_message("google.protobuf", "Duration", Duration)
 
 
 @dataclass(eq=False, repr=False)
@@ -593,7 +596,7 @@ class Empty(betterproto2.Message):
     pass
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Empty", Empty)
+default_message_pool.register_message("google.protobuf", "Empty", Empty)
 
 
 @dataclass(eq=False, repr=False)
@@ -635,7 +638,7 @@ class Enum(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Enum", Enum)
+default_message_pool.register_message("google.protobuf", "Enum", Enum)
 
 
 @dataclass(eq=False, repr=False)
@@ -660,7 +663,7 @@ class EnumValue(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "EnumValue", EnumValue)
+default_message_pool.register_message("google.protobuf", "EnumValue", EnumValue)
 
 
 @dataclass(eq=False, repr=False)
@@ -724,7 +727,7 @@ class Field(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Field", Field)
+default_message_pool.register_message("google.protobuf", "Field", Field)
 
 
 @dataclass(eq=False, repr=False)
@@ -936,7 +939,7 @@ class FieldMask(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "FieldMask", FieldMask)
+default_message_pool.register_message("google.protobuf", "FieldMask", FieldMask)
 
 
 @dataclass(eq=False, repr=False)
@@ -953,7 +956,7 @@ class FloatValue(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "FloatValue", FloatValue)
+default_message_pool.register_message("google.protobuf", "FloatValue", FloatValue)
 
 
 @dataclass(eq=False, repr=False)
@@ -970,7 +973,7 @@ class Int32Value(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Int32Value", Int32Value)
+default_message_pool.register_message("google.protobuf", "Int32Value", Int32Value)
 
 
 @dataclass(eq=False, repr=False)
@@ -987,7 +990,7 @@ class Int64Value(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Int64Value", Int64Value)
+default_message_pool.register_message("google.protobuf", "Int64Value", Int64Value)
 
 
 @dataclass(eq=False, repr=False)
@@ -1004,7 +1007,7 @@ class ListValue(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "ListValue", ListValue)
+default_message_pool.register_message("google.protobuf", "ListValue", ListValue)
 
 
 @dataclass(eq=False, repr=False)
@@ -1049,7 +1052,7 @@ class Method(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Method", Method)
+default_message_pool.register_message("google.protobuf", "Method", Method)
 
 
 @dataclass(eq=False, repr=False)
@@ -1102,7 +1105,7 @@ class Mixin(betterproto2.Message):
     The mixin construct implies that all methods in `AccessControl` are
     also declared with same name and request/response types in
     `Storage`. A documentation generator or annotation processor will
-    see the effective `Storage.GetAcl` method after inheriting
+    see the effective `Storage.GetAcl` method after inherting
     documentation and annotations as follows:
 
         service Storage {
@@ -1147,7 +1150,7 @@ class Mixin(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Mixin", Mixin)
+default_message_pool.register_message("google.protobuf", "Mixin", Mixin)
 
 
 @dataclass(eq=False, repr=False)
@@ -1174,7 +1177,7 @@ class Option(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Option", Option)
+default_message_pool.register_message("google.protobuf", "Option", Option)
 
 
 @dataclass(eq=False, repr=False)
@@ -1191,7 +1194,7 @@ class SourceContext(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "SourceContext", SourceContext)
+default_message_pool.register_message("google.protobuf", "SourceContext", SourceContext)
 
 
 @dataclass(eq=False, repr=False)
@@ -1208,7 +1211,7 @@ class StringValue(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "StringValue", StringValue)
+default_message_pool.register_message("google.protobuf", "StringValue", StringValue)
 
 
 @dataclass(eq=False, repr=False)
@@ -1232,7 +1235,7 @@ class Struct(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Struct", Struct)
+default_message_pool.register_message("google.protobuf", "Struct", Struct)
 
 
 @dataclass(eq=False, repr=False)
@@ -1345,7 +1348,7 @@ class Timestamp(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Timestamp", Timestamp)
+default_message_pool.register_message("google.protobuf", "Timestamp", Timestamp)
 
 
 @dataclass(eq=False, repr=False)
@@ -1390,7 +1393,7 @@ class Type(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Type", Type)
+default_message_pool.register_message("google.protobuf", "Type", Type)
 
 
 @dataclass(eq=False, repr=False)
@@ -1407,7 +1410,7 @@ class UInt32Value(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "UInt32Value", UInt32Value)
+default_message_pool.register_message("google.protobuf", "UInt32Value", UInt32Value)
 
 
 @dataclass(eq=False, repr=False)
@@ -1424,7 +1427,7 @@ class UInt64Value(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "UInt64Value", UInt64Value)
+default_message_pool.register_message("google.protobuf", "UInt64Value", UInt64Value)
 
 
 @dataclass(eq=False, repr=False)
@@ -1472,4 +1475,4 @@ class Value(betterproto2.Message):
     """
 
 
-betterproto2.default_message_pool.register_message("google.protobuf", "Value", Value)
+default_message_pool.register_message("google.protobuf", "Value", Value)

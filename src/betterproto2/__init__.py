@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-__all__ = ["__version__", "check_compiler_version", "unwrap", "MessagePool", "default_message_pool"]
+__all__ = ["__version__", "check_compiler_version", "unwrap", "MessagePool"]
 
 import dataclasses
 import enum as builtin_enum
@@ -43,7 +43,7 @@ from typing import (
 from dateutil.parser import isoparse
 from typing_extensions import Self
 
-from betterproto2.message_pool import MessagePool, default_message_pool
+from betterproto2.message_pool import MessagePool
 from betterproto2.utils import unwrap
 
 from ._types import T

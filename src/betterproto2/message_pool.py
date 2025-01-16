@@ -30,7 +30,3 @@ class MessagePool:
 
         self.url_to_type[url] = message_type
         self.type_to_url[message_type] = url
-
-
-default_message_pool = MessagePool()
-"""Global message pool that contains, by default, all the imported betterproto messages."""
