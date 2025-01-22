@@ -10,7 +10,7 @@ pip install betterproto2
 ```
 
 !!! info
-    The package is compatible with all Python versions from 3.8 to 3.13.
+    The package is compatible with all Python versions from 3.10 to 3.13.
 
 
 ## Compiling proto files
