@@ -78,9 +78,7 @@ async def test_trailer_only_error_stream_unary(mocker, handler_trailer_only_unau
     )
     async with ChannelFor([service]) as channel:
         with pytest.raises(grpclib.exceptions.GRPCError) as e:
-            await ThingServiceClient(channel).do_many_things(
-                do_thing_request_iterator=[DoThingRequest(name="something")]
-            )
+            await ThingServiceClient(channel).do_many_things(messages=[DoThingRequest(name="something")])
             await _test_client(ThingServiceClient(channel))
         assert e.value.status == grpclib.Status.UNAUTHENTICATED
 
