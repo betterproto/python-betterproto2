@@ -97,23 +97,27 @@ files = [
 dev = ["freezegun (>=1.0,<2.0)", "pytest (>=6.0)", "pytest-cov"]
 
 [[package]]
-name = "betterproto-rust-codec"
-version = "0.1.1"
+name = "betterproto2-rust-codec"
+version = "0.1.2"
 description = "Fast conversion between betterproto messages and Protobuf wire format."
 optional = true
 python-versions = ">=3.7"
 files = [
-    {file = "betterproto_rust_codec-0.1.1-cp37-abi3-macosx_10_12_x86_64.whl", hash = "sha256:38ec2ec1743d815a04ffc020e8e3791955601b239b097e4ae0721528d4d8b608"},
-    {file = "betterproto_rust_codec-0.1.1-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:96a6deef8cda4b4d084df98b621e39a3123d8878dab551b86bbe733d885c4965"},
-    {file = "betterproto_rust_codec-0.1.1-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:72ce9f153c83b1d0559ab40b0d6a31d8b83ac486230cefc298c8a08f4a97738b"},
-    {file = "betterproto_rust_codec-0.1.1-cp37-abi3-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:b8a8485aabbe843208307a9a2c3fc8a8c09295fb22c840cebd5fa7ec6b8ddb36"},
-    {file = "betterproto_rust_codec-0.1.1-cp37-abi3-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:22a395bf0c9dc86b7d3783ba43f161cd9f7a42809f38c70673cd9999d40eb4f1"},
-    {file = "betterproto_rust_codec-0.1.1-cp37-abi3-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:ea99bee659b33500bb1afc4e0dbfa63530f50a7c549d0687565a10a0de63d18f"},
-    {file = "betterproto_rust_codec-0.1.1-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:913d73365780d8f3da04cbaa1b2428ca5dc5372a5ee6f4ff2b9f30127362dff7"},
-    {file = "betterproto_rust_codec-0.1.1-cp37-abi3-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:1a16dbbbc48f4a27b3b70205a2a71baa53fe0e915bc347b75d9b3864326446fa"},
-    {file = "betterproto_rust_codec-0.1.1-cp37-abi3-win32.whl", hash = "sha256:06f95ac4c92aa1f28bd1be884c6db86f0bed05c9b93a1e4e3d80bbe2fc66847c"},
-    {file = "betterproto_rust_codec-0.1.1-cp37-abi3-win_amd64.whl", hash = "sha256:5b70b3aea76f336cc243b966f2f7496cb6366ad2679d7a999ff521d873f9de48"},
-    {file = "betterproto_rust_codec-0.1.1.tar.gz", hash = "sha256:6f7cbe80c8e3f87df992d71568771082c869ed6856521e01db833d9d3b012af5"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-macosx_10_12_x86_64.whl", hash = "sha256:55f8ea263508b84149c4f4e16d28e397dd6552400ad3069e020de9939f5a2b25"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:9c278c17fc83616d0eb2479b1c638b202a21e9a88c1c15c36584e7e27fecce61"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:2001d9a546e187a6cbf3a6c5b1b36baebe39d75e1f9c147968dce9b58a6c840e"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:4c76c6f68df214235de753a95a59964d6d9f8b0c52e71181d281c237ab2deb2c"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:bb8a0b092a7fcde4135c7f0f9af2f74efa99b88ded75359b4c321e85975a0cfe"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:abb2b0b5b514903c164c58ef87616809b9252e1164696102e24bb8f7e9cfdf4d"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bbe8779c45d678a577f6b00d32cd05ff59009b09c5b7b4d8c4b5a2c6b101a40b"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:37c583eac67141e4d2882e097d1177a7ecb9933262bd8bd6fcf59bfd4288913b"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:fc2c325be3455a765aa367d03a3e7171cb0831356c32ee92358c50ed7c7f0551"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-musllinux_1_2_armv7l.whl", hash = "sha256:f0336f6f8f10fe46be7d78607a5889102a06268e7b653a1500dc2980db07956d"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-musllinux_1_2_i686.whl", hash = "sha256:2b2d7865d014879b80612589766ca84a27db779b1ba3dedeff388af34c724b19"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:43dd091b84895756585654b66e3d96e024de1c2a6f773e7998106466b1b72599"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-win32.whl", hash = "sha256:206df0154f0b64b31af9f0f99df8d9706224b4a777dea08b329abda425615869"},
+    {file = "betterproto2_rust_codec-0.1.2-cp37-abi3-win_amd64.whl", hash = "sha256:ec0e73711033ca507a90da0eb4e0a4cff63294cf1ba29c9bb8b5d9a9d4081dae"},
+    {file = "betterproto2_rust_codec-0.1.2.tar.gz", hash = "sha256:cf05a822d4bc674d32fa205a91ac9222a94df3bd02864d1ef42716472a8aff6c"},
 ]
 
 [[package]]
@@ -540,13 +544,13 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "executing"
-version = "2.1.0"
+version = "2.2.0"
 description = "Get the currently executing AST node of a frame, and other information"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "executing-2.1.0-py2.py3-none-any.whl", hash = "sha256:8d63781349375b5ebccc3142f4b30350c0cd9c79f921cde38be2be4637e98eaf"},
-    {file = "executing-2.1.0.tar.gz", hash = "sha256:8ea27ddd260da8150fa5a708269c4a10e76161e2496ec3e587da9e3c0fe4b9ab"},
+    {file = "executing-2.2.0-py2.py3-none-any.whl", hash = "sha256:11387150cad388d62750327a53d3339fad4888b39a6fe233c3afbb54ecffd3aa"},
+    {file = "executing-2.2.0.tar.gz", hash = "sha256:5d108c028108fe2551d1a7b2e8b713341e2cb4fc0aa7dcf966fa4327a5226755"},
 ]
 
 [package.extras]
@@ -633,24 +637,24 @@ hyperframe = ">=6.0,<7"
 
 [[package]]
 name = "hpack"
-version = "4.0.0"
-description = "Pure-Python HPACK header compression"
+version = "4.1.0"
+description = "Pure-Python HPACK header encoding"
 optional = false
-python-versions = ">=3.6.1"
+python-versions = ">=3.9"
 files = [
-    {file = "hpack-4.0.0-py3-none-any.whl", hash = "sha256:84a076fad3dc9a9f8063ccb8041ef100867b1878b25ef0ee63847a5d53818a6c"},
-    {file = "hpack-4.0.0.tar.gz", hash = "sha256:fc41de0c63e687ebffde81187a948221294896f6bdc0ae2312708df339430095"},
+    {file = "hpack-4.1.0-py3-none-any.whl", hash = "sha256:157ac792668d995c657d93111f46b4535ed114f0c9c8d672271bbec7eae1b496"},
+    {file = "hpack-4.1.0.tar.gz", hash = "sha256:ec5eca154f7056aa06f196a557655c5b009b382873ac8d1e66e79e87535f1dca"},
 ]
 
 [[package]]
 name = "hyperframe"
-version = "6.0.1"
-description = "HTTP/2 framing layer for Python"
+version = "6.1.0"
+description = "Pure-Python HTTP/2 framing"
 optional = false
-python-versions = ">=3.6.1"
+python-versions = ">=3.9"
 files = [
-    {file = "hyperframe-6.0.1-py3-none-any.whl", hash = "sha256:0ec6bafd80d8ad2195c4f03aacba3a8265e57bc4cff261e802bf39970ed02a15"},
-    {file = "hyperframe-6.0.1.tar.gz", hash = "sha256:ae510046231dc8e9ecb1a6586f63d2347bf4c8905914aa84ba585ae85f28a914"},
+    {file = "hyperframe-6.1.0-py3-none-any.whl", hash = "sha256:b03380493a519fce58ea5af42e4a42317bf9bd425596f7a0835ffce80f1a42e5"},
+    {file = "hyperframe-6.1.0.tar.gz", hash = "sha256:f630908a00854a7adeabd6382b43923a4c4cd4b821fcb527e6ab9e15382a3b08"},
 ]
 
 [[package]]
@@ -2442,9 +2446,9 @@ files = [
 ]
 
 [extras]
-rust-codec = ["betterproto-rust-codec"]
+rust-codec = ["betterproto2-rust-codec"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0eb22dbe85bb5fcf7d0252f38aaf8db6a4266cf9b05e7553010acbfa97918f03"
+content-hash = "a19dd8b2f988ee23ee31a9a1a2059880ee8a9b32d17b8e5a745e81873674e1af"

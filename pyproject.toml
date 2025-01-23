@@ -16,7 +16,7 @@ python = "^3.10"
 grpclib = "^0.4.1"
 python-dateutil = "^2.8"
 typing-extensions = "^4.7.1"
-betterproto-rust-codec = { version = "0.1.1", optional = true }
+betterproto2-rust-codec = { version = "^0.1.2", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 asv = "^0.4.2"
@@ -43,7 +43,7 @@ cachelib = "^0.10.2"
 protoc-gen-python_betterproto = "betterproto2.plugin:main"
 
 [tool.poetry.extras]
-rust-codec = ["betterproto-rust-codec"]
+rust-codec = ["betterproto2-rust-codec"]
 
 [tool.ruff]
 extend-exclude = ["tests/output_*", "src/betterproto2/lib"]

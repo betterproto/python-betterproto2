@@ -1343,6 +1343,23 @@ class Message(ABC):
 Message.__annotations__ = {}  # HACK to avoid typing.get_type_hints breaking :)
 
 
+try:
+    import betterproto2_rust_codec
+except ModuleNotFoundError:
+    pass
+else:
+
+    def parse_patched(self, data: bytes) -> T:
+        betterproto2_rust_codec.deserialize(self, data)
+        return self
+
+    def bytes_patched(self) -> bytes:
+        return betterproto2_rust_codec.serialize(self)
+
+    Message.parse = parse_patched
+    Message.__bytes__ = bytes_patched
+
+
 def which_one_of(message: Message, group_name: str) -> Tuple[str, Optional[Any]]:
     """
     Return the name and value of a message's one-of field group.
