@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "betterproto2"
-version = "0.2.1"
+version = "0.2.2"
 description = "A better Protobuf / gRPC generator & library"
 authors = ["Adrien Vannson <adrien.vannson@protonmail.com>", "Daniel G. Taylor <danielgtaylor@gmail.com>"]
 readme = "README.md"
