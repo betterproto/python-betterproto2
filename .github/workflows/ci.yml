@@ -52,13 +52,13 @@ jobs:
         shell: bash
         run: poetry run pip --version >/dev/null 2>&1 || rm -rf .venv
 
-      - name: Download compiled test files
-        shell: bash
-        run: poetry run poe pull-compiled-tests
-
       - name: Install dependencies
         shell: bash
         run: poetry install
+
+      - name: Download compiled test files
+        shell: bash
+        run: poetry run poe pull-compiled-tests
 
       - name: Execute test suite
         shell: bash
