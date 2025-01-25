@@ -1312,7 +1312,7 @@ Message.__annotations__ = {}  # HACK to avoid typing.get_type_hints breaking :)
 
 
 try:
-    import betterproto2_rust_codec
+    import betterproto2_rust_codec  # pyright: ignore[reportMissingImports]
 except ModuleNotFoundError:
     pass
 else:

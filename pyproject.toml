@@ -40,6 +40,7 @@ mkdocstrings = {version = "^0.27.0", python = ">=3.10", extras = ["python"]}
 # The Ruff version is pinned. To update it, also update it in .pre-commit-config.yaml
 ruff = { version = "~0.9.3" }
 ipykernel = "^6.29.5"
+pyright = "^1.1.392"
 
 [tool.poetry.group.test.dependencies]
 poethepoet = ">=0.9.0"
@@ -86,9 +87,9 @@ addopts = "-p no:warnings"
 cmd = "pytest"
 help = "Run tests"
 
-[tool.poe.tasks.types]
-cmd  = "mypy src --ignore-missing-imports"
-help = "Check types with mypy"
+[tool.poe.tasks.typecheck]
+cmd  = "pyright src"
+help = "Typecheck the code with Pyright"
 
 [tool.poe.tasks.format]
 sequence = ["_format", "_sort-imports"]
