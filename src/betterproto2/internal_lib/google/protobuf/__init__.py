@@ -1399,10 +1399,10 @@ class Timestamp(betterproto2.Message):
             return f"{result}Z"
         if (nanos % 1e6) == 0:
             # Serialize 3 fractional digits.
-            return f"{result}.{int(nanos // 1e6) :03d}Z"
+            return f"{result}.{int(nanos // 1e6):03d}Z"
         if (nanos % 1e3) == 0:
             # Serialize 6 fractional digits.
-            return f"{result}.{int(nanos // 1e3) :06d}Z"
+            return f"{result}.{int(nanos // 1e3):06d}Z"
         # Serialize 9 fractional digits.
         return f"{result}.{nanos:09d}"
 

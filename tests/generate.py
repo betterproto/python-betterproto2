@@ -145,7 +145,7 @@ HELP = "\n".join(
         "Usage: python generate.py [-h] [-v] [DIRECTORIES or NAMES]",
         "Generate python classes for standard tests.",
         "",
-        "DIRECTORIES    One or more relative or absolute directories of test-cases to generate" "classes for.",
+        "DIRECTORIES    One or more relative or absolute directories of test-cases to generateclasses for.",
         "               python generate.py inputs/bool inputs/double inputs/enum",
         "",
         "NAMES          One or more test-case names to generate classes for.",

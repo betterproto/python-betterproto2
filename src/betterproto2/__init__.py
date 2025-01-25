@@ -259,7 +259,7 @@ def dump_varint(value: int, stream: "SupportsWrite[bytes]") -> None:
     """Encodes a single varint and dumps it into the provided stream."""
     if value < -(1 << 63):
         raise ValueError(
-            "Negative value is not representable as a 64-bit integer" " - unable to encode a varint within 10 bytes."
+            "Negative value is not representable as a 64-bit integer - unable to encode a varint within 10 bytes."
         )
     elif value < 0:
         value += 1 << 64
@@ -1335,7 +1335,7 @@ class Message(ABC):
 
             if len(set_fields) > 1:
                 set_fields_str = ", ".join(set_fields)
-                raise ValueError(f"Group {group} has more than one value;" f" fields {set_fields_str} are not None")
+                raise ValueError(f"Group {group} has more than one value; fields {set_fields_str} are not None")
 
         return values
 

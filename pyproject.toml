@@ -16,9 +16,6 @@ dynamic = ["dependencies"]
 Documentation = "https://betterproto.github.io/python-betterproto2/"
 Repository = "https://github.com/betterproto/python-betterproto2"
 
-[project.scripts]
-protoc-gen-python_betterproto = "betterproto2.plugin:main"
-
 [project.optional-dependencies]
 rust-codec = ["betterproto2-rust-codec"]
 
@@ -41,7 +38,7 @@ tox = "^4.0.0"
 mkdocs-material = {version = "^9.5.49", python = ">=3.10"}
 mkdocstrings = {version = "^0.27.0", python = ">=3.10", extras = ["python"]}
 # The Ruff version is pinned. To update it, also update it in .pre-commit-config.yaml
-ruff = { version = "~0.7.4" }
+ruff = { version = "~0.9.3" }
 ipykernel = "^6.29.5"
 
 [tool.poetry.group.test.dependencies]
@@ -56,7 +53,7 @@ cachelib = "^0.10.2"
 
 [tool.ruff]
 extend-exclude = ["tests/output_*", "src/betterproto2/lib"]
-target-version = "py38"
+target-version = "py310"
 line-length = 120
 
 [tool.ruff.lint]
