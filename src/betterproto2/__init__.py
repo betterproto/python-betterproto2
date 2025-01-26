@@ -616,10 +616,6 @@ class Message(ABC):
         ]
         return f"{self.__class__.__name__}({', '.join(parts)})"
 
-    # def __rich_repr__(self) -> Iterable[Tuple[str, Any, Any]]:
-    #     for field_name in self._betterproto.sorted_field_names:
-    #         yield field_name, self.__getattribute__(field_name), PLACEHOLDER
-
     def __bool__(self) -> bool:
         """True if the message has any fields with non-default values."""
         return any(
@@ -1011,7 +1007,7 @@ class Message(ABC):
                 elif field_is_repeated:
                     # Convert each item.
                     if output_format == OutputFormat.PYTHON:
-                        value = [i.to_pydict(casing, include_default_values) for i in value]
+                        value = [i.to_dict(**kwargs) for i in value]
                     else:
                         cls = self._betterproto.cls_by_field[field_name]
                         if cls == datetime:
