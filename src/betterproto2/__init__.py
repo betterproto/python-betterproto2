@@ -981,6 +981,12 @@ class Message(ABC):
         Dict[:class:`str`, Any]
             The JSON serializable dict representation of this object.
         """
+        kwargs = {  # For recursive calls
+            "output_format": output_format,
+            "casing": casing,
+            "include_default_values": include_default_values,
+        }
+
         output: Dict[str, Any] = {}
         field_types = self._type_hints()
         for field_name, meta in self._betterproto.meta_by_field_name.items():
@@ -1013,30 +1019,19 @@ class Message(ABC):
                         elif cls == timedelta:
                             value = [_Duration.delta_to_json(i) for i in value]
                         else:
-                            value = [
-                                i.to_dict(
-                                    output_format=output_format,
-                                    casing=casing,
-                                    include_default_values=include_default_values,
-                                )
-                                for i in value
-                            ]
+                            value = [i.to_dict(**kwargs) for i in value]
                     if value or include_default_values:
                         output[cased_name] = value
                 elif value is None:
                     if include_default_values:
                         output[cased_name] = None
                 else:
-                    output[cased_name] = value.to_dict(
-                        output_format=output_format, casing=casing, include_default_values=include_default_values
-                    )
+                    output[cased_name] = value.to_dict(**kwargs)
             elif meta.proto_type == TYPE_MAP:
                 output_map = {**value}
                 for k in value:
                     if hasattr(value[k], "to_dict"):
-                        output_map[k] = value[k].to_dict(
-                            output_format=output_format, casing=casing, include_default_values=include_default_values
-                        )
+                        output_map[k] = value[k].to_dict(**kwargs)
 
                 if value or include_default_values:
                     output[cased_name] = output_map
