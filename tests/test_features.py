@@ -10,6 +10,7 @@ from inspect import (
 from unittest.mock import ANY
 
 import betterproto2
+from betterproto2 import OutputFormat
 
 
 def test_class_init():
@@ -18,7 +19,7 @@ def test_class_init():
     foo = Foo(name="foo", child=Bar(name="bar"))
 
     assert foo.to_dict() == {"name": "foo", "child": {"name": "bar"}}
-    assert foo.to_pydict() == {"name": "foo", "child": {"name": "bar"}}
+    assert foo.to_dict(output_format=OutputFormat.PYTHON) == {"name": "foo", "child": {"name": "bar"}}
 
 
 def test_enum_as_int_json():
@@ -35,7 +36,7 @@ def test_enum_as_int_json():
     # Similar expectations for pydict
     enum_msg = EnumMsg().from_dict({"enum": 1})
     assert enum_msg.enum == Enum.ONE
-    assert enum_msg.to_pydict() == {"enum": Enum.ONE}
+    assert enum_msg.to_dict(output_format=OutputFormat.PYTHON) == {"enum": Enum.ONE}
 
 
 def test_unknown_fields():
@@ -127,20 +128,8 @@ def test_dict_casing():
         "snakeCase": 3,
         "kabobCase": 4,
     }
-    assert msg.to_pydict() == {
-        "pascalCase": 1,
-        "camelCase": 2,
-        "snakeCase": 3,
-        "kabobCase": 4,
-    }
 
     assert msg.to_dict(casing=betterproto2.Casing.SNAKE) == {
-        "pascal_case": 1,
-        "camel_case": 2,
-        "snake_case": 3,
-        "kabob_case": 4,
-    }
-    assert msg.to_pydict(casing=betterproto2.Casing.SNAKE) == {
         "pascal_case": 1,
         "camel_case": 2,
         "snake_case": 3,
@@ -173,12 +162,16 @@ def test_optional_datetime_to_dict():
     }
 
     # Check pydict serialization
-    assert OptionalDatetimeMsg().to_pydict() == {}
-    assert OptionalDatetimeMsg().to_pydict(include_default_values=True) == {"field": None}
-    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_pydict() == {"field": datetime(2020, 1, 1)}
-    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_pydict(include_default_values=True) == {
+    assert OptionalDatetimeMsg().to_dict(output_format=OutputFormat.PYTHON) == {}
+    assert OptionalDatetimeMsg().to_dict(include_default_values=True, output_format=OutputFormat.PYTHON) == {
+        "field": None
+    }
+    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_dict(output_format=OutputFormat.PYTHON) == {
         "field": datetime(2020, 1, 1)
     }
+    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_dict(
+        include_default_values=True, output_format=OutputFormat.PYTHON
+    ) == {"field": datetime(2020, 1, 1)}
 
 
 def test_to_json_default_values():
@@ -218,7 +211,7 @@ def test_to_dict_default_values():
         "someBool": False,
     }
 
-    assert test.to_pydict(include_default_values=True) == {
+    assert test.to_dict(include_default_values=True, output_format=OutputFormat.PYTHON) == {
         "someInt": 0,
         "someDouble": 0.0,
         "someStr": "",
@@ -263,7 +256,7 @@ def test_to_dict_default_values():
         }
     )
 
-    assert test.to_pydict(include_default_values=True) == {
+    assert test.to_dict(include_default_values=True, output_format=OutputFormat.PYTHON) == {
         "someInt": 2,
         "someDouble": 1.2,
         "someStr": "hello",
@@ -284,7 +277,7 @@ def test_to_dict_datetime_values():
 
     test = TimeMsg().from_pydict({"timestamp": datetime(year=2020, month=1, day=1), "duration": timedelta(days=1)})
 
-    assert test.to_pydict() == {
+    assert test.to_dict(output_format=OutputFormat.PYTHON) == {
         "timestamp": datetime(year=2020, month=1, day=1),
         "duration": timedelta(days=1),
     }
