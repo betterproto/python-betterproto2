@@ -20,6 +20,11 @@ def test_any_to_dict() -> None:
     person = Person(first_name="John", last_name="Smith")
 
     any = Any()
+
+    # TODO test with include defautl value
+    assert any.to_dict() == {"@type": ""}
+
+    # Pack an object inside
     any.pack(person)
 
     assert any.to_dict() == {
