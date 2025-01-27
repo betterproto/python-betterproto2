@@ -54,7 +54,7 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: poetry install
+        run: poetry install -E grpc-async
 
       - name: Download compiled test files
         shell: bash
@@ -66,7 +66,7 @@ jobs:
 
       - name: Install dependencies with the Rust codec
         shell: bash
-        run: poetry install -E rust-codec
+        run: poetry install -E grpc-async -E rust-codec
 
       - name: Execute test suite with the Rust codec
         shell: bash

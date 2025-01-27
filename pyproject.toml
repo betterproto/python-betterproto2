@@ -18,7 +18,7 @@ Repository = "https://github.com/betterproto/python-betterproto2"
 
 [project.optional-dependencies]
 rust-codec = ["betterproto2-rust-codec"]
-grpc_async = ["grpclib"]
+grpc-async = ["grpclib"]
 
 [tool.poetry]
 packages = [

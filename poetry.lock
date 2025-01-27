@@ -2568,4 +2568,4 @@ rust-codec = ["betterproto2-rust-codec"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "519222d5f74084830d59a07cb831774461de83cb798d44c0d8ac605913c26b39"
+content-hash = "b9fee852af52a78b03c45c41675502d3ab97482ac6531f67f71861ad4d4abbba"
