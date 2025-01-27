@@ -29,11 +29,11 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
+    Self,
     get_type_hints,
 )
 
 from dateutil.parser import isoparse
-from typing_extensions import Self
 
 from betterproto2.message_pool import MessagePool
 from betterproto2.utils import unwrap

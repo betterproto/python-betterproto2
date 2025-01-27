@@ -2466,6 +2466,7 @@ files = [
     {file = "typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d"},
     {file = "typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"},
 ]
+markers = {main = "python_version < \"3.11\""}
 
 [[package]]
 name = "urllib3"
@@ -2567,4 +2568,4 @@ rust-codec = ["betterproto2-rust-codec"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "9d06d8b7841ca0f04c1952af41ff6b02824c7f988d3e62fa1f5a965ea18e65a7"
+content-hash = "d75997b2d8bebb76484e33f0b70d81dab0a1501ac7834156d2fd4d67b0f74213"

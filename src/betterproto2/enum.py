@@ -8,17 +8,14 @@ from types import MappingProxyType
 from typing import (
     TYPE_CHECKING,
     Any,
+    Never,
+    Self,
 )
 
 if TYPE_CHECKING:
     from collections.abc import (
         Generator,
         Mapping,
-    )
-
-    from typing_extensions import (
-        Never,
-        Self,
     )
 
 

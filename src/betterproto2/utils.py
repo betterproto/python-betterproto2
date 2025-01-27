@@ -5,12 +5,9 @@ from typing import (
     Any,
     Concatenate,
     Generic,
-    TypeVar,
-)
-
-from typing_extensions import (
     ParamSpec,
     Self,
+    TypeVar,
 )
 
 SelfT = TypeVar("SelfT")

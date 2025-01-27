@@ -27,7 +27,6 @@ packages = [
 [tool.poetry.dependencies]
 grpclib = "^0.4.1"
 python-dateutil = "^2.8"
-typing-extensions = "^4.7.1"
 betterproto2-rust-codec = { version = "^0.1.2", optional = true }
 
 [tool.poetry.group.dev.dependencies]
