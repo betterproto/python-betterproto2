@@ -42,23 +42,6 @@ astroid = ["astroid (>=2,<4)"]
 test = ["astroid (>=2,<4)", "pytest", "pytest-cov", "pytest-xdist"]
 
 [[package]]
-name = "asv"
-version = "0.4.2"
-description = "Airspeed Velocity: A simple Python history benchmarking tool"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-groups = ["dev"]
-files = [
-    {file = "asv-0.4.2.tar.gz", hash = "sha256:9134f56b7a2f465420f17b5bb0dee16047a70f01029c996b7ab3f197de2d0779"},
-]
-
-[package.dependencies]
-six = ">=1.4"
-
-[package.extras]
-hg = ["python-hglib (>=1.5)"]
-
-[[package]]
 name = "atomicwrites"
 version = "1.4.1"
 description = "Atomic file writes."
@@ -2584,4 +2567,4 @@ rust-codec = ["betterproto2-rust-codec"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "a8f9aae73716b8ff3458204bb85ae7052bf5ba56beabd9dd023d82ef998b2834"
+content-hash = "9d06d8b7841ca0f04c1952af41ff6b02824c7f988d3e62fa1f5a965ea18e65a7"
