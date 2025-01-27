@@ -31,7 +31,6 @@ typing-extensions = "^4.7.1"
 betterproto2-rust-codec = { version = "^0.1.2", optional = true }
 
 [tool.poetry.group.dev.dependencies]
-asv = "^0.4.2"
 mypy = "^1.11.2"
 pre-commit = "^2.17.0"
 tox = "^4.0.0"
@@ -98,7 +97,7 @@ sequence = ["_format", "_sort-imports"]
 help = "Format the source code, and sort the imports"
 
 [tool.poe.tasks.check]
-sequence = ["_check-format", "_check-imports", "_check"]
+sequence = ["_check-format", "_check"]
 help = "Check that the source code is formatted and the imports sorted"
 
 [tool.poe.tasks._format]
@@ -113,25 +112,13 @@ help = "Sort the imports"
 cmd = "ruff format --diff src tests"
 help = "Check that the source code is formatted"
 
-[tool.poe.tasks._check-imports]
-cmd = "ruff check --select I src tests"
-help = "Check that the imports are sorted"
-
 [tool.poe.tasks._check]
 cmd = "ruff check src tests"
 help = "Check the code"
 
-[tool.poe.tasks.docs]
-cmd  = "sphinx-build docs docs/build"
-help = "Build the sphinx docs"
-
-[tool.poe.tasks.bench]
-shell = "asv run master^! && asv run HEAD^! && asv compare master HEAD"
-help  = "Benchmark current commit vs. master branch"
-
 [tool.poe.tasks.clean]
 cmd  = """
-rm -rf .asv .coverage .mypy_cache .pytest_cache
+rm -rf .coverage .mypy_cache .pytest_cache
        dist betterproto.egg-info **/__pycache__
        testsoutput_*
 """
