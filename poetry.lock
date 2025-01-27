@@ -622,7 +622,7 @@ colorama = ">=0.4"
 name = "grpclib"
 version = "0.4.7"
 description = "Pure-Python gRPC implementation for asyncio"
-optional = false
+optional = true
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
@@ -640,7 +640,7 @@ protobuf = ["protobuf (>=3.20.0)"]
 name = "h2"
 version = "4.1.0"
 description = "HTTP/2 State-Machine based protocol implementation"
-optional = false
+optional = true
 python-versions = ">=3.6.1"
 groups = ["main"]
 files = [
@@ -656,7 +656,7 @@ hyperframe = ">=6.0,<7"
 name = "hpack"
 version = "4.1.0"
 description = "Pure-Python HPACK header encoding"
-optional = false
+optional = true
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
@@ -668,7 +668,7 @@ files = [
 name = "hyperframe"
 version = "6.1.0"
 description = "Pure-Python HTTP/2 framing"
-optional = false
+optional = true
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
@@ -1143,7 +1143,7 @@ mkdocstrings = ">=0.26"
 name = "multidict"
 version = "6.1.0"
 description = "multidict implementation"
-optional = false
+optional = true
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
@@ -2562,9 +2562,10 @@ files = [
 ]
 
 [extras]
+grpc-async = ["grpclib"]
 rust-codec = ["betterproto2-rust-codec"]
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "9d06d8b7841ca0f04c1952af41ff6b02824c7f988d3e62fa1f5a965ea18e65a7"
+content-hash = "519222d5f74084830d59a07cb831774461de83cb798d44c0d8ac605913c26b39"
