@@ -6,7 +6,7 @@ Getting Started
 The package `betterproto2` can be simply installed from PyPI using `pip`:
 
 ```sh
-pip install betterproto2
+pip install betterproto2[all]
 ```
 
 !!! info
