@@ -488,7 +488,7 @@ class ProtoClassMetadata:
         "sorted_field_names",
     )
 
-    oneof_group_by_field: Dict[str, str]
+    oneof_group_by_field: Dict[str, str]  # TODO delete (still used in the rust codec for now)
     oneof_field_by_group: Dict[str, Set[dataclasses.Field]]
     field_name_by_number: Dict[int, str]
     meta_by_field_name: Dict[str, FieldMetadata]
@@ -520,12 +520,8 @@ class ProtoClassMetadata:
         self.field_name_by_number = by_field_number
         self.meta_by_field_name = by_field_name
         self.sorted_field_names = tuple(by_field_number[number] for number in sorted(by_field_number))
-        self.default_gen = self._get_default_gen(cls, fields)
+        self.default_gen = {field.name: field.default_factory for field in fields}
         self.cls_by_field = self._get_cls_by_field(cls, fields)
-
-    @staticmethod
-    def _get_default_gen(cls: Type["Message"], fields: Iterable[dataclasses.Field]) -> Dict[str, Callable[[], Any]]:
-        return {field.name: field.default_factory for field in fields}
 
     @staticmethod
     def _get_cls_by_field(cls: Type["Message"], fields: Iterable[dataclasses.Field]) -> Dict[str, Type]:
