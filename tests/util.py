@@ -5,18 +5,10 @@ import os
 import platform
 import sys
 import tempfile
+from collections.abc import Callable, Generator
 from dataclasses import dataclass
 from pathlib import Path
 from types import ModuleType
-from typing import (
-    Callable,
-    Dict,
-    Generator,
-    List,
-    Optional,
-    Tuple,
-    Union,
-)
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
@@ -39,8 +31,8 @@ def get_directories(path):
 
 
 async def protoc(
-    path: Union[str, Path],
-    output_dir: Union[str, Path],
+    path: str | Path,
+    output_dir: str | Path,
     reference: bool = False,
     pydantic_dataclasses: bool = False,
 ):
@@ -100,11 +92,11 @@ class TestCaseJsonFile:
     test_name: str
     file_name: str
 
-    def belongs_to(self, non_symmetrical_json: Dict[str, Tuple[str, ...]]) -> bool:
+    def belongs_to(self, non_symmetrical_json: dict[str, tuple[str, ...]]) -> bool:
         return self.file_name in non_symmetrical_json.get(self.test_name, ())
 
 
-def get_test_case_json_data(test_case_name: str, *json_file_names: str) -> List[TestCaseJsonFile]:
+def get_test_case_json_data(test_case_name: str, *json_file_names: str) -> list[TestCaseJsonFile]:
     """
     :return:
         A list of all files found in "{inputs_path}/test_case_name" with names matching
@@ -128,7 +120,7 @@ def get_test_case_json_data(test_case_name: str, *json_file_names: str) -> List[
     return result
 
 
-def find_module(module: ModuleType, predicate: Callable[[ModuleType], bool]) -> Optional[ModuleType]:
+def find_module(module: ModuleType, predicate: Callable[[ModuleType], bool]) -> ModuleType | None:
     """
     Recursively search module tree for a module that matches the search predicate.
     Assumes that the submodules are directories containing __init__.py.

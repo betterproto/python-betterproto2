@@ -1,16 +1,14 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import (
     Any,
-    Callable,
+    Concatenate,
     Generic,
-    Optional,
-    Type,
     TypeVar,
 )
 
 from typing_extensions import (
-    Concatenate,
     ParamSpec,
     Self,
 )
@@ -32,7 +30,7 @@ class hybridmethod(Generic[SelfT, P, HybridT]):
         self.instance_func = func
         return self
 
-    def __get__(self, instance: Optional[SelfT], owner: Type[SelfT]) -> Callable[P, HybridT]:
+    def __get__(self, instance: SelfT | None, owner: type[SelfT]) -> Callable[P, HybridT]:
         if instance is None or self.instance_func is None:
             # either bound to the class, or no instance method available
             return self.cls_func.__get__(owner, None)

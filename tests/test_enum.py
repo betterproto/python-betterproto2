@@ -1,8 +1,3 @@
-from typing import (
-    Optional,
-    Tuple,
-)
-
 import pytest
 
 import betterproto2
@@ -50,7 +45,7 @@ def test_repr(member: Colour, repr_value: str) -> None:
         (PURPLE, (None, 4)),
     ],
 )
-def test_name_values(member: Colour, values: Tuple[Optional[str], int]) -> None:
+def test_name_values(member: Colour, values: tuple[str | None, int]) -> None:
     assert (member.name, member.value) == values
 
 

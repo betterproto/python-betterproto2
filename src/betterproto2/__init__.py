@@ -15,6 +15,7 @@ from base64 import (
     b64decode,
     b64encode,
 )
+from collections.abc import Callable, Generator, Iterable, Mapping
 from copy import deepcopy
 from datetime import (
     datetime,
@@ -27,17 +28,7 @@ from itertools import count
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
-    Dict,
-    Generator,
-    Iterable,
-    Mapping,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    Union,
     get_type_hints,
 )
 
@@ -66,13 +57,6 @@ if TYPE_CHECKING:
         SupportsRead,
         SupportsWrite,
     )
-
-if sys.version_info >= (3, 10):
-    from types import UnionType as _types_UnionType
-else:
-
-    class _types_UnionType: ...
-
 
 # Proto 3 data types
 TYPE_ENUM = "enum"
@@ -182,18 +166,18 @@ class FieldMetadata:
     # Protobuf type name
     proto_type: str
     # Map information if the proto_type is a map
-    map_types: Optional[Tuple[str, str]] = None
+    map_types: tuple[str, str] | None = None
     # Groups several "one-of" fields together
-    group: Optional[str] = None
+    group: str | None = None
     # Describes the wrapped type (e.g. when using google.protobuf.BoolValue)
-    wraps: Optional[str] = None
+    wraps: str | None = None
     # Is the field optional
-    optional: Optional[bool] = False
+    optional: bool | None = False
     # Is the field repeated
-    repeated: Optional[bool] = False
+    repeated: bool | None = False
 
     @staticmethod
-    def get(field: dataclasses.Field) -> "FieldMetadata":
+    def get(field: dataclasses.Field) -> FieldMetadata:
         """Returns the field metadata for a dataclass field."""
         return field.metadata["betterproto"]
 
@@ -203,9 +187,9 @@ def field(
     proto_type: str,
     *,
     default_factory: Callable[[], Any] | None = None,
-    map_types: Optional[Tuple[str, str]] = None,
-    group: Optional[str] = None,
-    wraps: Optional[str] = None,
+    map_types: tuple[str, str] | None = None,
+    group: str | None = None,
+    wraps: str | None = None,
     optional: bool = False,
     repeated: bool = False,
 ) -> Any:  # Return type is Any to pass type checking
@@ -256,7 +240,7 @@ def _pack_fmt(proto_type: str) -> str:
     }[proto_type]
 
 
-def dump_varint(value: int, stream: "SupportsWrite[bytes]") -> None:
+def dump_varint(value: int, stream: SupportsWrite[bytes]) -> None:
     """Encodes a single varint and dumps it into the provided stream."""
     if value < -(1 << 63):
         raise ValueError(
@@ -367,7 +351,7 @@ def _parse_float(value: Any) -> float:
     return float(value)
 
 
-def _dump_float(value: float) -> Union[float, str]:
+def _dump_float(value: float) -> float | str:
     """Dump the given float to JSON
 
     Parameters
@@ -389,7 +373,7 @@ def _dump_float(value: float) -> Union[float, str]:
     return value
 
 
-def load_varint(stream: "SupportsRead[bytes]") -> Tuple[int, bytes]:
+def load_varint(stream: SupportsRead[bytes]) -> tuple[int, bytes]:
     """
     Load a single varint value from a stream. Returns the value and the raw bytes read.
     """
@@ -408,7 +392,7 @@ def load_varint(stream: "SupportsRead[bytes]") -> Tuple[int, bytes]:
             return result, raw
 
 
-def decode_varint(buffer: bytes, pos: int) -> Tuple[int, int]:
+def decode_varint(buffer: bytes, pos: int) -> tuple[int, int]:
     """
     Decode a single varint value from a byte buffer. Returns the value and the
     new position in the buffer.
@@ -427,7 +411,7 @@ class ParsedField:
     raw: bytes
 
 
-def load_fields(stream: "SupportsRead[bytes]") -> Generator[ParsedField, None, None]:
+def load_fields(stream: SupportsRead[bytes]) -> Generator[ParsedField, None, None]:
     while True:
         try:
             num_wire, raw = load_varint(stream)
@@ -489,17 +473,17 @@ class ProtoClassMetadata:
         "sorted_field_names",
     )
 
-    oneof_group_by_field: Dict[str, str]  # TODO delete (still used in the rust codec for now)
-    oneof_field_by_group: Dict[str, Set[dataclasses.Field]]
-    field_name_by_number: Dict[int, str]
-    meta_by_field_name: Dict[str, FieldMetadata]
-    sorted_field_names: Tuple[str, ...]
-    default_gen: Dict[str, Callable[[], Any]]
-    cls_by_field: Dict[str, Type]
+    oneof_group_by_field: dict[str, str]  # TODO delete (still used in the rust codec for now)
+    oneof_field_by_group: dict[str, set[dataclasses.Field]]
+    field_name_by_number: dict[int, str]
+    meta_by_field_name: dict[str, FieldMetadata]
+    sorted_field_names: tuple[str, ...]
+    default_gen: dict[str, Callable[[], Any]]
+    cls_by_field: dict[str, type]
 
-    def __init__(self, cls: Type["Message"]):
+    def __init__(self, cls: type[Message]):
         by_field = {}
-        by_group: Dict[str, Set] = {}
+        by_group: dict[str, set] = {}
         by_field_name = {}
         by_field_number = {}
 
@@ -525,7 +509,7 @@ class ProtoClassMetadata:
         self.cls_by_field = self._get_cls_by_field(cls, fields)
 
     @staticmethod
-    def _get_cls_by_field(cls: Type["Message"], fields: Iterable[dataclasses.Field]) -> Dict[str, Type]:
+    def _get_cls_by_field(cls: type[Message], fields: Iterable[dataclasses.Field]) -> dict[str, type]:
         field_cls = {}
 
         for field_ in fields:
@@ -646,7 +630,7 @@ class Message(ABC):
             cls._betterproto_meta = meta = ProtoClassMetadata(cls)
             return meta
 
-    def dump(self, stream: "SupportsWrite[bytes]", delimit: bool = False) -> None:
+    def dump(self, stream: SupportsWrite[bytes], delimit: bool = False) -> None:
         """
         Dumps the binary encoded Protobuf message to the stream.
 
@@ -746,20 +730,20 @@ class Message(ABC):
     def __setstate__(self: T, pickled_bytes: bytes) -> T:
         return self.parse(pickled_bytes)
 
-    def __reduce__(self) -> Tuple[Any, ...]:
+    def __reduce__(self) -> tuple[Any, ...]:
         return (self.__class__.FromString, (bytes(self),))
 
     @classmethod
-    def _type_hint(cls, field_name: str) -> Type:
+    def _type_hint(cls, field_name: str) -> type:
         return cls._type_hints()[field_name]
 
     @classmethod
-    def _type_hints(cls) -> Dict[str, Type]:
+    def _type_hints(cls) -> dict[str, type]:
         module = sys.modules[cls.__module__]
         return get_type_hints(cls, module.__dict__, {})
 
     @classmethod
-    def _cls_for(cls, field: dataclasses.Field, index: int = 0) -> Type:
+    def _cls_for(cls, field: dataclasses.Field, index: int = 0) -> type:
         """Get the message class for a field from the type hints."""
         field_cls = cls._type_hint(field.name)
         if hasattr(field_cls, "__args__") and index >= 0 and field_cls.__args__ is not None:
@@ -815,8 +799,8 @@ class Message(ABC):
 
     def load(
         self: T,
-        stream: "SupportsRead[bytes]",
-        size: Optional[int] = None,
+        stream: SupportsRead[bytes],
+        size: int | None = None,
     ) -> T:
         """
         Load the binary encoded Protobuf from a stream into this message instance. This
@@ -926,7 +910,7 @@ class Message(ABC):
 
     # For compatibility with other libraries.
     @classmethod
-    def FromString(cls: Type[T], data: bytes) -> T:
+    def FromString(cls: type[T], data: bytes) -> T:
         """
         Parse the binary encoded Protobuf into this message instance. This
         returns the instance itself and is therefore assignable and chainable.
@@ -954,7 +938,7 @@ class Message(ABC):
         output_format: OutputFormat = OutputFormat.PROTO_JSON,
         casing: Casing = Casing.CAMEL,
         include_default_values: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Return a dict representation of the message.
 
@@ -979,7 +963,7 @@ class Message(ABC):
             "include_default_values": include_default_values,
         }
 
-        output: Dict[str, Any] = {}
+        output: dict[str, Any] = {}
         field_types = self._type_hints()
         for field_name, meta in self._betterproto.meta_by_field_name.items():
             field_is_repeated = meta.repeated
@@ -1074,7 +1058,7 @@ class Message(ABC):
 
     @classmethod
     def _from_dict_init(cls, mapping: Mapping[str, Any]) -> Mapping[str, Any]:
-        init_kwargs: Dict[str, Any] = {}
+        init_kwargs: dict[str, Any] = {}
         for key, value in mapping.items():
             field_name = safe_snake_case(key)
             try:
@@ -1159,7 +1143,7 @@ class Message(ABC):
 
     def to_json(
         self,
-        indent: Union[None, int, str] = None,
+        indent: None | int | str = None,
         include_default_values: bool = False,
         casing: Casing = Casing.CAMEL,
     ) -> str:
@@ -1194,7 +1178,7 @@ class Message(ABC):
             indent=indent,
         )
 
-    def from_json(self: T, value: Union[str, bytes]) -> T:
+    def from_json(self: T, value: str | bytes) -> T:
         """A helper function to return the message instance from its JSON
         representation. This returns the instance itself and is therefore assignable
         and chainable.
@@ -1324,7 +1308,7 @@ else:
     Message.__bytes__ = bytes_patched
 
 
-def which_one_of(message: Message, group_name: str) -> Tuple[str, Optional[Any]]:
+def which_one_of(message: Message, group_name: str) -> tuple[str, Any | None]:
     """
     Return the name and value of a message's one-of field group.
 
@@ -1350,7 +1334,7 @@ from .internal_lib.google import protobuf as internal_lib_protobuf
 from .internal_lib.google.protobuf import Duration as _Duration, Timestamp as _Timestamp
 
 
-def _get_wrapper(proto_type: str) -> Type:
+def _get_wrapper(proto_type: str) -> type:
     """Get the wrapper message class for a wrapped type."""
 
     # TODO: include ListValue and NullValue?

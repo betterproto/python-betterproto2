@@ -1,7 +1,6 @@
+from collections.abc import Callable
 from typing import (
     Any,
-    Callable,
-    Optional,
 )
 
 import pytest
@@ -39,7 +38,7 @@ async def test_channel_receives_wrapped_type(
 
     await service_method(service, method_param)
 
-    assert channel.requests[0]["response_type"] != Optional[type(value)]
+    assert channel.requests[0]["response_type"] != type(value) | None
     assert channel.requests[0]["response_type"] == type(wrapped_value)
 
 

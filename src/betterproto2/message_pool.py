@@ -19,8 +19,8 @@ class MessagePool:
     """
 
     def __init__(self):
-        self.url_to_type: "dict[str, type[Message]]" = {}
-        self.type_to_url: "dict[type[Message], str]" = {}
+        self.url_to_type: dict[str, type[Message]] = {}
+        self.type_to_url: dict[type[Message], str] = {}
 
     def register_message(self, package_name: str, message_name: str, message_type: "type[Message]") -> None:
         url = get_type_url(package_name, message_name)

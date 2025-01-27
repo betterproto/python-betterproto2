@@ -8,9 +8,6 @@ from types import MappingProxyType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    Optional,
-    Tuple,
 )
 
 if TYPE_CHECKING:
@@ -33,7 +30,7 @@ class EnumType(EnumMeta if TYPE_CHECKING else type):
     _value_map_: Mapping[int, Enum]
     _member_map_: Mapping[str, Enum]
 
-    def __new__(mcs, name: str, bases: Tuple[type, ...], namespace: Dict[str, Any]) -> Self:
+    def __new__(mcs, name: str, bases: tuple[type, ...], namespace: dict[str, Any]) -> Self:
         value_map = {}
         member_map = {}
 
@@ -111,12 +108,12 @@ class Enum(IntEnum if TYPE_CHECKING else int, metaclass=EnumType):
     inherit from this. Emulates `enum.IntEnum`.
     """
 
-    name: Optional[str]
+    name: str | None
     value: int
 
     if not TYPE_CHECKING:
 
-        def __new__(cls, *, name: Optional[str], value: int) -> Self:
+        def __new__(cls, *, name: str | None, value: int) -> Self:
             self = super().__new__(cls, value)
             super().__setattr__(self, "name", name)
             super().__setattr__(self, "value", value)

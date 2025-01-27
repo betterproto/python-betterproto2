@@ -53,7 +53,7 @@ protobuf = "^4"
 cachelib = "^0.10.2"
 
 [tool.ruff]
-extend-exclude = ["tests/output_*", "src/betterproto2/lib"]
+extend-exclude = ["tests/output_*", "src/betterproto2/internal_lib"]
 target-version = "py310"
 line-length = 120
 
@@ -67,6 +67,8 @@ select = [
     "SIM101", # Simplify unnecessary if-else blocks
     "SIM102", # Simplify return or yield statements
     "SIM103", # Simplify list/set/dict comprehensions
+
+    "UP",
 
     "I",
 ]
@@ -96,7 +98,7 @@ sequence = ["_format", "_sort-imports"]
 help = "Format the source code, and sort the imports"
 
 [tool.poe.tasks.check]
-sequence = ["_check-format", "_check-imports"]
+sequence = ["_check-format", "_check-imports", "_check"]
 help = "Check that the source code is formatted and the imports sorted"
 
 [tool.poe.tasks._format]
@@ -114,6 +116,10 @@ help = "Check that the source code is formatted"
 [tool.poe.tasks._check-imports]
 cmd = "ruff check --select I src tests"
 help = "Check that the imports are sorted"
+
+[tool.poe.tasks._check]
+cmd = "ruff check src tests"
+help = "Check the code"
 
 [tool.poe.tasks.docs]
 cmd  = "sphinx-build docs docs/build"

@@ -1,8 +1,7 @@
 from abc import ABC
-from collections.abc import AsyncIterable
+from collections.abc import AsyncIterable, Callable
 from typing import (
     Any,
-    Callable,
 )
 
 import grpclib

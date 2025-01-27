@@ -7,9 +7,6 @@ from collections import namedtuple
 from types import ModuleType
 from typing import (
     Any,
-    Dict,
-    List,
-    Set,
 )
 
 import pytest
@@ -35,8 +32,8 @@ class TestCases:
     def __init__(
         self,
         path,
-        services: Set[str],
-        xfail: Set[str],
+        services: set[str],
+        xfail: set[str],
     ):
         _all = set(get_directories(path)) - {"__pycache__"}
         _services = services
@@ -53,7 +50,7 @@ class TestCases:
         self.messages_with_json = self.apply_xfail_marks(_messages_with_json, xfail)
 
     @staticmethod
-    def apply_xfail_marks(test_set: Set[str], xfail: Set[str]):
+    def apply_xfail_marks(test_set: set[str], xfail: set[str]):
         return [pytest.param(test, marks=pytest.mark.xfail) if test in xfail else test for test in test_set]
 
 
@@ -73,7 +70,7 @@ def module_has_entry_point(module: ModuleType):
     return any(hasattr(module, attr) for attr in ["Test", "TestStub"])
 
 
-def list_replace_nans(items: List) -> List[Any]:
+def list_replace_nans(items: list) -> list[Any]:
     """Replace float("nan") in a list with the string "NaN"
 
     Parameters
@@ -97,7 +94,7 @@ def list_replace_nans(items: List) -> List[Any]:
     return result
 
 
-def dict_replace_nans(input_dict: Dict[Any, Any]) -> Dict[Any, Any]:
+def dict_replace_nans(input_dict: dict[Any, Any]) -> dict[Any, Any]:
     """Replace float("nan") in a dictionary with the string "NaN"
 
     Parameters

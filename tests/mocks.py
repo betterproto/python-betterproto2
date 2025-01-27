@@ -1,5 +1,3 @@
-from typing import List
-
 from grpclib.client import Channel
 
 
@@ -23,7 +21,7 @@ class MockChannel(Channel):
 
 
 class MockStream:
-    def __init__(self, responses: List) -> None:
+    def __init__(self, responses: list) -> None:
         super().__init__()
         self.responses = responses
 

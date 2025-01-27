@@ -4,7 +4,6 @@ import os
 import shutil
 import sys
 from pathlib import Path
-from typing import Set
 
 from tests.util import (
     get_directories,
@@ -28,7 +27,7 @@ def clear_directory(dir_path: Path):
             file_or_directory.unlink()
 
 
-async def generate(whitelist: Set[str], verbose: bool):
+async def generate(whitelist: set[str], verbose: bool):
     test_case_names = set(get_directories(inputs_path)) - {"__pycache__"}
 
     path_whitelist = set()

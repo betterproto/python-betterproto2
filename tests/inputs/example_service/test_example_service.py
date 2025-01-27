@@ -1,6 +1,4 @@
-from typing import (
-    AsyncIterator,
-)
+from collections.abc import AsyncIterator
 
 import pytest
 from grpclib.testing import ChannelFor

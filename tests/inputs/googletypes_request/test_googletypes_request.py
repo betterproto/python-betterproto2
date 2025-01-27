@@ -1,10 +1,10 @@
+from collections.abc import Callable
 from datetime import (
     datetime,
     timedelta,
 )
 from typing import (
     Any,
-    Callable,
 )
 
 import pytest
