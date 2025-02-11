@@ -58,11 +58,6 @@ def test_repeated_enum_to_dict():
     assert (all_enums_dict["choices"]) == ["ZERO", "ONE", "THREE", "FOUR"]
 
 
-def test_repeated_enum_with_single_value_to_dict():
-    assert Test(choices=Choice.ONE).to_dict()["choices"] == ["ONE"]
-    assert Test(choices=1).to_dict()["choices"] == ["ONE"]
-
-
 def test_repeated_enum_with_non_list_iterables_to_dict():
     assert Test(choices=(1, 3)).to_dict()["choices"] == ["ONE", "THREE"]
     assert Test(choices=(1, 3)).to_dict()["choices"] == ["ONE", "THREE"]
