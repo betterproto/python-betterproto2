@@ -559,7 +559,7 @@ def _value_to_dict(
 ) -> tuple[Any, bool]:
     """
     Convert a single item to a Python dictionnary. This function is called on each element of a
-    list, set, etc.
+    list, set, etc by `Message.to_dict`.
 
     Returns:
         A tuple (dict, is_default_value)
@@ -1032,6 +1032,7 @@ class Message(ABC):
                     output[cased_name] = output_value
 
             elif meta.proto_type == TYPE_MAP:
+                assert meta.map_types is not None
                 field_type_k = field_types[field_name].__args__[0]
                 field_type_v = field_types[field_name].__args__[1]
                 output_map = {
@@ -1298,7 +1299,7 @@ except ModuleNotFoundError:
     pass
 else:
 
-    def parse_patched(self, data: bytes) -> T:
+    def parse_patched(self, data: bytes) -> Message:
         betterproto2_rust_codec.deserialize(self, data)
         return self
 
