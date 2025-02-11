@@ -8,7 +8,6 @@ import json
 import math
 import struct
 import sys
-import typing
 import warnings
 from abc import ABC
 from base64 import (
@@ -550,6 +549,58 @@ class OutputFormat(IntEnum):
     PROTO_JSON = 2
 
 
+def _value_to_dict(
+    value: Any,
+    proto_type: str,
+    field_type: type,
+    output_format: OutputFormat,
+    casing: Casing,
+    include_default_values: bool,
+) -> tuple[Any, bool]:
+    """
+    Convert a single item to a Python dictionnary. This function is called on each element of a
+    list, set, etc.
+
+    Returns:
+        A tuple (dict, is_default_value)
+    """
+    kwargs = {  # For recursive calls
+        "output_format": output_format,
+        "casing": casing,
+        "include_default_values": include_default_values,
+    }
+
+    if proto_type == TYPE_MESSAGE:
+        if isinstance(value, datetime):
+            if output_format == OutputFormat.PROTO_JSON:
+                return _Timestamp.timestamp_to_json(value), False
+            return value, False
+
+        if isinstance(value, timedelta):
+            if output_format == OutputFormat.PROTO_JSON:
+                return _Duration.delta_to_json(value), False
+            return value, False
+
+        if not isinstance(value, Message):  # For wrapped types
+            return value, False
+
+        return value.to_dict(**kwargs), False
+
+    if output_format == OutputFormat.PYTHON:
+        return value, not bool(value)
+
+    # PROTO_JSON
+    if proto_type in INT_64_TYPES:
+        return str(value), not bool(value)
+    if proto_type == TYPE_BYTES:
+        return b64encode(value).decode("utf8"), not (bool(value))
+    if proto_type == TYPE_ENUM:
+        return field_type(value).name, not bool(value)
+    if proto_type in (TYPE_FLOAT, TYPE_DOUBLE):
+        return _dump_float(value), not bool(value)
+    return value, not bool(value)
+
+
 class Message(ABC):
     """
     The base class for protobuf messages, all generated messages will inherit from
@@ -965,95 +1016,45 @@ class Message(ABC):
 
         output: dict[str, Any] = {}
         field_types = self._type_hints()
+
         for field_name, meta in self._betterproto.meta_by_field_name.items():
-            field_is_repeated = meta.repeated
             value = getattr(self, field_name)
             cased_name = casing(field_name).rstrip("_")  # type: ignore
-            if meta.proto_type == TYPE_MESSAGE:
-                if isinstance(value, datetime):
-                    if output_format == OutputFormat.PROTO_JSON:
-                        output[cased_name] = _Timestamp.timestamp_to_json(value)
-                    else:
-                        output[cased_name] = value
-                elif isinstance(value, timedelta):
-                    if output_format == OutputFormat.PROTO_JSON:
-                        output[cased_name] = _Duration.delta_to_json(value)
-                    else:
-                        output[cased_name] = value
 
-                elif meta.wraps:
-                    if value is not None or include_default_values:
-                        output[cased_name] = value
-                elif field_is_repeated:
-                    # Convert each item.
-                    if output_format == OutputFormat.PYTHON:
-                        value = [i.to_dict(**kwargs) for i in value]
-                    else:
-                        cls = self._betterproto.cls_by_field[field_name]
-                        if cls == datetime:
-                            value = [_Timestamp.timestamp_to_json(i) for i in value]
-                        elif cls == timedelta:
-                            value = [_Duration.delta_to_json(i) for i in value]
-                        else:
-                            value = [i.to_dict(**kwargs) for i in value]
-                    if value or include_default_values:
-                        output[cased_name] = value
-                elif value is None:
-                    if include_default_values:
-                        output[cased_name] = None
-                else:
-                    output[cased_name] = value.to_dict(**kwargs)
+            if meta.repeated or meta.optional:
+                field_type = field_types[field_name].__args__[0]
+            else:
+                field_type = field_types[field_name]
+
+            if meta.repeated:
+                output_value = [_value_to_dict(v, meta.proto_type, field_type, **kwargs)[0] for v in value]
+                if output_value or include_default_values:
+                    output[cased_name] = output_value
+
             elif meta.proto_type == TYPE_MAP:
-                output_map = {**value}
-                for k in value:
-                    if hasattr(value[k], "to_dict"):
-                        output_map[k] = value[k].to_dict(**kwargs)
+                field_type_k = field_types[field_name].__args__[0]
+                field_type_v = field_types[field_name].__args__[1]
+                output_map = {
+                    _value_to_dict(k, meta.map_types[0], field_type_k, **kwargs)[0]: _value_to_dict(
+                        v, meta.map_types[1], field_type_v, **kwargs
+                    )[0]
+                    for k, v in value.items()
+                }
 
-                if value or include_default_values:
+                if output_map or include_default_values:
                     output[cased_name] = output_map
-            elif value != self._get_field_default(field_name) or include_default_values:
-                if output_format == OutputFormat.PROTO_JSON:
-                    if meta.proto_type in INT_64_TYPES:
-                        if field_is_repeated:
-                            output[cased_name] = [str(n) for n in value]
-                        elif value is None:
-                            if include_default_values:
-                                output[cased_name] = value
-                        else:
-                            output[cased_name] = str(value)
-                    elif meta.proto_type == TYPE_BYTES:
-                        if field_is_repeated:
-                            output[cased_name] = [b64encode(b).decode("utf8") for b in value]
-                        elif value is None and include_default_values:
-                            output[cased_name] = value
-                        else:
-                            output[cased_name] = b64encode(value).decode("utf8")
-                    elif meta.proto_type == TYPE_ENUM:
-                        if field_is_repeated:
-                            enum_class = field_types[field_name].__args__[0]
-                            if isinstance(value, typing.Iterable) and not isinstance(value, str):
-                                output[cased_name] = [enum_class(el).name for el in value]
-                            else:
-                                # transparently upgrade single value to repeated
-                                output[cased_name] = [enum_class(value).name]
-                        elif value is None:
-                            if include_default_values:
-                                output[cased_name] = value
-                        elif meta.optional:
-                            enum_class = field_types[field_name].__args__[0]
-                            output[cased_name] = enum_class(value).name
-                        else:
-                            enum_class = field_types[field_name]  # noqa
-                            output[cased_name] = enum_class(value).name
-                    elif meta.proto_type in (TYPE_FLOAT, TYPE_DOUBLE):
-                        if field_is_repeated:
-                            output[cased_name] = [_dump_float(n) for n in value]
-                        else:
-                            output[cased_name] = _dump_float(value)
-                    else:
-                        output[cased_name] = value
+
+            else:
+                if value is None:
+                    output_value, is_default = None, True
                 else:
-                    output[cased_name] = value
+                    output_value, is_default = _value_to_dict(value, meta.proto_type, field_type, **kwargs)
+                    if meta.optional:
+                        is_default = False
+
+                if include_default_values or not is_default:
+                    output[cased_name] = output_value
+
         return output
 
     @classmethod
