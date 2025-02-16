@@ -30,17 +30,16 @@ class Enum(IntEnum):
     def from_string(cls, name: str) -> Self:
         """Return the value which corresponds to the string name.
 
-        Parameters
-        -----------
-        name: :class:`str`
-            The name of the enum member to get.
+        Parameters:
+            name: The name of the enum member to get.
 
-        Raises
-        -------
-        :exc:`ValueError`
-            The member was not found in the Enum.
+        Raises:
+            ValueError: The member was not found in the Enum.
+
+        Returns:
+            The corresponding value
         """
         try:
-            return cls._member_map_[name]
+            return cls[name]
         except KeyError as e:
             raise ValueError(f"Unknown value {name} for enum {cls.__name__}") from e
