@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package nested2.equipment;
-
-message Weapon {
-
-}
