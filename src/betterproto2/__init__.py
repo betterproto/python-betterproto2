@@ -823,7 +823,7 @@ class Message(ABC):
                 value = value > 0
             elif meta.proto_type == TYPE_ENUM:
                 # Convert enum ints to python enum instances
-                value = self._betterproto.cls_by_field[field_name].try_value(value)
+                value = self._betterproto.cls_by_field[field_name](value)
         elif wire_type in (WIRE_FIXED_32, WIRE_FIXED_64):
             fmt = _pack_fmt(meta.proto_type)
             value = struct.unpack(fmt, value)[0]

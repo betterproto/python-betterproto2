@@ -6,38 +6,25 @@ from typing_extensions import Self
 class Enum(IntEnum):
     @classmethod
     def _missing_(cls, value):
+        # If the given value is not an integer, let the standard enum implementation raise an error
+        if not isinstance(value, int):
+            return None
+
         # Create a new "unknown" instance with the given value.
         obj = int.__new__(cls, value)
         obj._value_ = value
-        obj._name_ = None
+        obj._name_ = ""
         return obj
 
     def __str__(self):
-        if self.name is None:
+        if not self.name:
             return f"{self.__class__.__name__}.~UNKNOWN({self.value})"
         return f"{self.__class__.__name__}.{self.name}"
 
     def __repr__(self):
-        if self.name is None:
+        if not self.name:
             return f"<{self.__class__.__name__}.~UNKNOWN: {self.value}>"
         return super().__repr__()
-
-    @classmethod
-    def try_value(cls, value: int = 0) -> Self:
-        """Return the value which corresponds to the value.
-
-        Parameters
-        -----------
-        value: :class:`int`
-            The value of the enum member to get.
-
-        Returns
-        -------
-        :class:`Enum`
-            The corresponding member or a new instance of the enum if
-            ``value`` isn't actually a member.
-        """
-        return cls(value)
 
     @classmethod
     def from_string(cls, name: str) -> Self:

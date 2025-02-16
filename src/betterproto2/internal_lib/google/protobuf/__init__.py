@@ -436,7 +436,7 @@ class Api(betterproto2.Message):
     Included interfaces. See [Mixin][].
     """
 
-    syntax: "Syntax" = betterproto2.field(7, betterproto2.TYPE_ENUM, default_factory=lambda: Syntax.try_value(0))
+    syntax: "Syntax" = betterproto2.field(7, betterproto2.TYPE_ENUM, default_factory=lambda: Syntax(0))
     """
     The source syntax of the service.
     """
@@ -646,7 +646,7 @@ class Enum(betterproto2.Message):
     The source context.
     """
 
-    syntax: "Syntax" = betterproto2.field(5, betterproto2.TYPE_ENUM, default_factory=lambda: Syntax.try_value(0))
+    syntax: "Syntax" = betterproto2.field(5, betterproto2.TYPE_ENUM, default_factory=lambda: Syntax(0))
     """
     The source syntax.
     """
@@ -691,13 +691,13 @@ class Field(betterproto2.Message):
     A single field of a message type.
     """
 
-    kind: "FieldKind" = betterproto2.field(1, betterproto2.TYPE_ENUM, default_factory=lambda: FieldKind.try_value(0))
+    kind: "FieldKind" = betterproto2.field(1, betterproto2.TYPE_ENUM, default_factory=lambda: FieldKind(0))
     """
     The field type.
     """
 
     cardinality: "FieldCardinality" = betterproto2.field(
-        2, betterproto2.TYPE_ENUM, default_factory=lambda: FieldCardinality.try_value(0)
+        2, betterproto2.TYPE_ENUM, default_factory=lambda: FieldCardinality(0)
     )
     """
     The field cardinality.
@@ -1065,7 +1065,7 @@ class Method(betterproto2.Message):
     Any metadata attached to the method.
     """
 
-    syntax: "Syntax" = betterproto2.field(7, betterproto2.TYPE_ENUM, default_factory=lambda: Syntax.try_value(0))
+    syntax: "Syntax" = betterproto2.field(7, betterproto2.TYPE_ENUM, default_factory=lambda: Syntax(0))
     """
     The source syntax of this method.
     """
@@ -1441,7 +1441,7 @@ class Type(betterproto2.Message):
     The source context.
     """
 
-    syntax: "Syntax" = betterproto2.field(6, betterproto2.TYPE_ENUM, default_factory=lambda: Syntax.try_value(0))
+    syntax: "Syntax" = betterproto2.field(6, betterproto2.TYPE_ENUM, default_factory=lambda: Syntax(0))
     """
     The source syntax.
     """
