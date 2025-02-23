@@ -18,8 +18,8 @@ class Enum(IntEnum):
 
     def __str__(self):
         if not self.name:
-            return f"{self.__class__.__name__}.~UNKNOWN({self.value})"
-        return f"{self.__class__.__name__}.{self.name}"
+            return f"UNKNOWN({self.value})"
+        return self.name
 
     def __repr__(self):
         if not self.name:

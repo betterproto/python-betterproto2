@@ -15,10 +15,10 @@ PURPLE = Colour(4)
 @pytest.mark.parametrize(
     "member, str_value",
     [
-        (Colour.RED, "Colour.RED"),
-        (Colour.GREEN, "Colour.GREEN"),
-        (Colour.BLUE, "Colour.BLUE"),
-        (PURPLE, "Colour.~UNKNOWN(4)"),
+        (Colour.RED, "RED"),
+        (Colour.GREEN, "GREEN"),
+        (Colour.BLUE, "BLUE"),
+        (PURPLE, "UNKNOWN(4)"),
     ],
 )
 def test_str(member: Colour, str_value: str) -> None:
