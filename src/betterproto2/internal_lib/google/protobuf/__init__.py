@@ -630,7 +630,7 @@ class Enum(betterproto2.Message):
     """
 
     enumvalue: "List[EnumValue]" = betterproto2.field(
-        2, betterproto2.TYPE_MESSAGE, wraps=betterproto2.TYPE_ENUM, repeated=True
+        2, betterproto2.TYPE_MESSAGE, repeated=True
     )
     """
     Enum value definitions.
