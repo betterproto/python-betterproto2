@@ -169,7 +169,7 @@ class FieldMetadata:
     # Groups several "one-of" fields together
     group: str | None = None
     # Describes the wrapped type (e.g. when using google.protobuf.BoolValue)
-    wraps: str | None = None
+    wrap: Callable[[], type] | None = None
     # Is the field optional
     optional: bool | None = False
     # Is the field repeated
@@ -188,7 +188,7 @@ def field(
     default_factory: Callable[[], Any] | None = None,
     map_types: tuple[str, str] | None = None,
     group: str | None = None,
-    wraps: str | None = None,
+    wrap: Callable[[], type] | None = None,
     optional: bool = False,
     repeated: bool = False,
 ) -> Any:  # Return type is Any to pass type checking
@@ -223,7 +223,7 @@ def field(
 
     return dataclasses.field(
         default_factory=default_factory,
-        metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, wraps, optional, repeated)},
+        metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, wrap, optional, repeated)},
     )
 
 
@@ -264,7 +264,7 @@ def encode_varint(value: int) -> bytes:
         return stream.getvalue()
 
 
-def _preprocess_single(proto_type: str, wraps: str, value: Any) -> bytes:
+def _preprocess_single(proto_type: str, wrap: Callable[[], type] | None, value: Any) -> bytes:
     """Adjusts values before serialization."""
     if proto_type in (
         TYPE_ENUM,
@@ -283,16 +283,9 @@ def _preprocess_single(proto_type: str, wraps: str, value: Any) -> bytes:
     elif proto_type == TYPE_STRING:
         return value.encode("utf-8")
     elif proto_type == TYPE_MESSAGE:
-        if isinstance(value, datetime):
-            # Convert the `datetime` to a timestamp message.
-            value = _Timestamp.from_datetime(value)
-        elif isinstance(value, timedelta):
-            # Convert the `timedelta` to a duration message.
-            value = _Duration.from_timedelta(value)
-        elif wraps:
-            if value is None:
-                return b""
-            value = _get_wrapper(wraps)(value=value)
+        if wrap is not None:
+            print(wrap())
+            value = wrap().from_wrapped(value)
 
         return bytes(value)
 
@@ -304,10 +297,10 @@ def _serialize_single(
     proto_type: str,
     value: Any,
     *,
-    wraps: str = "",
+    wrap: Callable[[], type] | None = None,
 ) -> bytes:
     """Serializes a single field and value."""
-    value = _preprocess_single(proto_type, wraps, value)
+    value = _preprocess_single(proto_type, wrap, value)
 
     output = bytearray()
     if proto_type in WIRE_VARINT_TYPES:
@@ -601,6 +594,22 @@ def _value_to_dict(
     return value, not bool(value)
 
 
+def _value_from_dict(value: Any, proto_type: str, field_type: type, wrap: Callable[[], type] | None = None) -> Any:
+    # TODO directly pass `meta` when available for maps
+
+    if proto_type == TYPE_MESSAGE:
+        if wrap and not isinstance(value, dict):
+            return value
+
+        msg_cls = wrap() if wrap else field_type
+
+        msg = msg_cls.from_dict(value)
+
+        if wrap:
+            return msg.to_wrapped()
+        return msg
+
+
 class Message(ABC):
     """
     The base class for protobuf messages, all generated messages will inherit from
@@ -733,7 +742,7 @@ class Message(ABC):
                                     meta.number,
                                     meta.proto_type,
                                     item,
-                                    wraps=meta.wraps or "",
+                                    wrap=meta.wrap,
                                 )
                                 # if it's an empty message it still needs to be
                                 # represented as an item in the repeated list
@@ -752,7 +761,7 @@ class Message(ABC):
                             meta.number,
                             meta.proto_type,
                             value,
-                            wraps=meta.wraps or "",
+                            wrap=meta.wrap or None,
                         )
                     )
 
@@ -831,18 +840,15 @@ class Message(ABC):
             if meta.proto_type == TYPE_STRING:
                 value = str(value, "utf-8")
             elif meta.proto_type == TYPE_MESSAGE:
-                cls = self._betterproto.cls_by_field[field_name]
-
-                if cls == datetime:
-                    value = _Timestamp().parse(value).to_datetime()
-                elif cls == timedelta:
-                    value = _Duration().parse(value).to_timedelta()
-                elif meta.wraps:
-                    # This is a Google wrapper value message around a single
-                    # scalar type.
-                    value = _get_wrapper(meta.wraps)().parse(value).value
+                if meta.wrap:
+                    msg_cls = meta.wrap()
                 else:
-                    value = cls().parse(value)
+                    msg_cls = self._betterproto.cls_by_field[field_name]
+
+                value = msg_cls().parse(value)
+
+                if meta.wrap:
+                    value = value.to_wrapped()
             elif meta.proto_type == TYPE_MAP:
                 value = self._betterproto.cls_by_field[field_name]().parse(value)
 
@@ -1060,32 +1066,44 @@ class Message(ABC):
 
     @classmethod
     def _from_dict_init(cls, mapping: Mapping[str, Any]) -> Mapping[str, Any]:
+        # TODO restructure using other function
         init_kwargs: dict[str, Any] = {}
         for key, value in mapping.items():
             field_name = safe_snake_case(key)
             try:
                 meta = cls._betterproto.meta_by_field_name[field_name]
             except KeyError:
-                continue
+                continue  # TODO is it a problem?
             if value is None:
                 continue
 
             if meta.proto_type == TYPE_MESSAGE:
-                sub_cls = cls._betterproto.cls_by_field[field_name]
-                if sub_cls == datetime:
-                    value = [isoparse(item) for item in value] if isinstance(value, list) else isoparse(value)
-                elif sub_cls == timedelta:
-                    value = (
-                        [timedelta(seconds=float(item[:-1])) for item in value]
-                        if isinstance(value, list)
-                        else timedelta(seconds=float(value[:-1]))
+                # sub_cls = cls._betterproto.cls_by_field[field_name]
+                # if sub_cls == datetime:
+                #     value = [isoparse(item) for item in value] if isinstance(value, list) else isoparse(value)
+                # elif sub_cls == timedelta:
+                #     value = (
+                #         [timedelta(seconds=float(item[:-1])) for item in value]
+                #         if isinstance(value, list)
+                #         else timedelta(seconds=float(value[:-1]))
+                #     )
+                # elif not meta.wraps:
+                #     value = (
+                #         [sub_cls.from_dict(item) for item in value]
+                #         if isinstance(value, list)
+                #         else sub_cls.from_dict(value)
+                #     )
+
+                if meta.repeated:
+                    value = [
+                        _value_from_dict(item, meta.proto_type, cls._betterproto.cls_by_field[field_name], meta.wrap)
+                        for item in value
+                    ]
+                else:
+                    value = _value_from_dict(
+                        value, meta.proto_type, cls._betterproto.cls_by_field[field_name], meta.wrap
                     )
-                elif not meta.wraps:
-                    value = (
-                        [sub_cls.from_dict(item) for item in value]
-                        if isinstance(value, list)
-                        else sub_cls.from_dict(value)
-                    )
+
             elif meta.map_types and meta.map_types[1] == TYPE_MESSAGE:
                 sub_cls = cls._betterproto.cls_by_field[f"{field_name}.value"]
                 value = {k: sub_cls.from_dict(v) for k, v in value.items()}
@@ -1329,26 +1347,3 @@ def which_one_of(message: Message, group_name: str) -> tuple[str, Any | None]:
             field_name, value = field.name, v
 
     return field_name, value
-
-
-# Avoid circular imports
-from .internal_lib.google import protobuf as internal_lib_protobuf
-from .internal_lib.google.protobuf import Duration as _Duration, Timestamp as _Timestamp
-
-
-def _get_wrapper(proto_type: str) -> type:
-    """Get the wrapper message class for a wrapped type."""
-
-    # TODO: include ListValue and NullValue?
-    return {
-        TYPE_BOOL: internal_lib_protobuf.BoolValue,
-        TYPE_BYTES: internal_lib_protobuf.BytesValue,
-        TYPE_DOUBLE: internal_lib_protobuf.DoubleValue,
-        TYPE_FLOAT: internal_lib_protobuf.FloatValue,
-        TYPE_ENUM: internal_lib_protobuf.EnumValue,
-        TYPE_INT32: internal_lib_protobuf.Int32Value,
-        TYPE_INT64: internal_lib_protobuf.Int64Value,
-        TYPE_STRING: internal_lib_protobuf.StringValue,
-        TYPE_UINT32: internal_lib_protobuf.UInt32Value,
-        TYPE_UINT64: internal_lib_protobuf.UInt64Value,
-    }[proto_type]
