@@ -36,3 +36,12 @@ def test_documentation() -> None:
 
     check(ServiceStub.__doc__, "service")
     check(ServiceStub.get.__doc__, "method")
+
+
+def test_escaping() -> None:
+    from .output_betterproto.documentation import ComplexDocumentation
+
+    ComplexDocumentation.__doc__ == """
+    A comment with backslashes \\ and triple quotes \"\"\"
+    Simple quotes are not escaped "
+    """
