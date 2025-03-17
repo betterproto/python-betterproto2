@@ -11,7 +11,6 @@ keywords = ["protobuf", "gRPC"]
 license = "MIT"
 requires-python = ">=3.10,<4.0"
 dynamic = ["dependencies"]
-dependencies = ["grpcio (>=1.71.0,<2.0.0)"]
 
 [project.urls]
 Documentation = "https://betterproto.github.io/python-betterproto2/"
@@ -19,8 +18,9 @@ Repository = "https://github.com/betterproto/python-betterproto2"
 
 [project.optional-dependencies]
 rust-codec = ["betterproto2-rust-codec"]
+grpc-sync = ["grpcio"]
 grpc-async = ["grpclib"]
-all = ["betterproto2-rust-codec", "grpclib"]
+all = ["betterproto2-rust-codec", "grpclib", "grpcio"]
 
 [tool.poetry]
 packages = [
@@ -29,6 +29,7 @@ packages = [
 
 [tool.poetry.dependencies]
 grpclib = { version = "^0.4.1", optional = true }
+grpcio = { version = "^1.71.0", optional = true }
 python-dateutil = "^2.8"
 typing-extensions = "^4.7.1"
 betterproto2-rust-codec = { version = "^0.1.2", optional = true }

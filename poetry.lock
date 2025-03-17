@@ -622,7 +622,7 @@ colorama = ">=0.4"
 name = "grpcio"
 version = "1.71.0"
 description = "HTTP/2-based RPC framework"
-optional = false
+optional = true
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
@@ -2626,11 +2626,12 @@ files = [
 ]
 
 [extras]
-all = ["betterproto2-rust-codec", "grpclib"]
+all = ["betterproto2-rust-codec", "grpcio", "grpclib"]
 grpc-async = ["grpclib"]
+grpc-sync = ["grpcio"]
 rust-codec = ["betterproto2-rust-codec"]
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "ec935e86d8ba028bdbb6ac7518cd07d54c68bcd6aec19f5f30d7d507fd5dcff8"
+content-hash = "77b4e06022435f8a338a541d03d5a7e450716bf8bd8fd1cac0a7d5e4853e2e7f"
