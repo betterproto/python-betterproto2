@@ -20,7 +20,9 @@ Repository = "https://github.com/betterproto/python-betterproto2"
 rust-codec = ["betterproto2-rust-codec"]
 grpc-sync = ["grpcio"]
 grpc-async = ["grpclib"]
-all = ["betterproto2-rust-codec", "grpclib", "grpcio"]
+
+# betterproto2-rust-codec is not included because still experimental
+all = ["grpclib", "grpcio"]
 
 [tool.poetry]
 packages = [

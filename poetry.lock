@@ -2626,7 +2626,7 @@ files = [
 ]
 
 [extras]
-all = ["betterproto2-rust-codec", "grpcio", "grpclib"]
+all = ["grpcio", "grpclib"]
 grpc-async = ["grpclib"]
 grpc-sync = ["grpcio"]
 rust-codec = ["betterproto2-rust-codec"]
@@ -2634,4 +2634,4 @@ rust-codec = ["betterproto2-rust-codec"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "77b4e06022435f8a338a541d03d5a7e450716bf8bd8fd1cac0a7d5e4853e2e7f"
+content-hash = "760b3debb0353238037a2c1479c1d3da9204420660a1569813d16c348c6eeec5"
