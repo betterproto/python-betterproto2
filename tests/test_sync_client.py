@@ -3,7 +3,6 @@ import threading
 from collections.abc import AsyncIterator
 
 import grpc
-import grpclib
 import pytest
 from grpclib.server import Server
 
@@ -24,10 +23,14 @@ class SimpleService(SimpleServiceBase):
             yield Response(message=f"Hello {message.value} {i}")
 
     async def get_stream_unary(self, messages: "AsyncIterator[Request]") -> "Response":
-        raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
+        s = 0
+        async for m in messages:
+            s += m.value
+        return Response(message=f"Hello {s}")
 
     async def get_stream_stream(self, messages: "AsyncIterator[Request]") -> "AsyncIterator[Response]":
-        raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
+        async for message in messages:
+            yield Response(message=f"Hello {message.value}")
 
 
 @pytest.mark.asyncio
@@ -56,6 +59,12 @@ async def test_sync_client():
 
         response = client.get_unary_stream(Request(value=42))
         assert [r.message for r in response] == [f"Hello 42 {i}" for i in range(5)]
+
+        response = client.get_stream_unary([Request(value=i) for i in range(5)])
+        assert response.message == "Hello 10"
+
+        response = client.get_stream_stream([Request(value=i) for i in range(5)])
+        assert [r.message for r in response] == [f"Hello {i}" for i in range(5)]
 
     # Create an async client
     # client = SimpleServiceStub(Channel(host="127.0.0.1", port=1234))
