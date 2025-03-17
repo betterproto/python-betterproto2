@@ -20,8 +20,8 @@ class SimpleService(SimpleServiceBase):
         return Response(message=f"Hello {message.value}")
 
     async def get_unary_stream(self, message: "Request") -> "AsyncIterator[Response]":
-        async for _ in range(5):
-            yield Response(message=f"Hello {message.value}")
+        for i in range(5):
+            yield Response(message=f"Hello {message.value} {i}")
 
     async def get_stream_unary(self, messages: "AsyncIterator[Request]") -> "Response":
         raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
@@ -50,8 +50,12 @@ async def test_sync_client():
     # Create a sync client
     with grpc.insecure_channel("localhost:1234") as channel:
         client = SimpleServiceSyncStub(channel)
+
         response = client.get_unary_unary(Request(value=42))
         assert response.message == "Hello 42"
+
+        response = client.get_unary_stream(Request(value=42))
+        assert [r.message for r in response] == [f"Hello 42 {i}" for i in range(5)]
 
     # Create an async client
     # client = SimpleServiceStub(Channel(host="127.0.0.1", port=1234))
