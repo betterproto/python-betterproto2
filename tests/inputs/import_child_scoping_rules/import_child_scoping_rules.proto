@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package import_child_scoping_rules;
-
-import "package.proto";
-
-message Test {
-    aaa.bbb.Msg msg = 1;
-}
