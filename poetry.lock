@@ -2627,11 +2627,11 @@ files = [
 
 [extras]
 all = ["grpcio", "grpclib"]
-grpc-async = ["grpclib"]
-grpc-sync = ["grpcio"]
+grpcio = ["grpcio"]
+grpclib = ["grpclib"]
 rust-codec = ["betterproto2-rust-codec"]
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "760b3debb0353238037a2c1479c1d3da9204420660a1569813d16c348c6eeec5"
+content-hash = "1c5b52976f63dccc304180ac52ea3d70bc0d584342cb29fd4d7bdc161b52ddf5"
