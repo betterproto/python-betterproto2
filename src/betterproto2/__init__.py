@@ -168,8 +168,12 @@ class FieldMetadata:
     map_types: tuple[str, str] | None = None
     # Groups several "one-of" fields together
     group: str | None = None
-    # Describes the wrapped type (e.g. when using google.protobuf.BoolValue)
+
+    # When a message is wrapped, the wrap type (bool, datetime, ...)
     wrap: Callable[[], type] | None = None
+    # When a message is wrapped, the original message (BoolValue, Timestamp, ...)
+    unwrap: Callable[[], type] | None = None
+
     # Is the field optional
     optional: bool | None = False
     # Is the field repeated
@@ -189,6 +193,7 @@ def field(
     map_types: tuple[str, str] | None = None,
     group: str | None = None,
     wrap: Callable[[], type] | None = None,
+    unwrap: Callable[[], type] | None = None,
     optional: bool = False,
     repeated: bool = False,
 ) -> Any:  # Return type is Any to pass type checking
@@ -223,7 +228,7 @@ def field(
 
     return dataclasses.field(
         default_factory=default_factory,
-        metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, wrap, optional, repeated)},
+        metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, wrap, unwrap, optional, repeated)},
     )
 
 
@@ -594,18 +599,15 @@ def _value_to_dict(
     return value, not bool(value)
 
 
-def _value_from_dict(value: Any, proto_type: str, field_type: type, wrap: Callable[[], type] | None = None) -> Any:
+def _value_from_dict(value: Any, proto_type: str, field_type: type, unwrap: Callable[[], type] | None = None) -> Any:
     # TODO directly pass `meta` when available for maps
 
     if proto_type == TYPE_MESSAGE:
-        if wrap and not isinstance(value, dict):
-            return value
-
-        msg_cls = wrap() if wrap else field_type
+        msg_cls = unwrap() if unwrap else field_type
 
         msg = msg_cls.from_dict(value)
 
-        if wrap:
+        if unwrap:
             return msg.to_wrapped()
         return msg
 
@@ -1096,12 +1098,12 @@ class Message(ABC):
 
                 if meta.repeated:
                     value = [
-                        _value_from_dict(item, meta.proto_type, cls._betterproto.cls_by_field[field_name], meta.wrap)
+                        _value_from_dict(item, meta.proto_type, cls._betterproto.cls_by_field[field_name], meta.unwrap)
                         for item in value
                     ]
                 else:
                     value = _value_from_dict(
-                        value, meta.proto_type, cls._betterproto.cls_by_field[field_name], meta.wrap
+                        value, meta.proto_type, cls._betterproto.cls_by_field[field_name], meta.unwrap
                     )
 
             elif meta.map_types and meta.map_types[1] == TYPE_MESSAGE:
