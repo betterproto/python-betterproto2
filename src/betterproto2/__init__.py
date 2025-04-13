@@ -1051,22 +1051,6 @@ class Message(ABC):
                 continue
 
             if meta.proto_type == TYPE_MESSAGE:
-                # sub_cls = cls._betterproto.cls_by_field[field_name]
-                # if sub_cls == datetime:
-                #     value = [isoparse(item) for item in value] if isinstance(value, list) else isoparse(value)
-                # elif sub_cls == timedelta:
-                #     value = (
-                #         [timedelta(seconds=float(item[:-1])) for item in value]
-                #         if isinstance(value, list)
-                #         else timedelta(seconds=float(value[:-1]))
-                #     )
-                # elif not meta.wraps:
-                #     value = (
-                #         [sub_cls.from_dict(item) for item in value]
-                #         if isinstance(value, list)
-                #         else sub_cls.from_dict(value)
-                #     )
-
                 if meta.repeated:
                     value = [
                         _value_from_dict(item, meta.proto_type, cls._betterproto.cls_by_field[field_name], meta.unwrap)
