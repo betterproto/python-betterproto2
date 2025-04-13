@@ -27,3 +27,18 @@
 #     assert _Timestamp.from_datetime(dt).to_datetime() == dt
 
 # TODO add back the test
+
+import datetime
+
+import pytest
+
+from tests.output_betterproto.google.protobuf import Timestamp
+
+
+def test_invalid_datetime():
+    """
+    Make sure that a ValueError is raised when trying to convert a naive datetime
+    to a protobuf timestamp message.
+    """
+    with pytest.raises(ValueError):
+        Timestamp.from_datetime(datetime.datetime.now())
