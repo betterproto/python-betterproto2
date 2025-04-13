@@ -1,19 +1,12 @@
 import asyncio
 import threading
-import time
-from asyncio import Event
 from collections.abc import AsyncIterator
 
 import grpc
 import pytest
 from grpclib.server import Server
 
-from tests.output_betterproto.simple_service import (
-    Request,
-    Response,
-    SimpleServiceBase,
-    SimpleServiceSyncStub,
-)
+from tests.output_betterproto.simple_service import Request, Response, SimpleServiceBase, SimpleServiceSyncStub
 
 
 class SimpleService(SimpleServiceBase):
@@ -37,13 +30,15 @@ class SimpleService(SimpleServiceBase):
 
 @pytest.mark.asyncio
 async def test_sync_client():
-    # The event will be set to close the server
-    close_server_event = Event()  # TODO the event is used in two different asyncio loops
+    start_server_event = threading.Event()
+    close_server_event = asyncio.Event()
 
     def start_server():
         async def run_server():
             server = Server([SimpleService()])
             await server.start("127.0.0.1", 1234)
+            start_server_event.set()
+
             await close_server_event.wait()
             server.close()
 
@@ -56,9 +51,9 @@ async def test_sync_client():
     server_thread.start()
 
     # Create a sync client
-    with grpc.insecure_channel("localhost:1234") as channel:
-        time.sleep(1)  # TODO not a good solution
+    start_server_event.wait()
 
+    with grpc.insecure_channel("localhost:1234") as channel:
         client = SimpleServiceSyncStub(channel)
 
         response = client.get_unary_unary(Request(value=42))
