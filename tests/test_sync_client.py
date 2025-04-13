@@ -1,5 +1,6 @@
 import asyncio
 import threading
+import time
 from asyncio import Event
 from collections.abc import AsyncIterator
 
@@ -37,7 +38,7 @@ class SimpleService(SimpleServiceBase):
 @pytest.mark.asyncio
 async def test_sync_client():
     # The event will be set to close the server
-    close_server_event = Event()
+    close_server_event = Event()  # TODO the event is used in two different asyncio loops
 
     def start_server():
         async def run_server():
@@ -56,6 +57,8 @@ async def test_sync_client():
 
     # Create a sync client
     with grpc.insecure_channel("localhost:1234") as channel:
+        time.sleep(1)  # TODO not a good solution
+
         client = SimpleServiceSyncStub(channel)
 
         response = client.get_unary_unary(Request(value=42))
