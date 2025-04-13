@@ -548,7 +548,7 @@ def _value_to_dict(
 
     if proto_type == TYPE_MESSAGE:
         if unwrapped_type is not None and output_format == OutputFormat.PYTHON:
-            return value
+            return value, False
 
         if unwrapped_type is not None:
             value = unwrapped_type().from_wrapped(value)
