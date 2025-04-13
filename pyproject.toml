@@ -90,6 +90,7 @@ addopts = "-p no:warnings"
 
 # Dev workflow tasks
 [tool.poe.tasks.get-local-compiled-tests]
+# task useful for local development. Copies the compiled test files from the compiler folder to the tests folder
 shell = "rm -r tests/output_* && cp -r ../python-betterproto2-compiler/tests/output_* tests"
 
 [tool.poe.tasks.test]
