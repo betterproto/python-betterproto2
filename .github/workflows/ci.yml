@@ -13,13 +13,14 @@ permissions:
 
 jobs:
   tests:
-    name: ${{ matrix.os }} / ${{ matrix.python-version }}
+    name: ${{ matrix.os }} / ${{ matrix.python-version }} / Rust codec ${{ matrix.rust-codec }}
     runs-on: ${{ matrix.os }}-latest
     strategy:
       fail-fast: false
       matrix:
         os: [Ubuntu, MacOS, Windows]
         python-version: ['3.10', '3.11', '3.12', '3.13']
+        rust-codec: [enabled, disabled]
     steps:
       - uses: actions/checkout@v4
 
@@ -48,7 +49,7 @@ jobs:
         id: cache
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ steps.full-python-version.outputs.version }}-${{ hashFiles('**/poetry.lock') }}
+          key: venv-${{ runner.os }}-${{ steps.full-python-version.outputs.version }}-rust-codec-${{ matrix.rust-codec }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Ensure cache is healthy
         if: steps.cache.outputs.cache-hit == 'true'
@@ -56,8 +57,14 @@ jobs:
         run: poetry run pip --version >/dev/null 2>&1 || rm -rf .venv
 
       - name: Install dependencies
+        if: matrix.rust-codec == 'disabled'
         shell: bash
         run: poetry install -E all
+
+      - name: Install dependencies with the Rust codec
+        if: matrix.rust-codec == 'enabled'
+        shell: bash
+        run: poetry install -E all -E rust-codec
 
       - name: Download compiled test files
         shell: bash
