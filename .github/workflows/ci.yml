@@ -73,11 +73,3 @@ jobs:
       - name: Execute test suite
         shell: bash
         run: poetry run poe test
-
-      # - name: Install dependencies with the Rust codec
-      #   shell: bash
-      #   run: poetry install -E all -E rust-codec
-
-      # - name: Execute test suite with the Rust codec
-      #   shell: bash
-      #   run: poetry run poe test
