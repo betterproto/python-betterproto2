@@ -246,7 +246,7 @@ def encode_varint(value: int) -> bytes:
         return stream.getvalue()
 
 
-def _preprocess_single(proto_type: str, wrap: Callable[[], type] | None, value: Any) -> bytes:
+def _preprocess_single(proto_type: str, unwrap: Callable[[], type] | None, value: Any) -> bytes:
     """Adjusts values before serialization."""
     if proto_type in (
         TYPE_ENUM,
@@ -265,9 +265,8 @@ def _preprocess_single(proto_type: str, wrap: Callable[[], type] | None, value: 
     elif proto_type == TYPE_STRING:
         return value.encode("utf-8")
     elif proto_type == TYPE_MESSAGE:
-        if wrap is not None:
-            print(wrap())
-            value = wrap().from_wrapped(value)
+        if unwrap is not None:
+            value = unwrap().from_wrapped(value)
 
         return bytes(value)
 
@@ -279,10 +278,10 @@ def _serialize_single(
     proto_type: str,
     value: Any,
     *,
-    wrap: Callable[[], type] | None = None,
+    unwrap: Callable[[], type] | None = None,
 ) -> bytes:
     """Serializes a single field and value."""
-    value = _preprocess_single(proto_type, wrap, value)
+    value = _preprocess_single(proto_type, unwrap, value)
 
     output = bytearray()
     if proto_type in WIRE_VARINT_TYPES:
@@ -706,7 +705,7 @@ class Message(ABC):
                         # treat it like a field of raw bytes.
                         buf = bytearray()
                         for item in value:
-                            buf += _preprocess_single(meta.proto_type, "", item)
+                            buf += _preprocess_single(meta.proto_type, None, item)
                         stream.write(_serialize_single(meta.number, TYPE_BYTES, buf))
                     else:
                         for item in value:
@@ -715,7 +714,7 @@ class Message(ABC):
                                     meta.number,
                                     meta.proto_type,
                                     item,
-                                    wrap=meta.wrap,
+                                    unwrap=meta.unwrap,
                                 )
                                 # if it's an empty message it still needs to be
                                 # represented as an item in the repeated list
@@ -734,7 +733,7 @@ class Message(ABC):
                             meta.number,
                             meta.proto_type,
                             value,
-                            wrap=meta.wrap or None,  # TODO why or None?
+                            unwrap=meta.unwrap,
                         )
                     )
 
@@ -813,8 +812,8 @@ class Message(ABC):
             if meta.proto_type == TYPE_STRING:
                 value = str(value, "utf-8")
             elif meta.proto_type == TYPE_MESSAGE:
-                if meta.wrap:
-                    msg_cls = meta.wrap()
+                if meta.unwrap:
+                    msg_cls = meta.unwrap()
                 else:
                     msg_cls = self._betterproto.cls_by_field[field_name]
 
