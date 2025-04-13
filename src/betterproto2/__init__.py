@@ -10,26 +10,14 @@ import struct
 import sys
 import warnings
 from abc import ABC
-from base64 import (
-    b64decode,
-    b64encode,
-)
+from base64 import b64decode, b64encode
 from collections.abc import Callable, Generator, Iterable, Mapping
 from copy import deepcopy
-from datetime import (
-    datetime,
-    timedelta,
-    timezone,
-)
+from datetime import datetime, timedelta, timezone
 from enum import IntEnum
 from io import BytesIO
 from itertools import count
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    ClassVar,
-    get_type_hints,
-)
+from typing import TYPE_CHECKING, Any, ClassVar, get_type_hints
 
 from typing_extensions import Self
 
@@ -38,23 +26,13 @@ from betterproto2.utils import unwrap
 
 from ._types import T
 from ._version import __version__, check_compiler_version
-from .casing import (
-    camel_case,
-    safe_snake_case,
-    snake_case,
-)
+from .casing import camel_case, safe_snake_case, snake_case
 from .enum import Enum as Enum
 from .grpc.grpclib_client import ServiceStub as ServiceStub
-from .utils import (
-    classproperty,
-    hybridmethod,
-)
+from .utils import classproperty, hybridmethod
 
 if TYPE_CHECKING:
-    from _typeshed import (
-        SupportsRead,
-        SupportsWrite,
-    )
+    from _typeshed import SupportsRead, SupportsWrite
 
 # Proto 3 data types
 TYPE_ENUM = "enum"
