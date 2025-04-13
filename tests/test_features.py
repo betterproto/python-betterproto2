@@ -2,6 +2,7 @@ import json
 from datetime import (
     datetime,
     timedelta,
+    timezone,
 )
 from inspect import (
     Parameter,
@@ -156,10 +157,12 @@ def test_optional_datetime_to_dict():
     # Check dict serialization
     assert OptionalDatetimeMsg().to_dict() == {}
     assert OptionalDatetimeMsg().to_dict(include_default_values=True) == {"field": None}
-    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_dict() == {"field": "2020-01-01T00:00:00Z"}
-    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1)).to_dict(include_default_values=True) == {
+    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1, tzinfo=timezone.utc)).to_dict() == {
         "field": "2020-01-01T00:00:00Z"
     }
+    assert OptionalDatetimeMsg(field=datetime(2020, 1, 1, tzinfo=timezone.utc)).to_dict(
+        include_default_values=True
+    ) == {"field": "2020-01-01T00:00:00Z"}
 
     # Check pydict serialization
     assert OptionalDatetimeMsg().to_dict(output_format=OutputFormat.PYTHON) == {}

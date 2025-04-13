@@ -31,7 +31,6 @@ from typing import (
     get_type_hints,
 )
 
-from dateutil.parser import isoparse
 from typing_extensions import Self
 
 from betterproto2.message_pool import MessagePool
@@ -551,6 +550,7 @@ def _value_to_dict(
     value: Any,
     proto_type: str,
     field_type: type,
+    unwrapped_type: Callable[[], type] | None,
     output_format: OutputFormat,
     casing: Casing,
     include_default_values: bool,
@@ -569,18 +569,11 @@ def _value_to_dict(
     }
 
     if proto_type == TYPE_MESSAGE:
-        if isinstance(value, datetime):
-            if output_format == OutputFormat.PROTO_JSON:
-                return _Timestamp.timestamp_to_json(value), False
-            return value, False
+        if unwrapped_type is not None and output_format == OutputFormat.PYTHON:
+            return value
 
-        if isinstance(value, timedelta):
-            if output_format == OutputFormat.PROTO_JSON:
-                return _Duration.delta_to_json(value), False
-            return value, False
-
-        if not isinstance(value, Message):  # For wrapped types
-            return value, False
+        if unwrapped_type is not None:
+            value = unwrapped_type().from_wrapped(value)
 
         return value.to_dict(**kwargs), False
 
@@ -763,7 +756,7 @@ class Message(ABC):
                             meta.number,
                             meta.proto_type,
                             value,
-                            wrap=meta.wrap or None,
+                            wrap=meta.wrap or None,  # TODO why or None?
                         )
                     )
 
@@ -1035,7 +1028,7 @@ class Message(ABC):
                 field_type = field_types[field_name]
 
             if meta.repeated:
-                output_value = [_value_to_dict(v, meta.proto_type, field_type, **kwargs)[0] for v in value]
+                output_value = [_value_to_dict(v, meta.proto_type, field_type, meta.unwrap, **kwargs)[0] for v in value]
                 if output_value or include_default_values:
                     output[cased_name] = output_value
 
@@ -1043,9 +1036,10 @@ class Message(ABC):
                 assert meta.map_types is not None
                 field_type_k = field_types[field_name].__args__[0]
                 field_type_v = field_types[field_name].__args__[1]
+                # TODO wrapped types don't work in maps
                 output_map = {
-                    _value_to_dict(k, meta.map_types[0], field_type_k, **kwargs)[0]: _value_to_dict(
-                        v, meta.map_types[1], field_type_v, **kwargs
+                    _value_to_dict(k, meta.map_types[0], field_type_k, None, **kwargs)[0]: _value_to_dict(
+                        v, meta.map_types[1], field_type_v, None, **kwargs
                     )[0]
                     for k, v in value.items()
                 }
@@ -1057,7 +1051,7 @@ class Message(ABC):
                 if value is None:
                     output_value, is_default = None, True
                 else:
-                    output_value, is_default = _value_to_dict(value, meta.proto_type, field_type, **kwargs)
+                    output_value, is_default = _value_to_dict(value, meta.proto_type, field_type, meta.unwrap, **kwargs)
                     if meta.optional:
                         is_default = False
 
