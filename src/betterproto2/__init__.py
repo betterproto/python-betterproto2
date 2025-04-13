@@ -146,8 +146,6 @@ class FieldMetadata:
     # Groups several "one-of" fields together
     group: str | None = None
 
-    # When a message is wrapped, the wrap type (bool, datetime, ...)
-    wrap: Callable[[], type] | None = None
     # When a message is wrapped, the original message (BoolValue, Timestamp, ...)
     unwrap: Callable[[], type] | None = None
 
@@ -169,7 +167,6 @@ def field(
     default_factory: Callable[[], Any] | None = None,
     map_types: tuple[str, str] | None = None,
     group: str | None = None,
-    wrap: Callable[[], type] | None = None,
     unwrap: Callable[[], type] | None = None,
     optional: bool = False,
     repeated: bool = False,
@@ -205,7 +202,7 @@ def field(
 
     return dataclasses.field(
         default_factory=default_factory,
-        metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, wrap, unwrap, optional, repeated)},
+        metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, unwrap, optional, repeated)},
     )
 
 
@@ -819,7 +816,7 @@ class Message(ABC):
 
                 value = msg_cls().parse(value)
 
-                if meta.wrap:
+                if meta.unwrap:
                     value = value.to_wrapped()
             elif meta.proto_type == TYPE_MAP:
                 value = self._betterproto.cls_by_field[field_name]().parse(value)
@@ -1208,7 +1205,7 @@ class Message(ABC):
                         v = value[key]
                     elif issubclass(cls, timedelta):
                         v = value[key]
-                    elif meta.wraps:
+                    elif meta.unwraps:
                         v = value[key]
                     else:
                         v = cls().from_pydict(value[key])
