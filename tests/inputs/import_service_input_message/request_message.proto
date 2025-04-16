@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package import_service_input_message;
-
-message RequestMessage {
-    int32 argument = 1;
-}
