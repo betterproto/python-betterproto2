@@ -1102,8 +1102,8 @@ class Message(ABC):
         :class:`Message`
             The initialized message.
         """
-        if not isinstance(value, Mapping) and hasattr(cls, "from_wrapped") and callable(cls.from_wrapped):
-            return cls.from_wrapped(value)
+        if not isinstance(value, Mapping) and hasattr(cls, "from_wrapped"):  # type: ignore
+            return cls.from_wrapped(value)  # type: ignore
 
         return cls(**cls._from_dict_init(value))
 
