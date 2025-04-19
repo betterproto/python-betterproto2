@@ -44,7 +44,7 @@ jobs:
 
     - name: Install dependencies
       shell: bash
-      run: poetry install
+      run: poetry install -E all
 
     - uses: pre-commit/action@v3.0.1
 
