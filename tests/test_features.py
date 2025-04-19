@@ -246,42 +246,25 @@ def test_to_dict_default_values():
         "someDefaultBool": False,
     }
 
-    test = MsgB().from_pydict(
-        {
-            "someInt": 2,
-            "someDouble": 1.2,
-            "someStr": "hello",
-            "someBool": True,
-            "someDefaultInt": 0,
-            "someDefaultDouble": 0.0,
-            "someDefaultStr": "",
-            "someDefaultBool": False,
-        }
-    )
-
-    assert test.to_dict(include_default_values=True, output_format=OutputFormat.PYTHON) == {
-        "someInt": 2,
-        "someDouble": 1.2,
-        "someStr": "hello",
-        "someBool": True,
-        "someDefaultInt": 0,
-        "someDefaultDouble": 0.0,
-        "someDefaultStr": "",
-        "someDefaultBool": False,
-    }
-
 
 def test_to_dict_datetime_values():
     from tests.output_betterproto.features import TimeMsg
 
-    test = TimeMsg().from_dict({"timestamp": "2020-01-01T00:00:00Z", "duration": "86400s"})
+    test = TimeMsg.from_dict({"timestamp": "2020-01-01T00:00:00Z", "duration": "86400s"})
     assert test.to_dict() == {"timestamp": "2020-01-01T00:00:00Z", "duration": "86400s"}
 
-    test = TimeMsg().from_pydict({"timestamp": datetime(year=2020, month=1, day=1), "duration": timedelta(days=1)})
+    test = TimeMsg.from_dict(
+        {"timestamp": datetime(year=2020, month=1, day=1, tzinfo=timezone.utc), "duration": timedelta(days=1)}
+    )
     assert test.to_dict(output_format=OutputFormat.PYTHON) == {
-        "timestamp": datetime(year=2020, month=1, day=1),
+        "timestamp": datetime(year=2020, month=1, day=1, tzinfo=timezone.utc),
         "duration": timedelta(days=1),
     }
+    assert test.to_dict(output_format=OutputFormat.PROTO_JSON) == {
+        "timestamp": "2020-01-01T00:00:00Z",
+        "duration": "86400s",
+    }
+    bytes(test)
 
 
 def test_oneof_default_value_set_causes_writes_wire():

@@ -450,7 +450,6 @@ def parse_fields(value: bytes) -> Generator[ParsedField, None, None]:
 
 class ProtoClassMetadata:
     __slots__ = (
-        "oneof_group_by_field",
         "oneof_field_by_group",
         "default_gen",
         "cls_by_field",
@@ -459,7 +458,6 @@ class ProtoClassMetadata:
         "sorted_field_names",
     )
 
-    oneof_group_by_field: dict[str, str]  # TODO delete (still used in the rust codec for now)
     oneof_field_by_group: dict[str, set[dataclasses.Field]]
     field_name_by_number: dict[int, str]
     meta_by_field_name: dict[str, FieldMetadata]
@@ -468,7 +466,6 @@ class ProtoClassMetadata:
     cls_by_field: dict[str, type]
 
     def __init__(self, cls: type[Message]):
-        by_field = {}
         by_group: dict[str, set] = {}
         by_field_name = {}
         by_field_number = {}
@@ -479,15 +476,11 @@ class ProtoClassMetadata:
             meta = FieldMetadata.get(field)
 
             if meta.group:
-                # This is part of a one-of group.
-                by_field[field.name] = meta.group
-
                 by_group.setdefault(meta.group, set()).add(field)
 
             by_field_name[field.name] = meta
             by_field_number[meta.number] = field.name
 
-        self.oneof_group_by_field = by_field
         self.oneof_field_by_group = by_group
         self.field_name_by_number = by_field_number
         self.meta_by_field_name = by_field_name
@@ -588,15 +581,15 @@ def _value_to_dict(
     return value, not bool(value)
 
 
-def _value_from_dict(value: Any, proto_type: str, field_type: type, unwrap: Callable[[], type] | None = None) -> Any:
+def _value_from_dict(value: Any, meta: FieldMetadata, field_type: type) -> Any:
     # TODO directly pass `meta` when available for maps
 
-    if proto_type == TYPE_MESSAGE:
-        msg_cls = unwrap() if unwrap else field_type
+    if meta.proto_type == TYPE_MESSAGE:
+        msg_cls = meta.unwrap() if meta.unwrap else field_type
 
         msg = msg_cls.from_dict(value)
 
-        if unwrap:
+        if meta.unwrap:
             return msg.to_wrapped()
         return msg
 
@@ -1056,7 +1049,7 @@ class Message(ABC):
         return output
 
     @classmethod
-    def _from_dict_init(cls, mapping: Mapping[str, Any]) -> Mapping[str, Any]:
+    def _from_dict_init(cls, mapping: Mapping[str, Any] | Any) -> Mapping[str, Any]:
         # TODO restructure using other function
         init_kwargs: dict[str, Any] = {}
         for key, value in mapping.items():
@@ -1070,14 +1063,9 @@ class Message(ABC):
 
             if meta.proto_type == TYPE_MESSAGE:
                 if meta.repeated:
-                    value = [
-                        _value_from_dict(item, meta.proto_type, cls._betterproto.cls_by_field[field_name], meta.unwrap)
-                        for item in value
-                    ]
+                    value = [_value_from_dict(item, meta, cls._betterproto.cls_by_field[field_name]) for item in value]
                 else:
-                    value = _value_from_dict(
-                        value, meta.proto_type, cls._betterproto.cls_by_field[field_name], meta.unwrap
-                    )
+                    value = _value_from_dict(value, meta, cls._betterproto.cls_by_field[field_name])
 
             elif meta.map_meta and meta.map_meta[1].proto_type == TYPE_MESSAGE:
                 sub_cls = cls._betterproto.cls_by_field[f"{field_name}.value"]
@@ -1100,7 +1088,7 @@ class Message(ABC):
         return init_kwargs
 
     @hybridmethod
-    def from_dict(cls: type[Self], value: Mapping[str, Any]) -> Self:  # type: ignore
+    def from_dict(cls: type[Self], value: Mapping[str, Any] | Any) -> Self:  # type: ignore
         """
         Parse the key/value pairs into the a new message instance.
 
@@ -1114,10 +1102,13 @@ class Message(ABC):
         :class:`Message`
             The initialized message.
         """
+        if not isinstance(value, Mapping) and hasattr(cls, "from_wrapped") and callable(cls.from_wrapped):
+            return cls.from_wrapped(value)
+
         return cls(**cls._from_dict_init(value))
 
     @from_dict.instancemethod
-    def from_dict(self, value: Mapping[str, Any]) -> Self:
+    def from_dict(self, value: Mapping[str, Any] | Any) -> Self:
         """
         Parse the key/value pairs into the current message instance. This returns the
         instance itself and is therefore assignable and chainable.
@@ -1193,49 +1184,6 @@ class Message(ABC):
             The initialized message.
         """
         return self.from_dict(json.loads(value))
-
-    def from_pydict(self: T, value: Mapping[str, Any]) -> T:
-        """
-        Parse the key/value pairs into the current message instance. This returns the
-        instance itself and is therefore assignable and chainable.
-
-        Parameters
-        -----------
-        value: Dict[:class:`str`, Any]
-            The dictionary to parse from.
-
-        Returns
-        --------
-        :class:`Message`
-            The initialized message.
-        """
-        for key in value:
-            field_name = safe_snake_case(key)
-            meta = self._betterproto.meta_by_field_name.get(field_name)
-            if not meta:
-                continue
-
-            if value[key] is not None:
-                if meta.proto_type == TYPE_MESSAGE:
-                    v = getattr(self, field_name)
-                    cls = self._betterproto.cls_by_field[field_name]
-                    if issubclass(cls, list):
-                        raise NotImplementedError  # TODO look at this
-                    elif meta.unwrap:
-                        v = value[key]
-                    else:
-                        v = cls().from_pydict(value[key])
-                elif meta.map_meta and meta.map_meta[1].proto_type == TYPE_MESSAGE:
-                    v = getattr(self, field_name)
-                    cls = self._betterproto.cls_by_field[f"{field_name}.value"]
-                    for k in value[key]:
-                        v[k] = cls().from_pydict(value[key][k])
-                else:
-                    v = value[key]
-
-                if v is not None:
-                    setattr(self, field_name, v)
-        return self
 
     def is_set(self, name: str) -> bool:
         """
