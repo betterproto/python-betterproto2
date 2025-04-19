@@ -141,8 +141,10 @@ class FieldMetadata:
     number: int
     # Protobuf type name
     proto_type: str
+
     # Map information if the proto_type is a map
-    map_types: tuple[str, str] | None = None
+    map_meta: tuple[FieldMetadata, FieldMetadata] | None = None
+
     # Groups several "one-of" fields together
     group: str | None = None
 
@@ -160,12 +162,24 @@ class FieldMetadata:
         return field.metadata["betterproto"]
 
 
+def map_meta(
+    proto_type_1: str,
+    proto_type_2: str,
+    *,
+    unwrap_2: Callable[[], type] | None = None,
+) -> tuple[FieldMetadata, FieldMetadata]:
+    key_meta = FieldMetadata(1, proto_type_1)
+    value_meta = FieldMetadata(2, proto_type_2, unwrap=unwrap_2)
+
+    return key_meta, value_meta
+
+
 def field(
     number: int,
     proto_type: str,
     *,
     default_factory: Callable[[], Any] | None = None,
-    map_types: tuple[str, str] | None = None,
+    map_meta: tuple[FieldMetadata, FieldMetadata] | None = None,
     group: str | None = None,
     unwrap: Callable[[], type] | None = None,
     optional: bool = False,
@@ -202,7 +216,7 @@ def field(
 
     return dataclasses.field(
         default_factory=default_factory,
-        metadata={"betterproto": FieldMetadata(number, proto_type, map_types, group, unwrap, optional, repeated)},
+        metadata={"betterproto": FieldMetadata(number, proto_type, map_meta, group, unwrap, optional, repeated)},
     )
 
 
@@ -485,7 +499,7 @@ class ProtoClassMetadata:
         for field_ in fields:
             meta = FieldMetadata.get(field_)
             if meta.proto_type == TYPE_MAP:
-                assert meta.map_types
+                assert meta.map_meta
                 kt = cls._cls_for(field_, index=0)
                 vt = cls._cls_for(field_, index=1)
                 field_cls[field_.name] = dataclasses.make_dataclass(
@@ -494,12 +508,12 @@ class ProtoClassMetadata:
                         (
                             "key",
                             kt,
-                            field(1, meta.map_types[0], default_factory=kt),
+                            field(1, meta.map_meta[0].proto_type, default_factory=kt),
                         ),
                         (
                             "value",
                             vt,
-                            field(2, meta.map_types[1], default_factory=vt),
+                            field(2, meta.map_meta[1].proto_type, default_factory=vt),
                         ),
                     ],
                     bases=(Message,),
@@ -720,9 +734,9 @@ class Message(ABC):
 
                 elif isinstance(value, dict):
                     for k, v in value.items():
-                        assert meta.map_types
-                        sk = _serialize_single(1, meta.map_types[0], k)
-                        sv = _serialize_single(2, meta.map_types[1], v)
+                        assert meta.map_meta
+                        sk = _serialize_single(1, meta.map_meta[0].proto_type, k)
+                        sv = _serialize_single(2, meta.map_meta[1].proto_type, v, unwrap=meta.map_meta[1].unwrap)
                         stream.write(_serialize_single(meta.number, meta.proto_type, sk + sv))
                 else:
                     stream.write(
@@ -1007,13 +1021,12 @@ class Message(ABC):
                     output[cased_name] = output_value
 
             elif meta.proto_type == TYPE_MAP:
-                assert meta.map_types is not None
+                assert meta.map_meta is not None
                 field_type_k = field_types[field_name].__args__[0]
                 field_type_v = field_types[field_name].__args__[1]
-                # TODO wrapped types don't work in maps
                 output_map = {
-                    _value_to_dict(k, meta.map_types[0], field_type_k, None, **kwargs)[0]: _value_to_dict(
-                        v, meta.map_types[1], field_type_v, None, **kwargs
+                    _value_to_dict(k, meta.map_meta[0].proto_type, field_type_k, None, **kwargs)[0]: _value_to_dict(
+                        v, meta.map_meta[1].proto_type, field_type_v, meta.map_meta[1].unwrap, **kwargs
                     )[0]
                     for k, v in value.items()
                 }
@@ -1058,7 +1071,7 @@ class Message(ABC):
                         value, meta.proto_type, cls._betterproto.cls_by_field[field_name], meta.unwrap
                     )
 
-            elif meta.map_types and meta.map_types[1] == TYPE_MESSAGE:
+            elif meta.map_meta and meta.map_meta[1].proto_type == TYPE_MESSAGE:
                 sub_cls = cls._betterproto.cls_by_field[f"{field_name}.value"]
                 value = {k: sub_cls.from_dict(v) for k, v in value.items()}
             else:
@@ -1209,7 +1222,7 @@ class Message(ABC):
                         v = value[key]
                     else:
                         v = cls().from_pydict(value[key])
-                elif meta.map_types and meta.map_types[1] == TYPE_MESSAGE:
+                elif meta.map_meta and meta.map_meta[1].proto_type == TYPE_MESSAGE:
                     v = getattr(self, field_name)
                     cls = self._betterproto.cls_by_field[f"{field_name}.value"]
                     for k in value[key]:
