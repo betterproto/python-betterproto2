@@ -129,8 +129,17 @@ NAN = "NaN"
 class Casing(builtin_enum.Enum):
     """Casing constants for serialization."""
 
-    CAMEL = camel_case  #: A camelCase sterilization function.
-    SNAKE = snake_case  #: A snake_case sterilization function.
+    CAMEL = 1
+    SNAKE = 2
+
+    def __call__(self, name: str) -> str:
+        """Convert the given name to the casing style."""
+        if self == Casing.CAMEL:
+            return camel_case(name)
+        elif self == Casing.SNAKE:
+            return snake_case(name)
+        else:
+            raise ValueError(f"Unknown casing style: {self}")
 
 
 @dataclasses.dataclass(frozen=True)
