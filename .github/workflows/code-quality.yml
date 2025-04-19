@@ -19,3 +19,35 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
     - uses: pre-commit/action@v3.0.1
+
+    - name: Install poetry
+      shell: bash
+      run: |
+        python -m pip install poetry
+        echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
+    - name: Configure poetry
+      shell: bash
+      run: poetry config virtualenvs.in-project true
+
+    - name: Set up cache
+      uses: actions/cache@v3
+      id: cache
+      with:
+        path: .venv
+        key: venv-quality-${{ hashFiles('**/poetry.lock') }}
+
+    - name: Ensure cache is healthy
+      if: steps.cache.outputs.cache-hit == 'true'
+      shell: bash
+      run: poetry run pip --version >/dev/null 2>&1 || rm -rf .venv
+
+    - name: Install dependencies
+      shell: bash
+      run: poetry install
+
+    - uses: pre-commit/action@v3.0.1
+
+    - name: Pyright
+      shell: bash
+      run: poetry run poe typecheck
