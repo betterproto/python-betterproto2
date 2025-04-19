@@ -169,9 +169,7 @@ def test_message_json(test_data: TestData) -> None:
         if sample.belongs_to(test_input_config.non_symmetrical_json):
             continue
 
-        message: betterproto2.Message = plugin_module.Test()
-
-        message.from_json(sample.json)
+        message: betterproto2.Message = plugin_module.Test.from_json(sample.json)
         message_json = message.to_json(indent=0)
 
         assert dict_replace_nans(json.loads(message_json)) == dict_replace_nans(json.loads(sample.json))

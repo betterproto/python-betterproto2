@@ -5,16 +5,14 @@ from tests.util import get_test_case_json_data
 def test_which_count():
     from tests.output_betterproto.oneof import Test
 
-    message = Test()
-    message.from_json(get_test_case_json_data("oneof")[0].json)
+    message = Test.from_json(get_test_case_json_data("oneof")[0].json)
     assert betterproto2.which_one_of(message, "foo") == ("pitied", 100)
 
 
 def test_which_name():
     from tests.output_betterproto.oneof import Test
 
-    message = Test()
-    message.from_json(get_test_case_json_data("oneof", "oneof_name.json")[0].json)
+    message = Test.from_json(get_test_case_json_data("oneof", "oneof_name.json")[0].json)
     assert betterproto2.which_one_of(message, "foo") == ("pitier", "Mr. T")
 
 

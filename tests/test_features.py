@@ -382,10 +382,8 @@ iso_candidates = """2009-12-12T12:34
 def test_iso_datetime():
     from tests.output_betterproto.features import TimeMsg
 
-    msg = TimeMsg()
-
     for _, candidate in enumerate(iso_candidates):
-        msg.from_dict({"timestamp": candidate})
+        msg = TimeMsg.from_dict({"timestamp": candidate})
         assert isinstance(msg.timestamp, datetime)
 
 

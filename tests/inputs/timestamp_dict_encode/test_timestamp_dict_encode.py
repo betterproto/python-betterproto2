@@ -22,8 +22,7 @@ def test_datetime_dict_encode(tz: timezone):
     original_message = Test()
     original_message.ts = original_time
     encoded = original_message.to_dict()
-    decoded_message = Test()
-    decoded_message.from_dict(encoded)
+    decoded_message = Test.from_dict(encoded)
 
     # check that the timestamps are equal after decoding from dict
     assert original_message.ts.tzinfo is not None
@@ -37,8 +36,7 @@ def test_json_serialize(tz: timezone):
     original_message = Test()
     original_message.ts = original_time
     json_serialized = original_message.to_json()
-    decoded_message = Test()
-    decoded_message.from_json(json_serialized)
+    decoded_message = Test.from_json(json_serialized)
 
     # check that the timestamps are equal after decoding from dict
     assert original_message.ts.tzinfo is not None

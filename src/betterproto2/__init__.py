@@ -28,7 +28,7 @@ from ._version import __version__, check_compiler_version
 from .casing import camel_case, safe_snake_case, snake_case
 from .enum import Enum as Enum
 from .grpc.grpclib_client import ServiceStub as ServiceStub
-from .utils import classproperty, hybridmethod
+from .utils import classproperty
 
 if TYPE_CHECKING:
     from _typeshed import SupportsRead, SupportsWrite
@@ -1087,8 +1087,8 @@ class Message(ABC):
             init_kwargs[field_name] = value
         return init_kwargs
 
-    @hybridmethod
-    def from_dict(cls: type[Self], value: Mapping[str, Any] | Any) -> Self:  # type: ignore
+    @classmethod
+    def from_dict(cls: type[Self], value: Mapping[str, Any] | Any) -> Self:
         """
         Parse the key/value pairs into the a new message instance.
 
@@ -1106,26 +1106,6 @@ class Message(ABC):
             return cls.from_wrapped(value)  # type: ignore
 
         return cls(**cls._from_dict_init(value))
-
-    @from_dict.instancemethod
-    def from_dict(self, value: Mapping[str, Any] | Any) -> Self:
-        """
-        Parse the key/value pairs into the current message instance. This returns the
-        instance itself and is therefore assignable and chainable.
-
-        Parameters
-        -----------
-        value: Dict[:class:`str`, Any]
-            The dictionary to parse from.
-
-        Returns
-        --------
-        :class:`Message`
-            The initialized message.
-        """
-        for field, value in self._from_dict_init(value).items():
-            setattr(self, field, value)
-        return self
 
     def to_json(
         self,
@@ -1164,7 +1144,8 @@ class Message(ABC):
             indent=indent,
         )
 
-    def from_json(self: T, value: str | bytes) -> T:
+    @classmethod
+    def from_json(cls, value: str | bytes) -> Self:
         """A helper function to return the message instance from its JSON
         representation. This returns the instance itself and is therefore assignable
         and chainable.
@@ -1183,7 +1164,7 @@ class Message(ABC):
         :class:`Message`
             The initialized message.
         """
-        return self.from_dict(json.loads(value))
+        return cls.from_dict(json.loads(value))
 
     def is_set(self, name: str) -> bool:
         """
