@@ -1,10 +1,7 @@
 import asyncio
 from abc import ABC
 from collections.abc import AsyncIterable, AsyncIterator, Collection, Iterable, Mapping
-from typing import (
-    TYPE_CHECKING,
-    Optional,
-)
+from typing import TYPE_CHECKING, Optional
 
 import grpclib.const
 
@@ -12,10 +9,7 @@ if TYPE_CHECKING:
     from grpclib.client import Channel
     from grpclib.metadata import Deadline
 
-    from .._types import (
-        IProtoMessage,
-        T,
-    )
+    from .._types import IProtoMessage, T  # type: ignore[reportPrivateImportUsage]
 
 
 Value = str | bytes

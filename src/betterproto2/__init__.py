@@ -13,7 +13,7 @@ from abc import ABC
 from base64 import b64decode, b64encode
 from collections.abc import Callable, Generator, Iterable, Mapping
 from copy import deepcopy
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from enum import IntEnum
 from io import BytesIO
 from itertools import count
@@ -224,7 +224,7 @@ def field(
         }[proto_type]
 
     return dataclasses.field(
-        default_factory=default_factory,
+        default_factory=default_factory or dataclasses.MISSING,
         metadata={"betterproto": FieldMetadata(number, proto_type, map_meta, group, unwrap, optional, repeated)},
     )
 
@@ -482,6 +482,7 @@ class ProtoClassMetadata:
         by_field_name = {}
         by_field_number = {}
 
+        assert dataclasses.is_dataclass(cls)
         fields = dataclasses.fields(cls)
         for field in fields:
             meta = FieldMetadata.get(field)
@@ -500,11 +501,16 @@ class ProtoClassMetadata:
         self.field_name_by_number = by_field_number
         self.meta_by_field_name = by_field_name
         self.sorted_field_names = tuple(by_field_number[number] for number in sorted(by_field_number))
-        self.default_gen = {field.name: field.default_factory for field in fields}
+
+        self.default_gen = {}
+        for field in fields:
+            assert field.default_factory is not dataclasses.MISSING
+            self.default_gen[field.name] = field.default_factory
+
         self.cls_by_field = self._get_cls_by_field(cls, fields)
 
     @staticmethod
-    def _get_cls_by_field(cls: type[Message], fields: Iterable[dataclasses.Field]) -> dict[str, type]:
+    def _get_cls_by_field(cls: type[Message], fields: Iterable[dataclasses.Field]) -> dict[str, type]:  # type: ignore[reportSelfClsParameterName]
         field_cls = {}
 
         for field_ in fields:
@@ -1223,12 +1229,7 @@ class Message(ABC):
                     v = getattr(self, field_name)
                     cls = self._betterproto.cls_by_field[field_name]
                     if issubclass(cls, list):
-                        for item in value[key]:
-                            v.append(cls().from_pydict(item))
-                    elif issubclass(cls, datetime):
-                        v = value[key]
-                    elif issubclass(cls, timedelta):
-                        v = value[key]
+                        raise NotImplementedError  # TODO look at this
                     elif meta.unwrap:
                         v = value[key]
                     else:

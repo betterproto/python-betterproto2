@@ -4,7 +4,7 @@ from typing import (
 )
 
 if TYPE_CHECKING:
-    from grpclib._typing import IProtoMessage
+    from grpclib._typing import IProtoMessage  # type: ignore[reportPrivateImportUsage]
 
     from . import Message
 
