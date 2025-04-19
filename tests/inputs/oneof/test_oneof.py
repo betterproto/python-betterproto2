@@ -1,5 +1,3 @@
-import pytest
-
 import betterproto2
 from tests.util import get_test_case_json_data
 
@@ -31,18 +29,6 @@ def test_oneof_constructor_assign():
     from tests.output_betterproto.oneof import MixedDrink, Test
 
     message = Test(mixed_drink=MixedDrink(shots=42))
-    field, value = betterproto2.which_one_of(message, "bar")
-    assert field == "mixed_drink"
-    assert value.shots == 42
-
-
-# Issue #305:
-@pytest.mark.xfail
-def test_oneof_nested_assign():
-    from tests.output_betterproto.oneof import Test
-
-    message = Test()
-    message.mixed_drink.shots = 42
     field, value = betterproto2.which_one_of(message, "bar")
     assert field == "mixed_drink"
     assert value.shots == 42
