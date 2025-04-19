@@ -374,7 +374,7 @@ def load_varint(stream: SupportsRead[bytes]) -> tuple[int, bytes]:
     raw = b""
     for shift in count(0, 7):
         if shift >= 64:
-            raise ValueError("Too many bytes when decoding varint.")
+            break
         b = stream.read(1)
         if not b:
             raise EOFError("Stream ended unexpectedly while attempting to load varint.")
@@ -383,6 +383,8 @@ def load_varint(stream: SupportsRead[bytes]) -> tuple[int, bytes]:
         result |= (b_int & 0x7F) << shift
         if not (b_int & 0x80):
             return result, raw
+
+    raise ValueError("Too many bytes when decoding varint.")
 
 
 def decode_varint(buffer: bytes, pos: int) -> tuple[int, int]:
@@ -761,7 +763,7 @@ class Message(ABC):
             return stream.getvalue()
 
     # For compatibility with other libraries
-    def SerializeToString(self: T) -> bytes:
+    def SerializeToString(self) -> bytes:
         """
         Get the binary encoded Protobuf representation of this message instance.
 
@@ -1227,7 +1229,7 @@ class Message(ABC):
                         v = value[key]
                     elif issubclass(cls, timedelta):
                         v = value[key]
-                    elif meta.unwraps:
+                    elif meta.unwrap:
                         v = value[key]
                     else:
                         v = cls().from_pydict(value[key])
