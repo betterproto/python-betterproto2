@@ -13,7 +13,6 @@ from abc import ABC
 from base64 import b64decode, b64encode
 from collections.abc import Callable, Generator, Iterable, Mapping
 from copy import deepcopy
-from datetime import datetime, timezone
 from enum import IntEnum
 from io import BytesIO
 from itertools import count
@@ -110,14 +109,6 @@ WIRE_LEN_DELIM_TYPES = [TYPE_STRING, TYPE_BYTES, TYPE_MESSAGE, TYPE_MAP]
 
 # Indicator of message delimitation in streams
 SIZE_DELIMITED = -1
-
-
-# Protobuf datetimes start at the Unix Epoch in 1970 in UTC.
-def datetime_default_gen() -> datetime:
-    return datetime(1970, 1, 1, tzinfo=timezone.utc)
-
-
-DATETIME_ZERO = datetime_default_gen()
 
 
 # Special protobuf json doubles
