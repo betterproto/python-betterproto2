@@ -1,6 +1,6 @@
 [project]
 name = "betterproto2"
-version = "0.4.0"
+version = "0.5.0"
 description = "A better Protobuf / gRPC generator & library"
 authors = [
     {name = "Adrien Vannson", email = "adrien.vannson@protonmail.com"},
@@ -153,9 +153,6 @@ help = "Serve the documentation locally"
 [tool.poe.tasks.full-test]
 shell = "poe generate && tox"
 help = "Run tests with multiple pythons"
-
-[tool.coverage.run]
-omit = ["betterproto/tests/*"]
 
 [tool.tox]
 legacy_tox_ini = """
