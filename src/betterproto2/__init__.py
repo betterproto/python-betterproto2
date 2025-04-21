@@ -503,19 +503,17 @@ class ProtoClassMetadata:
                 assert meta.map_meta
                 kt = cls._cls_for(field_, index=0)
                 vt = cls._cls_for(field_, index=1)
+
+                if meta.map_meta[1].proto_type == TYPE_ENUM:
+                    value_field = field(2, meta.map_meta[1].proto_type, default_factory=lambda: vt(0))
+                else:
+                    value_field = field(2, meta.map_meta[1].proto_type, unwrap=meta.map_meta[1].unwrap)
+
                 field_cls[field_.name] = dataclasses.make_dataclass(
                     "Entry",
                     [
-                        (
-                            "key",
-                            kt,
-                            field(1, meta.map_meta[0].proto_type, default_factory=kt),
-                        ),
-                        (
-                            "value",
-                            vt,
-                            field(2, meta.map_meta[1].proto_type, default_factory=vt),
-                        ),
+                        ("key", kt, field(1, meta.map_meta[0].proto_type)),
+                        ("value", vt, value_field),
                     ],
                     bases=(Message,),
                 )
@@ -582,8 +580,6 @@ def _value_to_dict(
 
 
 def _value_from_dict(value: Any, meta: FieldMetadata, field_type: type) -> Any:
-    # TODO directly pass `meta` when available for maps
-
     if meta.proto_type == TYPE_MESSAGE:
         msg_cls = meta.unwrap() if meta.unwrap else field_type
 
@@ -592,6 +588,26 @@ def _value_from_dict(value: Any, meta: FieldMetadata, field_type: type) -> Any:
         if meta.unwrap:
             return msg.to_wrapped()
         return msg
+
+    if meta.proto_type == TYPE_ENUM:
+        if isinstance(value, str):
+            return field_type.from_string(value)
+        if isinstance(value, int):
+            return field_type(value)
+        if isinstance(value, Enum):
+            return value
+        raise ValueError("Enum value must be a string or an Enum instance")
+
+    if meta.proto_type in INT_64_TYPES:  # TODO all integer types
+        return int(value)
+
+    if meta.proto_type == TYPE_BYTES:
+        return b64decode(value)
+
+    if meta.proto_type in (TYPE_FLOAT, TYPE_DOUBLE):
+        return _parse_float(value)
+
+    return value
 
 
 class Message(ABC):
@@ -671,8 +687,8 @@ class Message(ABC):
         try:
             return cls._betterproto_meta
         except AttributeError:
-            cls._betterproto_meta = meta = ProtoClassMetadata(cls)
-            return meta
+            cls._betterproto_meta = ProtoClassMetadata(cls)
+            return cls._betterproto_meta
 
     def dump(self, stream: SupportsWrite[bytes], delimit: bool = False) -> None:
         """
@@ -1050,6 +1066,8 @@ class Message(ABC):
         init_kwargs: dict[str, Any] = {}
         for key, value in mapping.items():
             field_name = safe_snake_case(key)
+            field_cls = cls._betterproto.cls_by_field[field_name]
+
             try:
                 meta = cls._betterproto.meta_by_field_name[field_name]
             except KeyError:
@@ -1059,26 +1077,23 @@ class Message(ABC):
 
             if meta.proto_type == TYPE_MESSAGE:
                 if meta.repeated:
-                    value = [_value_from_dict(item, meta, cls._betterproto.cls_by_field[field_name]) for item in value]
+                    value = [_value_from_dict(item, meta, field_cls) for item in value]
                 else:
-                    value = _value_from_dict(value, meta, cls._betterproto.cls_by_field[field_name])
+                    value = _value_from_dict(value, meta, field_cls)
 
-            elif meta.map_meta and meta.map_meta[1].proto_type == TYPE_MESSAGE:
-                sub_cls = cls._betterproto.cls_by_field[f"{field_name}.value"]
-                value = {k: sub_cls.from_dict(v) for k, v in value.items()}
+            elif meta.proto_type == TYPE_MAP:
+                assert meta.map_meta
+                assert isinstance(value, dict)
+
+                value_cls = cls._betterproto.cls_by_field[f"{field_name}.value"]
+
+                value = {k: _value_from_dict(v, meta.map_meta[1], value_cls) for k, v in value.items()}
+
+            elif meta.repeated:
+                value = [_value_from_dict(item, meta, field_cls) for item in value]
+
             else:
-                if meta.proto_type in INT_64_TYPES:
-                    value = [int(n) for n in value] if isinstance(value, list) else int(value)
-                elif meta.proto_type == TYPE_BYTES:
-                    value = [b64decode(n) for n in value] if isinstance(value, list) else b64decode(value)
-                elif meta.proto_type == TYPE_ENUM:
-                    enum_cls = cls._betterproto.cls_by_field[field_name]
-                    if isinstance(value, list):
-                        value = [enum_cls.from_string(e) for e in value]
-                    elif isinstance(value, str):
-                        value = enum_cls.from_string(value)
-                elif meta.proto_type in (TYPE_FLOAT, TYPE_DOUBLE):
-                    value = [_parse_float(n) for n in value] if isinstance(value, list) else _parse_float(value)
+                value = _value_from_dict(value, meta, field_cls)
 
             init_kwargs[field_name] = value
         return init_kwargs
