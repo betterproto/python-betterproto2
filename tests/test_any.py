@@ -8,7 +8,7 @@ def test_any() -> None:
     any = Any()
     any.pack(person)
 
-    new_any = Any().parse(bytes(any))
+    new_any = Any.parse(bytes(any))
 
     assert new_any.unpack() == person
 

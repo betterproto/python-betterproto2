@@ -80,12 +80,12 @@ def test_enum_mapped_on_parse():
     assert b.choices == []
 
     # test non default value
-    a = Test().parse(bytes(Test(choice=Choice.ONE)))
+    a = Test.parse(bytes(Test(choice=Choice.ONE)))
     assert a.choice.name == Choice.ONE.name
     assert b.choices == []
 
     # test repeated
-    c = Test().parse(bytes(Test(choices=[Choice.THREE, Choice.FOUR])))
+    c = Test.parse(bytes(Test(choices=[Choice.THREE, Choice.FOUR])))
     assert c.choices[0].name == Choice.THREE.name
     assert c.choices[1].name == Choice.FOUR.name
 

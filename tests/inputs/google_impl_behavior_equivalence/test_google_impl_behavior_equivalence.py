@@ -48,7 +48,7 @@ def test_bytes_are_the_same_for_oneof():
 
     assert message_bytes == message_reference_bytes
 
-    message2 = Test().parse(message_reference_bytes)
+    message2 = Test.parse(message_reference_bytes)
     message_reference2 = ReferenceTest()
     message_reference2.ParseFromString(message_reference_bytes)
 
@@ -71,7 +71,7 @@ def test_datetime_clamping(dt):  # see #407
     assert bytes(Spam(dt)) == ReferenceSpam(ts=ts).SerializeToString()
     message_bytes = bytes(Spam(dt))
 
-    assert Spam().parse(message_bytes).ts.timestamp() == ReferenceSpam.FromString(message_bytes).ts.seconds
+    assert Spam.parse(message_bytes).ts.timestamp() == ReferenceSpam.FromString(message_bytes).ts.seconds
 
 
 def test_empty_message_field():

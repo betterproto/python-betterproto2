@@ -47,10 +47,10 @@ def test_unknown_fields():
     serialized_newer = bytes(newer)
 
     # Unknown fields in `Newer` should round trip with `Older`
-    round_trip = bytes(Older().parse(serialized_newer))
+    round_trip = bytes(Older.parse(serialized_newer))
     assert serialized_newer == round_trip
 
-    new_again = Newer().parse(round_trip)
+    new_again = Newer.parse(round_trip)
     assert newer == new_again
 
 
@@ -84,7 +84,7 @@ def test_oneof_support():
     assert bytes(msg) == b"\x08\x00"
 
     # Round trip should also work
-    msg = OneofMsg().parse(bytes(msg))
+    msg = OneofMsg.parse(bytes(msg))
     assert betterproto2.which_one_of(msg, "group1")[0] == "x"
     assert msg.x == 0
     assert betterproto2.which_one_of(msg, "group2")[0] == ""
@@ -147,8 +147,8 @@ def test_optional_flag():
     assert bytes(OptionalBoolMsg(field=False)) == b"\n\x00"
 
     # Differentiate between not passed and the zero-value.
-    assert OptionalBoolMsg().parse(b"").field is None
-    assert OptionalBoolMsg().parse(b"\n\x00").field is False
+    assert OptionalBoolMsg.parse(b"").field is None
+    assert OptionalBoolMsg.parse(b"\n\x00").field is False
 
 
 def test_optional_datetime_to_dict():
@@ -271,7 +271,7 @@ def test_oneof_default_value_set_causes_writes_wire():
     from tests.output_betterproto.features import Empty, MsgC
 
     def _round_trip_serialization(msg: MsgC) -> MsgC:
-        return MsgC().parse(bytes(msg))
+        return MsgC.parse(bytes(msg))
 
     int_msg = MsgC(int_field=0)
     str_msg = MsgC(string_field="")

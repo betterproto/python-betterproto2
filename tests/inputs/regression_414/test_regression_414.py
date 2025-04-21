@@ -8,7 +8,7 @@ def test_full_cycle():
 
     obj = Test(body=body, auth=auth, signatures=sig)
 
-    decoded = Test().parse(bytes(obj))
+    decoded = Test.parse(bytes(obj))
     assert decoded == obj
     assert decoded.body == body
     assert decoded.auth == auth

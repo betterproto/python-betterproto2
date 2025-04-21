@@ -824,12 +824,12 @@ class Message(ABC):
                 else:
                     msg_cls = self._betterproto.cls_by_field[field_name]
 
-                value = msg_cls().parse(value)
+                value = msg_cls.parse(value)
 
                 if meta.unwrap:
                     value = value.to_wrapped()
             elif meta.proto_type == TYPE_MAP:
-                value = self._betterproto.cls_by_field[field_name]().parse(value)
+                value = self._betterproto.cls_by_field[field_name].parse(value)
 
         return value
 
