@@ -768,14 +768,9 @@ class Message(ABC):
         """
         return bytes(self)
 
-    def __getstate__(self) -> bytes:
-        return bytes(self)
-
-    def __setstate__(self: T, pickled_bytes: bytes) -> T:
-        return self.parse(pickled_bytes)
-
     def __reduce__(self) -> tuple[Any, ...]:
-        return (self.__class__.FromString, (bytes(self),))
+        # To support pickling
+        return (self.__class__.parse, (bytes(self),))
 
     @classmethod
     def _type_hint(cls, field_name: str) -> type:
@@ -931,7 +926,8 @@ class Message(ABC):
 
         return self
 
-    def parse(self: T, data: bytes) -> T:
+    @classmethod
+    def parse(cls, data: bytes) -> T:
         """
         Parse the binary encoded Protobuf into this message instance. This
         returns the instance itself and is therefore assignable and chainable.
@@ -947,7 +943,7 @@ class Message(ABC):
             The initialized message.
         """
         with BytesIO(data) as stream:
-            return self.load(stream)
+            return cls().load(stream)
 
     # For compatibility with other libraries.
     @classmethod
@@ -971,7 +967,7 @@ class Message(ABC):
         :class:`Message`
             The initialized message.
         """
-        return cls().parse(data)
+        return cls.parse(data)
 
     def to_dict(
         self,

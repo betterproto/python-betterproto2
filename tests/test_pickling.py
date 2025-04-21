@@ -1,8 +1,5 @@
 import pickle
-from copy import (
-    copy,
-    deepcopy,
-)
+from copy import copy, deepcopy
 
 import cachelib
 
@@ -49,10 +46,7 @@ def test_pickling_complex_message():
 
 
 def test_recursive_message_defaults():
-    from tests.output_betterproto.recursivemessage import (
-        Intermediate,
-        Test as RecursiveMessage,
-    )
+    from tests.output_betterproto.recursivemessage import Intermediate, Test as RecursiveMessage
 
     msg = RecursiveMessage(name="bob", intermediate=Intermediate(42))
     msg = unpickled(msg)

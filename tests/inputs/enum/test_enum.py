@@ -75,7 +75,7 @@ def test_repeated_enum_with_non_list_iterables_to_dict():
 
 def test_enum_mapped_on_parse():
     # test default value
-    b = Test().parse(bytes(Test()))
+    b = Test.parse(bytes(Test()))
     assert b.choice.name == Choice.ZERO.name
     assert b.choices == []
 
