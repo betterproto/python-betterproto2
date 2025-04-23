@@ -66,6 +66,12 @@ FIXED_TYPES = [
 # Fields that are numerical 64-bit types
 INT_64_TYPES = [TYPE_INT64, TYPE_UINT64, TYPE_SINT64, TYPE_FIXED64, TYPE_SFIXED64]
 
+# Fields that are numerical 32-bit types
+INT_32_TYPES = [TYPE_INT32, TYPE_UINT32, TYPE_SINT32, TYPE_FIXED32, TYPE_SFIXED32]
+
+# Fields that are numerical types
+ALL_INT_TYPES = INT_64_TYPES + INT_32_TYPES
+
 # Fields that are efficiently packed when
 PACKED_TYPES = [
     TYPE_ENUM,
@@ -598,7 +604,7 @@ def _value_from_dict(value: Any, meta: FieldMetadata, field_type: type) -> Any:
             return value
         raise ValueError("Enum value must be a string or an Enum instance")
 
-    if meta.proto_type in INT_64_TYPES:  # TODO all integer types
+    if meta.proto_type in ALL_INT_TYPES:
         return int(value)
 
     if meta.proto_type == TYPE_BYTES:
@@ -1087,7 +1093,10 @@ class Message(ABC):
 
                 value_cls = cls._betterproto.cls_by_field[f"{field_name}.value"]
 
-                value = {k: _value_from_dict(v, meta.map_meta[1], value_cls) for k, v in value.items()}
+                value = {
+                    _value_from_dict(k, meta.map_meta[0], value_cls): _value_from_dict(v, meta.map_meta[1], value_cls)
+                    for k, v in value.items()
+                }
 
             elif meta.repeated:
                 value = [_value_from_dict(item, meta, field_cls) for item in value]
