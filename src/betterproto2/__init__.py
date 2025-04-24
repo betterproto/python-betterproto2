@@ -1094,7 +1094,7 @@ class Message(ABC):
                 value_cls = cls._betterproto.cls_by_field[f"{field_name}.value"]
 
                 value = {
-                    _value_from_dict(k, meta.map_meta[0], value_cls): _value_from_dict(v, meta.map_meta[1], value_cls)
+                    _value_from_dict(k, meta.map_meta[0], type(None)): _value_from_dict(v, meta.map_meta[1], value_cls)
                     for k, v in value.items()
                 }
 
