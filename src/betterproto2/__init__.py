@@ -1068,7 +1068,6 @@ class Message(ABC):
 
     @classmethod
     def _from_dict_init(cls, mapping: Mapping[str, Any] | Any) -> Mapping[str, Any]:
-        # TODO restructure using other function
         init_kwargs: dict[str, Any] = {}
         for key, value in mapping.items():
             field_name = safe_snake_case(key)
