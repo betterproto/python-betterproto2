@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-__all__ = ["__version__", "check_compiler_version", "unwrap", "MessagePool"]
+__all__ = ["__version__", "check_compiler_version", "unwrap", "MessagePool", "validators"]
 
 import dataclasses
 import enum as builtin_enum
@@ -20,6 +20,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, get_type_hints
 
 from typing_extensions import Self
 
+import betterproto2.validators as validators
 from betterproto2.message_pool import MessagePool
 from betterproto2.utils import unwrap
 

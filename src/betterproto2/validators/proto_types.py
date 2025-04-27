@@ -12,34 +12,10 @@ will already be of the correct type and only bounds checking is needed.
 import struct
 
 
-def validate_int32(v: int) -> int:
-    if v < -(2**31) or v > 2**31 - 1:
-        raise ValueError(f"Value out of range for int32: {v}")
-    return v
-
-
-def validate_uint32(v: int) -> int:
-    if v < 0 or v > 2**32 - 1:
-        raise ValueError(f"Value out of range for uint32: {v}")
-    return v
-
-
-def validate_int64(v: int) -> int:
-    if v < -(2**63) or v > 2**63 - 1:
-        raise ValueError(f"Value out of range for int64: {v}")
-    return v
-
-
-def validate_uint64(v: int) -> int:
-    if v < 0 or v > 2**64 - 1:
-        raise ValueError(f"Value out of range for uint64: {v}")
-    return v
-
-
-def validate_float(v: float) -> float:
+def validate_float32(v: float) -> float:
     try:
         packed = struct.pack("!f", v)
-        struct.unpack("!f", packed)[0]
+        struct.unpack("!f", packed)
     except (struct.error, OverflowError):
         raise ValueError(f"Value cannot be encoded as a float: {v}")
 
