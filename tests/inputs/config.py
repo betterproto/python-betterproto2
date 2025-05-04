@@ -4,7 +4,6 @@ xfail = {
     "namespace_keywords",  # 70
     "googletypes_struct",  # 9
     "googletypes_value",  # 9
-    "example",  # This is the example in the readme. Not a test.
 }
 
 services = {
