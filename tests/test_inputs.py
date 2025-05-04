@@ -5,9 +5,7 @@ import os
 import sys
 from collections import namedtuple
 from types import ModuleType
-from typing import (
-    Any,
-)
+from typing import Any
 
 import pytest
 
@@ -35,19 +33,15 @@ class TestCases:
         services: set[str],
         xfail: set[str],
     ):
-        _all = set(get_directories(path)) - {"__pycache__"}
-        _services = services
-        _messages = (_all - services) - {"__pycache__"}
-        _messages_with_json = {test for test in _messages if get_test_case_json_data(test)}
+        all = set(get_directories(path)) - {"__pycache__"}
+        messages = {test for test in all - services if get_test_case_json_data(test)}
 
-        unknown_xfail_tests = xfail - _all
+        unknown_xfail_tests = xfail - all
         if unknown_xfail_tests:
             raise Exception(f"Unknown test(s) in config.py: {unknown_xfail_tests}")
 
-        self.all = self.apply_xfail_marks(_all, xfail)
-        self.services = self.apply_xfail_marks(_services, xfail)
-        self.messages = self.apply_xfail_marks(_messages, xfail)
-        self.messages_with_json = self.apply_xfail_marks(_messages_with_json, xfail)
+        self.services = self.apply_xfail_marks(services, xfail)
+        self.messages = self.apply_xfail_marks(messages, xfail)
 
     @staticmethod
     def apply_xfail_marks(test_set: set[str], xfail: set[str]):
@@ -161,7 +155,7 @@ def test_message_equality(test_data: TestData) -> None:
     assert message1 == message2
 
 
-@pytest.mark.parametrize("test_data", test_cases.messages_with_json, indirect=True)
+@pytest.mark.parametrize("test_data", test_cases.messages, indirect=True)
 def test_message_json(test_data: TestData) -> None:
     plugin_module, _, json_data = test_data
 
@@ -180,7 +174,7 @@ def test_service_can_be_instantiated(test_data: TestData) -> None:
     test_data.plugin_module.TestStub(MockChannel())
 
 
-@pytest.mark.parametrize("test_data", test_cases.messages_with_json, indirect=True)
+@pytest.mark.parametrize("test_data", test_cases.messages, indirect=True)
 def test_binary_compatibility(test_data: TestData) -> None:
     plugin_module, reference_module, json_data = test_data
 
