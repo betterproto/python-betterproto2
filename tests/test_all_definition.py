@@ -8,12 +8,13 @@ def test_all_definition():
     import tests.output_betterproto.service as service
 
     assert service.__all__ == (
-        "ThingType",
         "DoThingRequest",
         "DoThingResponse",
         "GetThingRequest",
         "GetThingResponse",
-        "TestStub",
         "TestBase",
+        "TestStub",
+        "TestSyncStub",
+        "ThingType",
     )
     assert enum.__all__ == ("ArithmeticOperator", "Choice", "Test")
