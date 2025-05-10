@@ -977,6 +977,9 @@ class Message(ABC):
                 " or the expected size may have been incorrect."
             )
 
+        if self._is_pydantic():
+            self._validate()
+
         return self
 
     @classmethod
