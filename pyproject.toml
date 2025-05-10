@@ -96,6 +96,10 @@ shell = "rm -r tests/output_* && cp -r ../python-betterproto2-compiler/tests/out
 cmd = "pytest"
 help = "Run tests"
 
+[tool.poe.tasks.test-cov]
+cmd = "pytest --cov=betterproto2 --cov-report=term --cov-report=html tests/"
+help = "Run tests with code coverage report"
+
 [tool.poe.tasks.typecheck]
 cmd  = "pyright src"
 help = "Typecheck the code with Pyright"
