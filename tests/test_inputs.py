@@ -1,3 +1,4 @@
+import copy
 import importlib
 import json
 import math
@@ -12,12 +13,7 @@ import pytest
 import betterproto2
 from tests.inputs import config as test_input_config
 from tests.mocks import MockChannel
-from tests.util import (
-    find_module,
-    get_directories,
-    get_test_case_json_data,
-    inputs_path,
-)
+from tests.util import find_module, get_directories, get_test_case_json_data, inputs_path
 
 # Force pure-python implementation instead of C++, otherwise imports
 # break things because we can't properly reset the symbol database.
@@ -111,6 +107,13 @@ def dict_replace_nans(input_dict: dict[Any, Any]) -> dict[Any, Any]:
             value = betterproto2.NAN
         result[key] = value
     return result
+
+
+@pytest.fixture
+def reset_sys_path():
+    original = copy.deepcopy(sys.path)
+    yield
+    sys.path = original
 
 
 @pytest.fixture
