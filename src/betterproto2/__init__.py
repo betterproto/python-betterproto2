@@ -710,11 +710,12 @@ class Message(ABC):
         """
         return pydantic is not None and pydantic.dataclasses.is_pydantic_dataclass(type(self))
 
-    def validate(self) -> None:
+    def _validate(self) -> None:
         """
         Manually validate the message using pydantic.
 
-        This is useful since pydantic does not revalidate the message when fields are changed.
+        This is useful since pydantic does not revalidate the message when fields are changed. This function doesn't
+        validate the fields recursively.
         """
         if not self._is_pydantic():
             raise TypeError("Validation is only available for pydantic dataclasses.")
@@ -746,6 +747,9 @@ class Message(ABC):
         """
         Get the binary encoded Protobuf representation of this message instance.
         """
+        if self._is_pydantic():
+            self._validate()
+
         with BytesIO() as stream:
             for field_name, meta in self._betterproto.meta_by_field_name.items():
                 value = getattr(self, field_name)
@@ -1043,6 +1047,9 @@ class Message(ABC):
         Dict[:class:`str`, Any]
             The JSON serializable dict representation of this object.
         """
+        if self._is_pydantic():
+            self._validate()
+
         kwargs = {  # For recursive calls
             "output_format": output_format,
             "casing": casing,
