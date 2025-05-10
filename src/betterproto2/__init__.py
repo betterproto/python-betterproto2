@@ -20,6 +20,13 @@ from typing import TYPE_CHECKING, Any, ClassVar, get_type_hints
 
 from typing_extensions import Self
 
+try:
+    import pydantic
+    import pydantic_core
+except ImportError:
+    pydantic = None
+    pydantic_core = None
+
 import betterproto2.validators as validators
 from betterproto2.message_pool import MessagePool
 from betterproto2.utils import unwrap
@@ -696,6 +703,25 @@ class Message(ABC):
         except AttributeError:
             cls._betterproto_meta = ProtoClassMetadata(cls)
             return cls._betterproto_meta
+
+    def _is_pydantic(self) -> bool:
+        """
+        Check if the message is a pydantic dataclass.
+        """
+        return pydantic is not None and pydantic.dataclasses.is_pydantic_dataclass(type(self))
+
+    def validate(self) -> None:
+        """
+        Manually validate the message using pydantic.
+
+        This is useful since pydantic does not revalidate the message when fields are changed.
+        """
+        if not self._is_pydantic():
+            raise TypeError("Validation is only available for pydantic dataclasses.")
+
+        dict = self.__dict__.copy()
+        del dict["_unknown_fields"]
+        pydantic_core.SchemaValidator(self.__pydantic_core_schema__).validate_python(dict)
 
     def dump(self, stream: SupportsWrite[bytes], delimit: bool = False) -> None:
         """
