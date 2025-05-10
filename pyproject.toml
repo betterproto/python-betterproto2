@@ -39,7 +39,6 @@ betterproto2-rust-codec = { version = "^0.1.2", optional = true }
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.11.2"
 pre-commit = "^2.17.0"
-tox = "^4.0.0"
 mkdocs-material = {version = "^9.5.49", python = ">=3.10"}
 mkdocstrings = {version = "^0.27.0", python = ">=3.10", extras = ["python"]}
 # The Ruff version is pinned. To update it, also update it in .pre-commit-config.yaml
@@ -147,32 +146,6 @@ help = "Pulls the compiled test files from the betterproto2-compiler repository"
 [tool.poe.tasks.serve-docs]
 cmd = "mkdocs serve"
 help = "Serve the documentation locally"
-
-# CI tasks
-
-[tool.poe.tasks.full-test]
-shell = "poe generate && tox"
-help = "Run tests with multiple pythons"
-
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-requires =
-    tox>=4.2
-    tox-poetry-installer[poetry]==1.0.0b1
-env_list =
-    py311
-    py38
-    py37
-
-[testenv]
-commands =
-    pytest {posargs: --cov betterproto}
-poetry_dep_groups =
-    test
-require_locked_deps = true
-require_poetry = true
-"""
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3"]
