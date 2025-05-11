@@ -722,7 +722,7 @@ class Message(ABC):
 
         dict = self.__dict__.copy()
         del dict["_unknown_fields"]
-        pydantic_core.SchemaValidator(self.__pydantic_core_schema__).validate_python(dict)
+        pydantic_core.SchemaValidator(self.__pydantic_core_schema__).validate_python(dict)  # type: ignore
 
     def dump(self, stream: SupportsWrite[bytes], delimit: bool = False) -> None:
         """
