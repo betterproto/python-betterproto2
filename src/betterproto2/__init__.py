@@ -860,8 +860,9 @@ class Message(ABC):
                 bits = 32 if meta.proto_type == TYPE_UINT32 else 64
                 value = value & ((1 << bits) - 1)
             elif meta.proto_type in (TYPE_SINT32, TYPE_SINT64):
-                # Undo zig-zag encoding
-                value = (value >> 1) ^ (-(value & 1))
+                bits = 32 if meta.proto_type == TYPE_SINT32 else 64
+                value = value & ((1 << bits) - 1)
+                value = (value >> 1) ^ (-(value & 1))  # Undo zig-zag encoding
             elif meta.proto_type == TYPE_BOOL:
                 # Booleans use a varint encoding, so convert it to true/false.
                 value = value > 0
