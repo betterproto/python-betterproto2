@@ -852,7 +852,7 @@ class Message(ABC):
         """Adjusts values after parsing."""
         if wire_type == WIRE_VARINT:
             if meta.proto_type in (TYPE_INT32, TYPE_INT64):
-                bits = int(meta.proto_type[3:])
+                bits = 32 if meta.proto_type == TYPE_INT32 else 64
                 value = value & ((1 << bits) - 1)
                 signbit = 1 << (bits - 1)
                 value = int((value ^ signbit) - signbit)
