@@ -856,6 +856,9 @@ class Message(ABC):
                 value = value & ((1 << bits) - 1)
                 signbit = 1 << (bits - 1)
                 value = int((value ^ signbit) - signbit)
+            elif meta.proto_type in (TYPE_UINT32, TYPE_UINT64):
+                bits = 32 if meta.proto_type == TYPE_UINT32 else 64
+                value = value & ((1 << bits) - 1)
             elif meta.proto_type in (TYPE_SINT32, TYPE_SINT64):
                 # Undo zig-zag encoding
                 value = (value >> 1) ^ (-(value & 1))
