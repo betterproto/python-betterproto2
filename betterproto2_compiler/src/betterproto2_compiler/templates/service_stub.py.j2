@@ -1,0 +1,32 @@
+class {% filter add_to_all %}{% block class_name %}{% endblock %}{% endfilter %}({% block inherit_from %}{% endblock %}):
+    {% block service_docstring scoped %}
+    {% if service.comment %}
+    """
+    {{ service.comment | indent(4) }}
+    """
+    {% elif not service.methods %}
+    pass
+    {% endif %}
+    {% endblock %}
+
+    {% block class_content %}{% endblock %}
+
+    {% for method in service.methods %}
+    {% block method_definition scoped required %}{% endblock %}
+        {% block method_docstring scoped %}
+        {% if method.comment %}
+        """
+        {{ method.comment | indent(8) }}
+        """
+        {% endif %}
+        {% endblock %}
+
+        {% block deprecation_warning scoped %}
+        {% if method.deprecated %}
+        warnings.warn("{{ service.py_name }}.{{ method.py_name }} is deprecated", DeprecationWarning)
+        {% endif %}
+        {% endblock %}
+
+        {% block method_body scoped required %}{% endblock %}
+
+    {% endfor %}

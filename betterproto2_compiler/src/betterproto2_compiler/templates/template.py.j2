@@ -1,0 +1,174 @@
+{% for _, enum in output_file.enums|dictsort(by="key") %}
+class {{ enum.py_name | add_to_all }}(betterproto2.Enum):
+    {% if enum.comment %}
+    """
+    {{ enum.comment | indent(4) }}
+    """
+    {% endif %}
+
+    {% for entry in enum.entries %}
+    {{ entry.name }} = {{ entry.value }}
+    {% if entry.comment %}
+    """
+    {{ entry.comment | indent(4) }}
+    """
+    {% endif %}
+
+    {% endfor %}
+
+    {% if output_file.settings.pydantic_dataclasses %}
+    @classmethod
+    def __get_pydantic_core_schema__(cls, _source_type, _handler):
+        from pydantic_core import core_schema
+
+        return core_schema.int_schema(ge=0)
+    {% endif %}
+
+{% endfor %}
+{% for _, message in output_file.messages|dictsort(by="key") %}
+{% if output_file.settings.pydantic_dataclasses %}
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+{% else %}
+@dataclass(eq=False, repr=False)
+{% endif %}
+class {{ message.py_name | add_to_all }}(betterproto2.Message):
+    {% if message.comment or message.oneofs %}
+    """
+    {{ message.comment | indent(4) }}
+    {% if message.oneofs %}
+
+    Oneofs:
+        {% for oneof in message.oneofs %}
+        - {{ oneof.name }}: {{ oneof.comment | indent(12) }}
+        {% endfor %}
+    {% endif %}
+    """
+    {% endif %}
+
+    {% for field in message.fields %}
+    {{ field.get_field_string() }}
+    {% if field.comment %}
+    """
+    {{ field.comment | indent(4) }}
+    """
+    {% endif %}
+
+    {% endfor %}
+
+    {% if not message.fields %}
+    pass
+    {% endif %}
+
+    {% if message.deprecated or message.has_deprecated_fields %}
+    def __post_init__(self) -> None:
+        {% if message.deprecated %}
+        warnings.warn("{{ message.py_name }} is deprecated", DeprecationWarning)
+        {% endif %}
+        super().__post_init__()
+        {% for field in message.deprecated_fields %}
+        if self.is_set("{{ field }}"):
+            warnings.warn("{{ message.py_name }}.{{ field }} is deprecated", DeprecationWarning)
+        {% endfor %}
+    {%  endif %}
+
+    {% if output_file.settings.pydantic_dataclasses and message.has_oneof_fields %}
+    @model_validator(mode='after')
+    def check_oneof(cls, values):
+        return cls._validate_field_groups(values)
+
+    {%  endif %}
+    {% for method_source in message.custom_methods %}
+    {{ method_source }}
+    {% endfor %}
+
+default_message_pool.register_message("{{ output_file.package }}", "{{ message.proto_name }}", {{ message.py_name }})
+
+
+{% endfor %}
+
+{% for _, service in output_file.services|dictsort(by="key") %}
+
+{% if output_file.settings.client_generation.is_sync_generated %}
+{% include "service_stub_sync.py.j2" %}
+{% endif %}
+
+{% if output_file.settings.client_generation.is_async_generated %}
+{% include "service_stub_async.py.j2" %}
+{% endif %}
+
+{% endfor %}
+
+{% for i in output_file.imports_end %}
+{{ i }}
+{% endfor %}
+
+{% if output_file.settings.server_generation == "async" %}
+{% for _, service in output_file.services|dictsort(by="key") %}
+class {{ (service.py_name + "Base") | add_to_all }}(ServiceBase):
+    {% if service.comment %}
+    """
+    {{ service.comment | indent(4) }}
+    """
+    {% endif %}
+
+    {% for method in service.methods %}
+    async def {{ method.py_name }}(self
+        {%- if not method.client_streaming -%}
+            , message: "{{ method.py_input_message_type }}"
+        {%- else -%}
+            {# Client streaming: need a request iterator instead #}
+            , messages: "AsyncIterator[{{ method.py_input_message_type }}]"
+        {%- endif -%}
+            ) -> {% if method.server_streaming %}"AsyncIterator[{{ method.py_output_message_type }}]"{% else %}"{{ method.py_output_message_type }}"{% endif %}:
+        {% if method.comment %}
+        """
+        {{ method.comment | indent(8) }}
+        """
+        {% endif %}
+
+        raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
+
+    {% endfor %}
+
+    {% for method in service.methods %}
+    async def __rpc_{{ method.py_name }}(self, stream: "grpclib.server.Stream[{{ method.py_input_message_type }}, {{ method.py_output_message_type }}]") -> None:
+        {% if not method.client_streaming %}
+        request = await stream.recv_message()
+        {% else %}
+        request = stream.__aiter__()
+        {% endif %}
+        {% if not method.server_streaming %}
+        response = await self.{{ method.py_name }}(request)
+        await stream.send_message(response)
+        {% else %}
+        await self._call_rpc_handler_server_stream(
+            self.{{ method.py_name }},
+            stream,
+            request,
+        )
+        {% endif %}
+
+    {% endfor %}
+
+    def __mapping__(self) -> "dict[str, grpclib.const.Handler]":
+        return {
+        {% for method in service.methods %}
+        "{{ method.route }}": grpclib.const.Handler(
+            self.__rpc_{{ method.py_name }},
+            {% if not method.client_streaming and not method.server_streaming %}
+            grpclib.const.Cardinality.UNARY_UNARY,
+            {% elif not method.client_streaming and method.server_streaming %}
+            grpclib.const.Cardinality.UNARY_STREAM,
+            {% elif method.client_streaming and not method.server_streaming %}
+            grpclib.const.Cardinality.STREAM_UNARY,
+            {% else %}
+            grpclib.const.Cardinality.STREAM_STREAM,
+            {% endif %}
+            {{ method.py_input_message_type }},
+            {{ method.py_output_message_type }},
+        ),
+        {% endfor %}
+        }
+
+{% endfor %}
+{% endif %}

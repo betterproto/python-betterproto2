@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package stream_stream;
+
+message Message {
+    string body = 1;
+}

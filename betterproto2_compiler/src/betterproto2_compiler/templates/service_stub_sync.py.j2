@@ -1,0 +1,72 @@
+{% extends "service_stub.py.j2" %}
+
+{# Class definition #}
+{% block class_name %}{{ service.py_name }}{% if output_file.settings.client_generation.is_sync_prefixed %}Sync{% endif %}Stub{% endblock %}
+
+{% block class_content %}
+    {# TODO move to parent class #}
+    def __init__(self, channel: grpc.Channel):
+        self._channel = channel
+{% endblock %}
+
+{# Methods definition #}
+{% block method_definition %}
+    def {{ method.py_name }}(self
+        {%- if not method.client_streaming -%}
+            , message:
+                {%- if method.is_input_msg_empty -%}
+                    "{{ method.py_input_message_type }} | None" = None
+                {%- else -%}
+                    "{{ method.py_input_message_type }}"
+                {%- endif -%}
+        {%- else -%}
+            {# Client streaming: need a request iterator instead #}
+            , messages: "Iterable[{{ method.py_input_message_type }}]"
+        {%- endif -%}
+            ) -> "{% if method.server_streaming %}Iterator[{{ method.py_output_message_type }}]{% else %}{{ method.py_output_message_type }}{% endif %}":
+{% endblock %}
+
+{% block method_body %}
+    {% if method.server_streaming %}
+      {% if method.client_streaming %}
+        for response in self._channel.stream_stream(
+            "{{ method.route }}",
+            {{ method.py_input_message_type }}.SerializeToString,
+            {{ method.py_output_message_type }}.FromString,
+        )(iter(messages)):
+            yield response
+      {% else %}
+        {% if method.is_input_msg_empty %}
+        if message is None:
+            message = {{ method.py_input_message_type }}()
+
+        {% endif %}
+        for response in self._channel.unary_stream(
+            "{{ method.route }}",
+            {{ method.py_input_message_type }}.SerializeToString,
+            {{ method.py_output_message_type }}.FromString,
+        )(message):
+            yield response
+
+      {% endif %}
+    {% else %}
+      {% if method.client_streaming %}
+        return self._channel.stream_unary(
+            "{{ method.route }}",
+            {{ method.py_input_message_type }}.SerializeToString,
+            {{ method.py_output_message_type }}.FromString,
+        )(iter(messages))
+      {% else %}
+        {% if method.is_input_msg_empty %}
+        if message is None:
+            message = {{ method.py_input_message_type }}()
+
+        {% endif %}
+        return self._channel.unary_unary(
+            "{{ method.route }}",
+            {{ method.py_input_message_type }}.SerializeToString,
+            {{ method.py_output_message_type }}.FromString,
+        )(message)
+      {% endif %}
+    {% endif %}
+{% endblock %}
