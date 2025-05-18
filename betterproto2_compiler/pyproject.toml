@@ -6,11 +6,20 @@ authors = [
     { name = "Adrien Vannson", email = "adrien.vannson@protonmail.com" },
     { name = "Daniel G. Taylor", email = "danielgtaylor@gmail.com" },
 ]
-readme = "README.md"
-keywords = ["protobuf", "gRPC", "compiler"]
-license = "MIT"
 requires-python = ">=3.10,<4.0"
-dynamic = ["dependencies"]
+license = "MIT"
+keywords = [
+    "protobuf",
+    "gRPC",
+    "compiler",
+]
+dependencies = [
+    "betterproto2[grpclib]>=0.5.1,<0.6",
+    "ruff~=0.9.3",
+    "jinja2>=3.0.3",
+    "typing-extensions>=4.7.1,<5",
+    "strenum>=0.4.15,<0.5 ; python_version == '3.10'",
+]
 
 [project.urls]
 Documentation = "https://betterproto.github.io/python-betterproto2-compiler/"
@@ -19,36 +28,39 @@ Repository = "https://github.com/betterproto/python-betterproto2-compiler"
 [project.scripts]
 protoc-gen-python_betterproto2 = "betterproto2_compiler.plugin:main"
 
-[tool.poetry]
-packages = [
-    { include = "betterproto2_compiler", from = "src" }
+[dependency-groups]
+dev = [
+    "pre-commit>=2.17.0,<3",
+    "grpcio-tools>=1.54.2,<2",
+    "mkdocs-material>=9.5.49,<10",
+    "mkdocstrings[python]>=0.27.0,<0.28",
+    "poethepoet>=0.32.2,<0.33",
+    "pyright>=1.1.391,<2",
+    "ipykernel>=6.29.5,<7",
+]
+test = [
+    "pytest>=8.3.4,<9",
+    "protobuf>=5.29.3,<6",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-betterproto2 = { version = "^0.5.1", extras = ["grpclib"] }
-# betterproto2 = { git="https://github.com/betterproto/python-betterproto2" }
-# betterproto2 = { path = "../python-betterproto2", extras = ["grpclib"] }
-# The Ruff version is pinned. To update it, also update it in .pre-commit-config.yaml
-ruff = "~0.9.3"
-jinja2 = ">=3.0.3"
-typing-extensions = "^4.7.1"
-strenum = [
-    {version = "^0.4.15", python = "=3.10"},
+[tool.uv]
+default-groups = [
+    "dev",
+    "test",
 ]
 
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^2.17.0"
-grpcio-tools = "^1.54.2"
-mkdocs-material = {version = "^9.5.49"}
-mkdocstrings = {version = "^0.27.0", extras = ["python"]}
-poethepoet = "^0.32.2"
-pyright = "^1.1.391"
-ipykernel = "^6.29.5"
+[tool.hatch.build.targets.sdist]
+include = ["src/betterproto2_compiler"]
 
-[tool.poetry.group.test.dependencies]
-pytest = "^8.3.4"
-protobuf = "^5.29.3"
+[tool.hatch.build.targets.wheel]
+include = ["src/betterproto2_compiler"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/betterproto2_compiler" = "betterproto2_compiler"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 extend-exclude = ["tests/output_*", "src/betterproto2_compiler/lib"]
@@ -71,11 +83,8 @@ select = [
     "I",
 ]
 
-
 [tool.ruff.lint.isort]
 combine-as-imports = true
-
-# Dev workflow tasks
 
 [tool.poe.tasks.test]
 cmd = "pytest"
@@ -149,10 +158,6 @@ help = "Check the code with the Ruff linter"
 [tool.poe.tasks.serve-docs]
 cmd = "mkdocs serve"
 help = "Serve the documentation locally"
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3"]
-build-backend = "poetry.core.masonry.api"
 
 # python -m grpc.tools.protoc \
 #     --python_betterproto2_out=src/lib2 \
