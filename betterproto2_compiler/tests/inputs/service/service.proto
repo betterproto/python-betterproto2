@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package service;
+
+enum ThingType {
+  UNKNOWN = 0;
+  LIVING = 1;
+  DEAD = 2;
+}
+
+message DoThingRequest {
+  string name = 1;
+  repeated string comments = 2;
+  ThingType type = 3;
+}
+
+message DoThingResponse {
+  repeated string names = 1;
+}
+
+message GetThingRequest {
+  string name = 1;
+}
+
+message GetThingResponse {
+  string name = 1;
+  int32 version = 2;
+}
+
+service Test {
+  rpc DoThing (DoThingRequest) returns (DoThingResponse);
+  rpc DoManyThings (stream DoThingRequest) returns (DoThingResponse);
+  rpc GetThingVersions (GetThingRequest) returns (stream GetThingResponse);
+  rpc GetDifferentThings (stream GetThingRequest) returns (stream GetThingResponse);
+}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package googletypes_service_returns_empty;
+
+import "google/protobuf/empty.proto";
+
+service Test {
+    rpc Send (RequestMessage) returns (google.protobuf.Empty) {
+    }
+}
+
+message RequestMessage {
+}

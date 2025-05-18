@@ -1,0 +1,169 @@
+[project]
+name = "betterproto2_compiler"
+version = "0.5.1"
+description = "Compiler for betterproto2"
+authors = [
+    { name = "Adrien Vannson", email = "adrien.vannson@protonmail.com" },
+    { name = "Daniel G. Taylor", email = "danielgtaylor@gmail.com" },
+]
+readme = "README.md"
+keywords = ["protobuf", "gRPC", "compiler"]
+license = "MIT"
+requires-python = ">=3.10,<4.0"
+dynamic = ["dependencies"]
+
+[project.urls]
+Documentation = "https://betterproto.github.io/python-betterproto2-compiler/"
+Repository = "https://github.com/betterproto/python-betterproto2-compiler"
+
+[project.scripts]
+protoc-gen-python_betterproto2 = "betterproto2_compiler.plugin:main"
+
+[tool.poetry]
+packages = [
+    { include = "betterproto2_compiler", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+betterproto2 = { version = "^0.5.1", extras = ["grpclib"] }
+# betterproto2 = { git="https://github.com/betterproto/python-betterproto2" }
+# betterproto2 = { path = "../python-betterproto2", extras = ["grpclib"] }
+# The Ruff version is pinned. To update it, also update it in .pre-commit-config.yaml
+ruff = "~0.9.3"
+jinja2 = ">=3.0.3"
+typing-extensions = "^4.7.1"
+strenum = [
+    {version = "^0.4.15", python = "=3.10"},
+]
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^2.17.0"
+grpcio-tools = "^1.54.2"
+mkdocs-material = {version = "^9.5.49"}
+mkdocstrings = {version = "^0.27.0", extras = ["python"]}
+poethepoet = "^0.32.2"
+pyright = "^1.1.391"
+ipykernel = "^6.29.5"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+protobuf = "^5.29.3"
+
+[tool.ruff]
+extend-exclude = ["tests/output_*", "src/betterproto2_compiler/lib"]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "F401",  # Unused imports
+    "F841",  # Unused local variables
+    "F821",  # Undefined names
+    "E501",  # Line length violations
+
+    "SIM101", # Simplify unnecessary if-else blocks
+    "SIM102", # Simplify return or yield statements
+    "SIM103", # Simplify list/set/dict comprehensions
+
+    "UP",
+
+    "I",
+]
+
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+# Dev workflow tasks
+
+[tool.poe.tasks.test]
+cmd = "pytest"
+help = "Run tests"
+
+[tool.poe.tasks.generate]
+sequence = ["_generate_tests", "_generate_tests_lib"]
+help = "Generate test cases"
+
+[tool.poe.tasks._generate_tests]
+script = "tests.generate:main"
+
+[tool.poe.tasks._generate_tests_lib]
+shell = """
+python -m grpc.tools.protoc \
+    --python_betterproto2_out=tests/output_betterproto \
+    google/protobuf/any.proto \
+    google/protobuf/api.proto \
+    google/protobuf/duration.proto \
+    google/protobuf/empty.proto \
+    google/protobuf/field_mask.proto \
+    google/protobuf/source_context.proto \
+    google/protobuf/struct.proto \
+    google/protobuf/timestamp.proto \
+    google/protobuf/type.proto \
+    google/protobuf/wrappers.proto
+
+python -m grpc.tools.protoc \
+    --python_betterproto2_out=tests/output_betterproto_pydantic \
+    --python_betterproto2_opt=pydantic_dataclasses \
+    google/protobuf/any.proto \
+    google/protobuf/api.proto \
+    google/protobuf/duration.proto \
+    google/protobuf/empty.proto \
+    google/protobuf/field_mask.proto \
+    google/protobuf/source_context.proto \
+    google/protobuf/struct.proto \
+    google/protobuf/timestamp.proto \
+    google/protobuf/type.proto \
+    google/protobuf/wrappers.proto
+"""
+
+[tool.poe.tasks.typecheck]
+cmd  = "pyright src"
+help = "Typecheck the code with Pyright"
+
+[tool.poe.tasks.format]
+sequence = ["_format", "_sort-imports"]
+help = "Format the source code, and sort the imports"
+
+[tool.poe.tasks.check]
+sequence = ["_check-format", "_check-ruff-lint"]
+help = "Check that the source code is formatted and the code passes the linter"
+
+[tool.poe.tasks._format]
+cmd = "ruff format src tests"
+help = "Format the source code without sorting the imports"
+
+[tool.poe.tasks._sort-imports]
+cmd = "ruff check --select I --fix src tests"
+help = "Sort the imports"
+
+[tool.poe.tasks._check-format]
+cmd = "ruff format --diff src tests"
+help = "Check that the source code is formatted"
+
+[tool.poe.tasks._check-ruff-lint]
+cmd = "ruff check src tests"
+help = "Check the code with the Ruff linter"
+
+[tool.poe.tasks.serve-docs]
+cmd = "mkdocs serve"
+help = "Serve the documentation locally"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3"]
+build-backend = "poetry.core.masonry.api"
+
+# python -m grpc.tools.protoc \
+#     --python_betterproto2_out=src/lib2 \
+#     google/protobuf/any.proto \
+#     google/protobuf/api.proto \
+#     google/protobuf/duration.proto \
+#     google/protobuf/empty.proto \
+#     google/protobuf/field_mask.proto \
+#     google/protobuf/source_context.proto \
+#     google/protobuf/struct.proto \
+#     google/protobuf/timestamp.proto \
+#     google/protobuf/type.proto \
+#     google/protobuf/wrappers.proto \
+#     google/protobuf/compiler/plugin.proto

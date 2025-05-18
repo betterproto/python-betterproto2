@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package googletypes_struct;
+
+import "google/protobuf/struct.proto";
+
+message Test {
+  google.protobuf.Struct struct = 1;
+}

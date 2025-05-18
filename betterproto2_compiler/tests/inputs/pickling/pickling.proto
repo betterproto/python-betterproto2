@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package pickling;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
+
+message Test {}
+
+message Fe {
+    string abc = 1;
+}
+
+message Fi {
+    string abc = 1;
+}
+
+message Fo {
+    string abc = 1;
+}
+
+message NestedData {
+    map<string, google.protobuf.Struct> struct_foo = 1;
+    map<string, google.protobuf.Any> map_str_any_bar = 2;
+}
+
+message Complex {
+    string foo_str = 1;
+    oneof grp {
+        Fe fe = 3;
+        Fi fi = 4;
+        Fo fo = 5;
+    }
+    NestedData nested_data = 6;
+    map<string, google.protobuf.Any> mapping = 7;
+}
+
+message PickledMessage {
+    bool foo = 1;
+    int32 bar = 2;
+    repeated string baz = 3;
+}

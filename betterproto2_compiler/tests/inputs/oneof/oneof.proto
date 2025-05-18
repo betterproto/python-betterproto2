@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package oneof;
+
+message MixedDrink {
+  int32 shots = 1;
+}
+
+message Test {
+  oneof foo {
+    int32 pitied = 1;
+    string pitier = 2;
+  }
+
+  int32 just_a_regular_field = 3;
+
+  oneof bar {
+    int32 drinks = 11;
+    string bar_name = 12;
+    MixedDrink mixed_drink = 13;
+  }
+}
+
