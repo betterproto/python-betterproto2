@@ -1112,9 +1112,11 @@ class Message(ABC):
         init_kwargs: dict[str, Any] = {}
         for key, value in mapping.items():
             field_name = safe_snake_case(key)
-            field_cls = cls._betterproto.cls_by_field[field_name]
 
             try:
+                # To support backwards compatible additive changes, we wrap the accessing in a try except. If a field
+                # is not present in Message, but it is present in the mapping, we ignore it.
+                field_cls = cls._betterproto.cls_by_field[field_name]
                 meta = cls._betterproto.meta_by_field_name[field_name]
             except KeyError:
                 continue  # TODO is it a problem?
