@@ -267,6 +267,20 @@ def test_to_dict_datetime_values():
     bytes(test)
 
 
+def test_from_dict_backward_compatibility():
+    from tests.output_betterproto.features import Newer, Older
+
+    newer = Newer(x=True, y=1, z="Hello")
+    dict_newer = newer.to_dict()
+
+    round_trip = Older.from_dict(dict_newer)
+
+    # ensure that there is no failure and extra fields y & z are ignored
+    expected_round_trip = Older(x=True)
+
+    assert expected_round_trip == round_trip
+
+
 def test_oneof_default_value_set_causes_writes_wire():
     from tests.output_betterproto.features import Empty, MsgC
 
