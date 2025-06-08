@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   tests:
-    name: ${{ matrix.os }} / ${{ matrix.python-version }} / Rust codec ${{ matrix.rust-codec }}
+    name: ${{ matrix.os }} / ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}-latest
     strategy:
       fail-fast: false
