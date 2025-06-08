@@ -182,7 +182,7 @@ def test_binary_compatibility(test_data: TestData) -> None:
     plugin_module, reference_module, json_data = test_data
 
     # TODO fix and delete
-    if "/map/" in plugin_module.__file__:
+    if "map" in plugin_module.__file__.replace("\\", "/").split("/"):
         pytest.skip("Skipping this test for now.")
 
     for sample in json_data:
