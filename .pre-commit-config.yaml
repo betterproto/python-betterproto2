@@ -6,6 +6,6 @@ repos:
     rev: v0.9.3
     hooks:
       - id: ruff-format
-        args: ["--diff", "src", "tests"]
+        args: ["--diff", "betterproto2/src", "betterproto2/tests", "betterproto2_compiler/src", "betterproto2_compiler/tests"]
       - id: ruff
-        args: ["src", "tests"]
+        args: ["betterproto2/src", "betterproto2/tests", "betterproto2_compiler/src", "betterproto2_compiler/tests"]

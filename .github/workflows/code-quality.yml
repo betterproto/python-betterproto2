@@ -12,42 +12,27 @@ permissions:
   contents: read
 
 jobs:
-  check-formatting:
+  code-quality:
     name: Check code/doc formatting
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    # - uses: actions/setup-python@v5
     - uses: pre-commit/action@v3.0.1
 
-    - name: Install poetry
-      shell: bash
-      run: |
-        python -m pip install poetry
-        echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-
-    - name: Configure poetry
-      shell: bash
-      run: poetry config virtualenvs.in-project true
-
-    - name: Set up cache
-      uses: actions/cache@v3
-      id: cache
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
       with:
-        path: .venv
-        key: venv-quality-${{ hashFiles('**/poetry.lock') }}
+        version: "0.7.5"
+        python-version: 3.10
 
-    - name: Ensure cache is healthy
-      if: steps.cache.outputs.cache-hit == 'true'
-      shell: bash
-      run: poetry run pip --version >/dev/null 2>&1 || rm -rf .venv
-
-    - name: Install dependencies
-      shell: bash
-      run: poetry install -E all
+    - name: Install the project
+      working-directory: ./betterproto2
+      run: uv sync --locked --all-extras --all-groups
 
     - uses: pre-commit/action@v3.0.1
 
     - name: Pyright
+      working-directory: ./betterproto2
       shell: bash
-      run: poetry run poe typecheck
+      run: uv run poe typecheck
