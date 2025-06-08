@@ -1,31 +1,28 @@
 site_name: Betterproto2
-site_url: https://betterproto.github.io/python-betterproto2/
+site_url: https://betterproto.github.io/
 theme:
   name: material
   palette:
     primary: deep orange
     accent: deep orange
-  
-  features:
-   - navigation.tabs
 
 nav:
-  - Betterproto2: 
-     - index.md
-     - Getting Started: getting-started.md
-     - Tutorial:
-        - Messages: tutorial/messages.md
-        - Clients: tutorial/clients.md
-     - API: api.md
-  - Betterproto2 compiler: https://betterproto.github.io/python-betterproto2-compiler/
+  - index.md
+  - Getting Started: getting-started.md
+  - Tutorial:
+    - Messages: tutorial/messages.md
+    - Clients: tutorial/clients.md
+  - API: api.md
+  - Development: development.md
+    
 
 plugins:
-- search
-- mkdocstrings:
-    handlers:
-      python:
-        options:
-          show_source: false
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
 
 markdown_extensions:
   - admonition

@@ -1,5 +1,7 @@
 # Development
 
+This page targets the betterproto maintainers.
+
 ## Recompiling the lib proto files
 
 After some updates in the compiler, it might be useful to recompile the standard Google proto files used by the
