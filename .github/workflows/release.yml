@@ -37,3 +37,33 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1.12
         with:
           packages-dir: betterproto2/dist
+
+  publish_betterproto2_compiler:
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/compiler-v')
+    name: Publish betterproto2_compiler to PyPI
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/betterproto2_compiler
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.7.5"
+          python-version: "3.10"
+
+      - name: Build package
+        working-directory: ./betterproto2_compiler
+        run: uv build
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1.12
+        with:
+          packages-dir: betterproto2_compiler/dist
