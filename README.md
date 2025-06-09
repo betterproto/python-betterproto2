@@ -4,7 +4,7 @@
 
 > :warning: `betterproto2` is a fork of the original [`betterproto`](https://github.com/danielgtaylor/python-betterproto) repository. It is a major redesign of the library, allowing to fix several bugs and to support new features.
 > 
-> However, it is still in active developement. The documentation is not complete and a few breaking changes still are likely to be done. There is still work to do and the project is still subject to breaking changes.
+> However, it is still in active developement. The documentation is not complete, there is still work to do and the project is still subject to breaking changes.
 
 This project aims to provide an improved experience when using Protobuf / gRPC in a modern Python environment by making use of modern language features and generating readable, understandable, idiomatic Python code. It will not support legacy features or environments (e.g. Protobuf 2). The following are supported:
 
