@@ -1108,16 +1108,23 @@ class Message(ABC):
         return output
 
     @classmethod
-    def _from_dict_init(cls, mapping: Mapping[str, Any] | Any) -> Mapping[str, Any]:
+    def _from_dict_init(cls, mapping: Mapping[str, Any] | Any, *, ignore_unknown_fields: bool) -> Mapping[str, Any]:
         init_kwargs: dict[str, Any] = {}
         for key, value in mapping.items():
             field_name = safe_snake_case(key)
-            field_cls = cls._betterproto.cls_by_field[field_name]
 
             try:
+                field_cls = cls._betterproto.cls_by_field[field_name]
                 meta = cls._betterproto.meta_by_field_name[field_name]
             except KeyError:
-                continue  # TODO is it a problem?
+                # According to the protobuf spec (https://protobuf.dev/programming-guides/json/): "The protobuf JSON
+                # parser should reject unknown fields by default but may provide an option to ignore unknown fields in
+                # parsing."
+                if ignore_unknown_fields:
+                    continue
+
+                raise KeyError(f"Unknown field '{field_name}' in message {cls.__name__}.") from None
+
             if value is None:
                 continue
 
@@ -1148,7 +1155,7 @@ class Message(ABC):
         return init_kwargs
 
     @classmethod
-    def from_dict(cls: type[Self], value: Mapping[str, Any] | Any) -> Self:
+    def from_dict(cls: type[Self], value: Mapping[str, Any] | Any, *, ignore_unknown_fields: bool = False) -> Self:
         """
         Parse the key/value pairs into the a new message instance.
 
@@ -1165,7 +1172,7 @@ class Message(ABC):
         if not isinstance(value, Mapping) and hasattr(cls, "from_wrapped"):  # type: ignore
             return cls.from_wrapped(value)  # type: ignore
 
-        return cls(**cls._from_dict_init(value))
+        return cls(**cls._from_dict_init(value, ignore_unknown_fields=ignore_unknown_fields))  # type: ignore
 
     def to_json(
         self,

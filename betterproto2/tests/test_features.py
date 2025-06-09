@@ -10,6 +10,8 @@ from inspect import (
 )
 from unittest.mock import ANY
 
+import pytest
+
 import betterproto2
 from betterproto2 import OutputFormat
 
@@ -52,6 +54,15 @@ def test_unknown_fields():
 
     new_again = Newer.parse(round_trip)
     assert newer == new_again
+
+
+def test_from_dict_unknown_fields():
+    from tests.output_betterproto.features import Older
+
+    with pytest.raises(KeyError):
+        Older.from_dict({"x": True, "y": 1})
+
+    assert Older.from_dict({"x": True, "y": 1}, ignore_unknown_fields=True) == Older(x=True)
 
 
 def test_oneof_support():
