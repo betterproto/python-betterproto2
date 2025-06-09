@@ -6,7 +6,6 @@ authors = [
     {name = "Adrien Vannson", email = "adrien.vannson@protonmail.com"},
     {name = "Daniel G. Taylor", email = "danielgtaylor@gmail.com"}
 ]
-# readme = "../README.md"
 keywords = ["protobuf", "gRPC"]
 license = "MIT"
 requires-python = ">=3.10,<4.0"
@@ -25,8 +24,34 @@ grpclib = ["grpclib>=0.4.8"]
 pydantic = ["pydantic>=2.11.5"]
 all = ["grpclib>=0.4.8", "grpcio>=1.72.1", "pydantic>=2.11.5"]
 
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+    "mkdocs-material>=9.6.14",
+    "mkdocstrings[python]>=0.29.1",
+    "mypy>=1.16.0",
+    "pre-commit>=4.2.0",
+    "pyright>=1.1.401",
+    # The Ruff version is pinned. To update it, also update it in .pre-commit-config.yaml
+    "ruff==0.9.3",
+]
+test = [
+    "cachelib>=0.13.0",
+    "poethepoet>=0.34.0",
+    "protobuf>=5.29.3",
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.1.1",
+    "pytest-mock>=3.14.1",
+]
+
 [tool.uv]
 package = true
+default-groups = "all"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 # [tool.poetry]
 # packages = [
@@ -67,7 +92,7 @@ addopts = "-p no:warnings"
 # Dev workflow tasks
 [tool.poe.tasks.get-local-compiled-tests]
 # task useful for local development. Copies the compiled test files from the compiler folder to the tests folder
-shell = "rm -r tests/output_* && cp -r ../python-betterproto2-compiler/tests/output_* tests"
+shell = "rm -rf tests/output_* && cp -r ../betterproto2_compiler/tests/output_* tests"
 
 [tool.poe.tasks.test]
 cmd = "pytest"
@@ -127,28 +152,3 @@ help = "Pulls the compiled test files from the betterproto2-compiler repository"
 [tool.poe.tasks.serve-docs]
 cmd = "mkdocs serve"
 help = "Serve the documentation locally"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[dependency-groups]
-dev = [
-    "ipykernel>=6.29.5",
-    "mkdocs-material>=9.6.14",
-    "mkdocstrings[python]>=0.29.1",
-    "mypy>=1.16.0",
-    "pre-commit>=4.2.0",
-    "pyright>=1.1.401",
-    # The Ruff version is pinned. To update it, also update it in .pre-commit-config.yaml
-    "ruff==0.9.3",
-]
-test = [
-    "cachelib>=0.13.0",
-    "poethepoet>=0.34.0",
-    "protobuf>=5.29.3",
-    "pytest>=8.4.0",
-    "pytest-asyncio>=1.0.0",
-    "pytest-cov>=6.1.1",
-    "pytest-mock>=3.14.1",
-]

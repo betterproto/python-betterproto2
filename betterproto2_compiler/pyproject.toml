@@ -6,14 +6,15 @@ authors = [
     { name = "Adrien Vannson", email = "adrien.vannson@protonmail.com" },
     { name = "Daniel G. Taylor", email = "danielgtaylor@gmail.com" },
 ]
-requires-python = ">=3.10,<4.0"
 license = "MIT"
 keywords = [
     "protobuf",
     "gRPC",
     "compiler",
 ]
+requires-python = ">=3.10,<4.0"
 dependencies = [
+    # TODO use the version from the current repo?
     "betterproto2[grpclib]>=0.5.1,<0.6",
     "ruff~=0.9.3",
     "jinja2>=3.0.3",
@@ -42,19 +43,17 @@ test = [
 ]
 
 [tool.uv]
-default-groups = [
-    "dev",
-    "test",
-]
+package = true
+default-groups = "all"
 
-[tool.hatch.build.targets.sdist]
-include = ["src/betterproto2_compiler"]
+# [tool.hatch.build.targets.sdist]
+# include = ["src/betterproto2_compiler"]
 
-[tool.hatch.build.targets.wheel]
-include = ["src/betterproto2_compiler"]
+# [tool.hatch.build.targets.wheel]
+# include = ["src/betterproto2_compiler"]
 
-[tool.hatch.build.targets.wheel.sources]
-"src/betterproto2_compiler" = "betterproto2_compiler"
+# [tool.hatch.build.targets.wheel.sources]
+# "src/betterproto2_compiler" = "betterproto2_compiler"
 
 [build-system]
 requires = ["hatchling"]
