@@ -1,6 +1,6 @@
 [project]
 name = "betterproto2_compiler"
-version = "0.5.1"
+version = "0.6.0"
 description = "Compiler for betterproto2"
 authors = [
     { name = "Adrien Vannson", email = "adrien.vannson@protonmail.com" },
