@@ -15,7 +15,7 @@ keywords = [
 requires-python = ">=3.10,<4.0"
 dependencies = [
     # TODO use the version from the current repo?
-    "betterproto2[grpclib]>=0.5.1,<0.6",
+    "betterproto2[grpclib]>=0.6.0,<0.7",
     "ruff~=0.9.3",
     "jinja2>=3.0.3",
     "typing-extensions>=4.7.1,<5",

@@ -17,7 +17,7 @@ import betterproto2
 
 from ....message_pool import default_message_pool
 
-betterproto2.check_compiler_version("0.5.0")
+betterproto2.check_compiler_version("0.6.0")
 
 
 class CodeGeneratorResponseFeature(betterproto2.Enum):
