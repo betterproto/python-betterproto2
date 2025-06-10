@@ -1212,7 +1212,7 @@ class Message(ABC):
         )
 
     @classmethod
-    def from_json(cls, value: str | bytes) -> Self:
+    def from_json(cls, value: str | bytes, *, ignore_unknown_fields: bool = False) -> Self:
         """A helper function to return the message instance from its JSON
         representation. This returns the instance itself and is therefore assignable
         and chainable.
@@ -1231,7 +1231,7 @@ class Message(ABC):
         :class:`Message`
             The initialized message.
         """
-        return cls.from_dict(json.loads(value))
+        return cls.from_dict(json.loads(value), ignore_unknown_fields=ignore_unknown_fields)
 
     def is_set(self, name: str) -> bool:
         """

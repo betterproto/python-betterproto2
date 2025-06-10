@@ -65,6 +65,15 @@ def test_from_dict_unknown_fields():
     assert Older.from_dict({"x": True, "y": 1}, ignore_unknown_fields=True) == Older(x=True)
 
 
+def test_from_json_unknown_fields():
+    from tests.output_betterproto.features import Older
+
+    with pytest.raises(KeyError):
+        Older.from_json('{"x": true, "y": 1}')
+
+    assert Older.from_json('{"x": true, "y": 1}', ignore_unknown_fields=True) == Older(x=True)
+
+
 def test_oneof_support():
     from tests.output_betterproto.features import IntMsg, OneofMsg
 
