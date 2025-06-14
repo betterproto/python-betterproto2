@@ -68,6 +68,7 @@ class ServerGeneration(StrEnum):
 @dataclass
 class Settings:
     pydantic_dataclasses: bool
+    google_protobuf_descriptors: bool
 
     client_generation: ClientGeneration
     server_generation: ServerGeneration

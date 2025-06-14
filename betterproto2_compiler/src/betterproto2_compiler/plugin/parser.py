@@ -81,6 +81,7 @@ def get_settings(plugin_options: list[str]) -> Settings:
 
     return Settings(
         pydantic_dataclasses="pydantic_dataclasses" in plugin_options,
+        google_protobuf_descriptors="google_protobuf_descriptors" in plugin_options,
         client_generation=client_generation,
         server_generation=server_generation,
     )
