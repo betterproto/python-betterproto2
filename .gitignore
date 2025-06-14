@@ -6,7 +6,7 @@
 .pytest_cache
 .python-version
 build/
-tests/output_*
+*/tests/output_*
 **/__pycache__
 dist
 **/*.egg-info

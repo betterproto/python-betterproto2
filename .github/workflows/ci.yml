@@ -49,7 +49,7 @@ jobs:
 
       - name: Move compiled files to betterproto2
         shell: bash
-        run: mv betterproto2_compiler/tests/output_betterproto betterproto2_compiler/tests/output_betterproto_pydantic betterproto2_compiler/tests/output_reference betterproto2/tests 
+        run: mv betterproto2_compiler/tests/output_betterproto betterproto2_compiler/tests/output_betterproto_pydantic betterproto2_compiler/tests/output_betterproto_descriptor betterproto2_compiler/tests/output_reference betterproto2/tests
 
       - name: Execute test suite
         working-directory: ./betterproto2

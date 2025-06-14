@@ -216,6 +216,10 @@ class OutputTemplate:
         """
         return sorted([f.name for f in self.input_files])
 
+    @property
+    def descriptor(self):
+        return self.package_proto_obj.SerializeToString()
+
 
 @dataclass(kw_only=True)
 class MessageCompiler(ProtoContentBase):
@@ -265,6 +269,10 @@ class MessageCompiler(ProtoContentBase):
             methods_source.append(source.strip())
 
         return methods_source
+
+    @property
+    def descriptor(self):
+        return self.proto_obj.SerializeToString()
 
 
 def is_map(proto_field_obj: FieldDescriptorProto, parent_message: DescriptorProto) -> bool:
@@ -594,6 +602,10 @@ class EnumDefinitionCompiler(ProtoContentBase):
     @property
     def deprecated(self) -> bool:
         return bool(self.proto_obj.options and self.proto_obj.options.deprecated)
+
+    @property
+    def descriptor(self):
+        return self.proto_obj.SerializeToString()
 
 
 @dataclass(kw_only=True)

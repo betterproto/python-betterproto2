@@ -32,6 +32,9 @@ import betterproto2
 from betterproto2.grpc.grpclib_server import ServiceBase
 import grpc
 import grpclib
+{# These imports will be pruned by the compiler if they are unused. #}
+from google.protobuf import descriptor_pool as _descriptor_pool
+from google.protobuf.descriptor import Descriptor, EnumDescriptor
 
 {# Import the message pool of the generated code. #}
 {% if output_file.package %}
@@ -46,3 +49,8 @@ if TYPE_CHECKING:
     from grpclib.metadata import Deadline
 
 betterproto2.check_compiler_version("{{ version }}")
+
+{% if output_file.settings.google_protobuf_descriptors %}
+{# Add descriptors to Google protobuf's default pool to be more drop-in compatible with other libraries. #}
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile({{ output_file.descriptor }})
+{% endif %}
