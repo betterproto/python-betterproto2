@@ -34,7 +34,7 @@ from dataclasses import (
 
 from betterproto2 import unwrap
 
-from betterproto2_compiler.compile.importing import get_type_reference, parse_source_type_name
+from betterproto2_compiler.compile.importing import get_symbol_reference, get_type_reference, parse_source_type_name
 from betterproto2_compiler.compile.naming import (
     pythonize_class_name,
     pythonize_enum_member_name,
@@ -217,7 +217,41 @@ class OutputTemplate:
         return sorted([f.name for f in self.input_files])
 
     @property
+    def dependency_imports(self):
+        """Proto dependencies as Python imports.
+
+        Returns
+        -------
+        list[str]
+            Imports for each proto dependency of this package resolved to the output
+            names, not the input file paths.
+        """
+        def dep_to_pkg_import(dep: str) -> str:
+            for (output_name, pkg) in self.parent_request.output_packages.items():
+                if dep in pkg.input_filenames:
+                    ref, ref_import = get_symbol_reference(
+                        package=self.package,
+                        imports=self.imports_end,
+                        source_package=output_name,
+                        request=self.parent_request,
+                        symbol="_COMPILER_VERSION",
+                        import_suffx="_dep"
+                    )
+
+                    # import and check compiler version for safety and to avoid this import being removed.
+                    return f'{ref_import}\nbetterproto2.check_compiler_version({ref})'
+            raise ValueError(f"cannot find which output package {dep} belongs to")
+        return [dep_to_pkg_import(dep) for dep in self.package_proto_obj.dependency]
+
+    @property
     def descriptor(self):
+        """Google protobuf library descriptor.
+
+        Returns
+        -------
+        str
+            A binary string of the package's proto descriptor.
+        """
         return self.package_proto_obj.SerializeToString()
 
 
@@ -272,6 +306,13 @@ class MessageCompiler(ProtoContentBase):
 
     @property
     def descriptor(self):
+        """Google protobuf library descriptor.
+
+        Returns
+        -------
+        str
+            A binary string of the message's proto descriptor.
+        """
         return self.proto_obj.SerializeToString()
 
 
@@ -605,6 +646,13 @@ class EnumDefinitionCompiler(ProtoContentBase):
 
     @property
     def descriptor(self):
+        """Google protobuf library descriptor.
+
+        Returns
+        -------
+        str
+            A binary string of the enum's proto descriptor.
+        """
         return self.proto_obj.SerializeToString()
 
 
