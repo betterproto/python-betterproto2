@@ -226,7 +226,7 @@ class OutputTemplate:
             Imports for each proto dependency of this package resolved to the output
             names, not the input file paths.
         """
-        def dep_to_pkg_import(dep: str) -> str:
+        def dep_to_pkg_import(dep: str) -> tuple[str, str]:
             for (output_name, pkg) in self.parent_request.output_packages.items():
                 if dep in pkg.input_filenames:
                     ref, ref_import = get_symbol_reference(
@@ -239,9 +239,9 @@ class OutputTemplate:
                     )
 
                     # import and check compiler version for safety and to avoid this import being removed.
-                    return f'{ref_import}\nbetterproto2.check_compiler_version({ref})'
+                    return (ref, f'{ref_import}\nbetterproto2.check_compiler_version({ref})')
             raise ValueError(f"cannot find which output package {dep} belongs to")
-        return {dep_to_pkg_import(dep) for dep in self.package_proto_obj.dependency}
+        return dict([dep_to_pkg_import(dep) for dep in self.package_proto_obj.dependency]).values()
 
     def get_descriptor_name(self, source_file: FileDescriptorProto):
         return f'{source_file.name.replace('/', '_').replace('.', '_').upper()}_DESCRIPTOR'
