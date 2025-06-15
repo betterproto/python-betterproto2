@@ -241,19 +241,21 @@ class OutputTemplate:
                     # import and check compiler version for safety and to avoid this import being removed.
                     return f'{ref_import}\nbetterproto2.check_compiler_version({ref})'
             raise ValueError(f"cannot find which output package {dep} belongs to")
-        return [dep_to_pkg_import(dep) for dep in self.package_proto_obj.dependency]
+        return {dep_to_pkg_import(dep) for dep in self.package_proto_obj.dependency}
+
+    def get_descriptor_name(self, source_file: FileDescriptorProto):
+        return f'{source_file.name.replace('/', '_').replace('.', '_').upper()}_DESCRIPTOR'
 
     @property
-    def descriptor(self):
-        """Google protobuf library descriptor.
+    def descriptors(self):
+        """Google protobuf library descriptors.
 
         Returns
         -------
         str
-            A binary string of the package's proto descriptor.
+            A list of pool registrations for proto descriptors.
         """
-        return self.package_proto_obj.SerializeToString()
-
+        return '\n'.join([f'{self.get_descriptor_name(input_file)} = _descriptor_pool.Default().AddSerializedFile({input_file.SerializeToString()})' for input_file in self.input_files])
 
 @dataclass(kw_only=True)
 class MessageCompiler(ProtoContentBase):
@@ -303,6 +305,17 @@ class MessageCompiler(ProtoContentBase):
             methods_source.append(source.strip())
 
         return methods_source
+
+    @property
+    def descriptor_name(self):
+        """Google protobuf library descriptor name.
+
+        Returns
+        -------
+        str
+            The Python name of the descriptor to reference.
+        """
+        return self.output_file.get_descriptor_name(self.source_file)
 
     @property
     def descriptor(self):
@@ -643,6 +656,17 @@ class EnumDefinitionCompiler(ProtoContentBase):
     @property
     def deprecated(self) -> bool:
         return bool(self.proto_obj.options and self.proto_obj.options.deprecated)
+
+    @property
+    def descriptor_name(self):
+        """Google protobuf library descriptor name.
+
+        Returns
+        -------
+        str
+            The Python name of the descriptor to reference.
+        """
+        return self.output_file.get_descriptor_name(self.source_file)
 
     @property
     def descriptor(self):
