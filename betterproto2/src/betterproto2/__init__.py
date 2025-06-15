@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-__all__ = ["__version__", "check_compiler_version", "unwrap", "MessagePool", "validators"]
+__all__ = ["__version__", "check_compiler_version", "classproperty", "unwrap", "MessagePool", "validators"]
 
 import dataclasses
 import enum as builtin_enum

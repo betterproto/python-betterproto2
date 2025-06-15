@@ -34,7 +34,7 @@ from dataclasses import (
 
 from betterproto2 import unwrap
 
-from betterproto2_compiler.compile.importing import get_type_reference, parse_source_type_name
+from betterproto2_compiler.compile.importing import get_symbol_reference, get_type_reference, parse_source_type_name
 from betterproto2_compiler.compile.naming import (
     pythonize_class_name,
     pythonize_enum_member_name,
@@ -216,6 +216,46 @@ class OutputTemplate:
         """
         return sorted([f.name for f in self.input_files])
 
+    @property
+    def dependency_imports(self):
+        """Proto dependencies as Python imports.
+
+        Returns
+        -------
+        list[str]
+            Imports for each proto dependency of this package resolved to the output
+            names, not the input file paths.
+        """
+        def dep_to_pkg_import(dep: str) -> tuple[str, str]:
+            for (output_name, pkg) in self.parent_request.output_packages.items():
+                if dep in pkg.input_filenames:
+                    ref, ref_import = get_symbol_reference(
+                        package=self.package,
+                        imports=self.imports_end,
+                        source_package=output_name,
+                        request=self.parent_request,
+                        symbol="_COMPILER_VERSION",
+                        import_suffx="_dep"
+                    )
+
+                    # import and check compiler version for safety and to avoid this import being removed.
+                    return (ref, f'{ref_import}\nbetterproto2.check_compiler_version({ref})')
+            raise ValueError(f"cannot find which output package {dep} belongs to")
+        return dict([dep_to_pkg_import(dep) for dep in self.package_proto_obj.dependency]).values()
+
+    def get_descriptor_name(self, source_file: FileDescriptorProto):
+        return f'{source_file.name.replace('/', '_').replace('.', '_').upper()}_DESCRIPTOR'
+
+    @property
+    def descriptors(self):
+        """Google protobuf library descriptors.
+
+        Returns
+        -------
+        str
+            A list of pool registrations for proto descriptors.
+        """
+        return '\n'.join([f'{self.get_descriptor_name(input_file)} = _descriptor_pool.Default().AddSerializedFile({input_file.SerializeToString()})' for input_file in self.input_files])
 
 @dataclass(kw_only=True)
 class MessageCompiler(ProtoContentBase):
@@ -232,8 +272,12 @@ class MessageCompiler(ProtoContentBase):
         return self.proto_obj.name
 
     @property
+    def prefixed_proto_name(self) -> str:
+        return self.proto_obj.prefixed_name
+
+    @property
     def py_name(self) -> str:
-        return pythonize_class_name(self.proto_name)
+        return pythonize_class_name(self.proto_obj.prefixed_name)
 
     @property
     def deprecated(self) -> bool:
@@ -243,7 +287,7 @@ class MessageCompiler(ProtoContentBase):
     def deprecated_fields(self) -> Iterator[str]:
         for f in self.fields:
             if f.deprecated:
-                yield f.py_name
+                yield f.proto_name
 
     @property
     def has_deprecated_fields(self) -> bool:
@@ -265,6 +309,28 @@ class MessageCompiler(ProtoContentBase):
             methods_source.append(source.strip())
 
         return methods_source
+
+    @property
+    def descriptor_name(self):
+        """Google protobuf library descriptor name.
+
+        Returns
+        -------
+        str
+            The Python name of the descriptor to reference.
+        """
+        return self.output_file.get_descriptor_name(self.source_file)
+
+    @property
+    def descriptor(self):
+        """Google protobuf library descriptor.
+
+        Returns
+        -------
+        str
+            A binary string of the message's proto descriptor.
+        """
+        return self.proto_obj.SerializeToString()
 
 
 def is_map(proto_field_obj: FieldDescriptorProto, parent_message: DescriptorProto) -> bool:
@@ -588,12 +654,38 @@ class EnumDefinitionCompiler(ProtoContentBase):
         return self.proto_obj.name
 
     @property
+    def prefixed_proto_name(self) -> str:
+        return self.proto_obj.prefixed_name
+
+    @property
     def py_name(self) -> str:
-        return pythonize_class_name(self.proto_name)
+        return pythonize_class_name(self.proto_obj.prefixed_name)
 
     @property
     def deprecated(self) -> bool:
         return bool(self.proto_obj.options and self.proto_obj.options.deprecated)
+
+    @property
+    def descriptor_name(self):
+        """Google protobuf library descriptor name.
+
+        Returns
+        -------
+        str
+            The Python name of the descriptor to reference.
+        """
+        return self.output_file.get_descriptor_name(self.source_file)
+
+    @property
+    def descriptor(self):
+        """Google protobuf library descriptor.
+
+        Returns
+        -------
+        str
+            A binary string of the enum's proto descriptor.
+        """
+        return self.proto_obj.SerializeToString()
 
 
 @dataclass(kw_only=True)

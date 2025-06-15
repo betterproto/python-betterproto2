@@ -144,6 +144,7 @@ rm -rf tests/output_* &&
 git clone https://github.com/betterproto/python-betterproto2-compiler --branch compiled-test-files --single-branch compiled_files &&
 mv compiled_files/tests_betterproto tests/output_betterproto &&
 mv compiled_files/tests_betterproto_pydantic tests/output_betterproto_pydantic &&
+mv compiled_files/tests_betterproto_pydantic tests/output_betterproto_descriptor &&
 mv compiled_files/tests_reference tests/output_reference &&
 rm -rf compiled_files
 """

@@ -10,6 +10,7 @@ inputs_path = root_path.joinpath("inputs")
 output_path_reference = root_path.joinpath("output_reference")
 output_path_betterproto = root_path.joinpath("output_betterproto")
 output_path_betterproto_pydantic = root_path.joinpath("output_betterproto_pydantic")
+output_path_betterproto_descriptor = root_path.joinpath("output_betterproto_descriptor")
 
 
 def get_directories(path):
@@ -17,18 +18,18 @@ def get_directories(path):
         yield from directories
 
 
-async def protoc(path: str | Path, output_dir: str | Path, reference: bool = False, pydantic_dataclasses: bool = False):
-    path: Path = Path(path).resolve()
-    output_dir: Path = Path(output_dir).resolve()
+async def protoc(path: str | Path, output_dir: str | Path, reference: bool = False, pydantic_dataclasses: bool = False, google_protobuf_descriptors: bool = False):
+    resolved_path: Path = Path(path).resolve()
+    resolved_output_dir: Path = Path(output_dir).resolve()
     python_out_option: str = "python_out" if reference else "python_betterproto2_out"
 
     command = [
         sys.executable,
         "-m",
         "grpc.tools.protoc",
-        f"--proto_path={path.as_posix()}",
-        f"--{python_out_option}={output_dir.as_posix()}",
-        *[p.as_posix() for p in path.glob("*.proto")],
+        f"--proto_path={resolved_path.as_posix()}",
+        f"--{python_out_option}={resolved_output_dir.as_posix()}",
+        *[p.as_posix() for p in resolved_path.glob("*.proto")],
     ]
 
     if not reference:
@@ -38,10 +39,13 @@ async def protoc(path: str | Path, output_dir: str | Path, reference: bool = Fal
         if pydantic_dataclasses:
             command.insert(3, "--python_betterproto2_opt=pydantic_dataclasses")
 
+        if google_protobuf_descriptors:
+            command.insert(3, "--python_betterproto2_opt=google_protobuf_descriptors")
+
     proc = await asyncio.create_subprocess_exec(
         *command,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
     stdout, stderr = await proc.communicate()
-    return stdout, stderr, proc.returncode
+    return stdout, stderr, proc.returncode or 0
