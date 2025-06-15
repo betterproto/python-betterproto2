@@ -44,10 +44,10 @@ def traverse(
     ) -> Generator[tuple[EnumDescriptorProto | DescriptorProto, list[int]], None, None]:
         for i, item in enumerate(items):
             # Adjust the name since we flatten the hierarchy.
-            # Todo: don't change the name, but include full name in returned tuple
             should_rename = not isinstance(item, DescriptorProto) or not item.options or not item.options.map_entry
 
-            item.name = next_prefix = f"{prefix}.{item.name}" if prefix and should_rename else item.name
+            # Record prefixed name but *do not* mutate original file.
+            item.prefixed_name = next_prefix = f"{prefix}.{item.name}" if prefix and should_rename else item.name
             yield item, [*path, i]
 
             if isinstance(item, DescriptorProto):
@@ -192,7 +192,7 @@ def read_protobuf_type(
             proto_obj=item,
             path=path,
         )
-        output_package.messages[message_data.proto_name] = message_data
+        output_package.messages[message_data.prefixed_proto_name] = message_data
 
         for index, field in enumerate(item.field):
             if is_map(field, item):
@@ -247,7 +247,7 @@ def read_protobuf_type(
             proto_obj=item,
             path=path,
         )
-        output_package.enums[enum.proto_name] = enum
+        output_package.enums[enum.prefixed_proto_name] = enum
 
 
 def read_protobuf_service(

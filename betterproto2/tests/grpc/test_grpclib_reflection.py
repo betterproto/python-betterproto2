@@ -62,7 +62,7 @@ async def test_grpclib_reflection():
         import tests.output_betterproto_descriptor.example_service as example_service_with_desc
         requests.put(ServerReflectionRequest(file_containing_symbol="example_service.Test"))
         response = await anext(responses)
-        expected = descriptor_pb2.FileDescriptorProto.FromString(example_service_with_desc.DESCRIPTOR.serialized_pb)
+        expected = descriptor_pb2.FileDescriptorProto.FromString(example_service_with_desc.EXAMPLE_SERVICE_PROTO_DESCRIPTOR.serialized_pb)
         assert response.error_response is None
         assert response.file_descriptor_response is not None
         assert len(response.file_descriptor_response.file_descriptor_proto) == 1

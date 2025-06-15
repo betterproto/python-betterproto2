@@ -10,7 +10,7 @@ class {{ enum.py_name | add_to_all }}(betterproto2.Enum):
     {# Add descriptor class property to be more drop-in compatible with other libraries. #}
     @betterproto2.classproperty
     def DESCRIPTOR(self) -> EnumDescriptor:
-        return {{ enum.descriptor_name }}.enum_types_by_name['{{ enum.proto_name }}']
+        return {{ enum.descriptor_name }}.enum_types_by_name['{{ enum.prefixed_proto_name }}']
     {% endif %}
 
     {% for entry in enum.entries %}
@@ -56,7 +56,7 @@ class {{ message.py_name | add_to_all }}(betterproto2.Message):
     {# Add descriptor class property to be more drop-in compatible with other libraries. #}
     @betterproto2.classproperty
     def DESCRIPTOR(self) -> Descriptor:
-        return {{ message.descriptor_name }}.message_types_by_name['{{ message.proto_name }}']
+        return {{ message.descriptor_name }}.message_types_by_name['{{ message.prefixed_proto_name }}']
     {% endif %}
 
     {% for field in message.fields %}
@@ -95,7 +95,7 @@ class {{ message.py_name | add_to_all }}(betterproto2.Message):
     {{ method_source }}
     {% endfor %}
 
-default_message_pool.register_message("{{ output_file.package }}", "{{ message.proto_name }}", {{ message.py_name }})
+default_message_pool.register_message("{{ output_file.package }}", "{{ message.prefixed_proto_name }}", {{ message.py_name }})
 
 
 {% endfor %}

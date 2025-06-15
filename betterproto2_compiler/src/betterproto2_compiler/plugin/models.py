@@ -272,8 +272,12 @@ class MessageCompiler(ProtoContentBase):
         return self.proto_obj.name
 
     @property
+    def prefixed_proto_name(self) -> str:
+        return self.proto_obj.prefixed_name
+
+    @property
     def py_name(self) -> str:
-        return pythonize_class_name(self.proto_name)
+        return pythonize_class_name(self.proto_obj.prefixed_name)
 
     @property
     def deprecated(self) -> bool:
@@ -283,7 +287,7 @@ class MessageCompiler(ProtoContentBase):
     def deprecated_fields(self) -> Iterator[str]:
         for f in self.fields:
             if f.deprecated:
-                yield f.py_name
+                yield f.proto_name
 
     @property
     def has_deprecated_fields(self) -> bool:
@@ -650,8 +654,12 @@ class EnumDefinitionCompiler(ProtoContentBase):
         return self.proto_obj.name
 
     @property
+    def prefixed_proto_name(self) -> str:
+        return self.proto_obj.prefixed_name
+
+    @property
     def py_name(self) -> str:
-        return pythonize_class_name(self.proto_name)
+        return pythonize_class_name(self.proto_obj.prefixed_name)
 
     @property
     def deprecated(self) -> bool:
