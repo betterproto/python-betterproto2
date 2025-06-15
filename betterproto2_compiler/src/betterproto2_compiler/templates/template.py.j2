@@ -142,6 +142,7 @@ class {{ (service.py_name + "Base") | add_to_all }}(ServiceBase):
 
         raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
         {% if method.server_streaming %}
+        {# yielding here changes the return type from a coroutine to an async_generator #}
         yield {{ method.py_output_message_type }}()
         {% endif %}
 
