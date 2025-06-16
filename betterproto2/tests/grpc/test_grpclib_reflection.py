@@ -24,6 +24,8 @@ T = TypeVar("T")
 
 
 class AsyncIterableQueue(Generic[T]):
+    CLOSED_SENTINEL = object()
+
     def __init__(self):
         self._queue = asyncio.Queue()
         self._done = asyncio.Event()
@@ -32,16 +34,16 @@ class AsyncIterableQueue(Generic[T]):
         self._queue.put_nowait(item)
 
     def close(self):
-        self._queue.shutdown()
+        self._queue.put_nowait(self.CLOSED_SENTINEL)
 
     def __aiter__(self):
         return self
 
     async def __anext__(self) -> T:
-        try:
-            return await self._queue.get()
-        except asyncio.QueueShutDown:
+        val = await self._queue.get()
+        if val is self.CLOSED_SENTINEL:
             raise StopAsyncIteration
+        return val
 
 
 @pytest.mark.asyncio
