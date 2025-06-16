@@ -9,8 +9,8 @@ from tests.util import (
     get_directories,
     inputs_path,
     output_path_betterproto,
-    output_path_betterproto_pydantic,
     output_path_betterproto_descriptor,
+    output_path_betterproto_pydantic,
     output_path_reference,
     protoc,
 )
@@ -136,7 +136,9 @@ async def generate_test_case_output(test_case_input_path: Path, test_case_name: 
     if plg_code_desc == 0:
         print(f"\033[31;1;4mGenerated plugin (google protobuf descriptor) output for {test_case_name!r}\033[0m")
     else:
-        print(f"\033[31;1;4mFailed to generate plugin (google protobuf descriptor) output for {test_case_name!r}\033[0m")
+        print(
+            f"\033[31;1;4mFailed to generate plugin (google protobuf descriptor) output for {test_case_name!r}\033[0m"
+        )
         print(plg_err_desc.decode())
 
     if verbose:

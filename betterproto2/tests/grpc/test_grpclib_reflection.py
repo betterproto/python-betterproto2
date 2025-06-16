@@ -1,21 +1,28 @@
 import asyncio
 from typing import Generic, TypeVar
 
-import grpclib
-from grpclib.reflection.service import ServerReflection
 import pytest
-from grpclib.testing import ChannelFor
 from google.protobuf import descriptor_pb2
-
-from tests.grpc.async_channel import AsyncChannel
-from tests.output_betterproto.grpc.reflection.v1 import ErrorResponse, ListServiceResponse, ServiceResponse, ServerReflectionRequest, ServerReflectionStub
+from grpclib.reflection.service import ServerReflection
+from grpclib.testing import ChannelFor
 
 from tests.output_betterproto.example_service import TestBase
+from tests.output_betterproto.grpc.reflection.v1 import (
+    ErrorResponse,
+    ListServiceResponse,
+    ServerReflectionRequest,
+    ServerReflectionStub,
+    ServiceResponse,
+)
+
 
 class TestService(TestBase):
     pass
 
+
 T = TypeVar("T")
+
+
 class AsyncIterableQueue(Generic[T]):
     def __init__(self):
         self._queue = asyncio.Queue()
@@ -36,6 +43,7 @@ class AsyncIterableQueue(Generic[T]):
         except asyncio.QueueShutDown:
             raise StopAsyncIteration
 
+
 @pytest.mark.asyncio
 async def test_grpclib_reflection():
     service = TestService()
@@ -48,25 +56,31 @@ async def test_grpclib_reflection():
         requests.put(ServerReflectionRequest(list_services=""))
         response = await anext(responses)
         assert response.list_services_response == ListServiceResponse(
-            service=[ServiceResponse(name='example_service.Test')])
+            service=[ServiceResponse(name="example_service.Test")]
+        )
 
         # list methods
 
         # should fail before we've added descriptors to the protobuf pool
         requests.put(ServerReflectionRequest(file_containing_symbol="example_service.Test"))
         response = await anext(responses)
-        assert response.error_response == ErrorResponse(error_code=5, error_message='not found')
+        assert response.error_response == ErrorResponse(error_code=5, error_message="not found")
         assert response.file_descriptor_response is None
 
         # now it should work
         import tests.output_betterproto_descriptor.example_service as example_service_with_desc
+
         requests.put(ServerReflectionRequest(file_containing_symbol="example_service.Test"))
         response = await anext(responses)
-        expected = descriptor_pb2.FileDescriptorProto.FromString(example_service_with_desc.EXAMPLE_SERVICE_PROTO_DESCRIPTOR.serialized_pb)
+        expected = descriptor_pb2.FileDescriptorProto.FromString(
+            example_service_with_desc.EXAMPLE_SERVICE_PROTO_DESCRIPTOR.serialized_pb
+        )
         assert response.error_response is None
         assert response.file_descriptor_response is not None
         assert len(response.file_descriptor_response.file_descriptor_proto) == 1
-        actual = descriptor_pb2.FileDescriptorProto.FromString(response.file_descriptor_response.file_descriptor_proto[0])
+        actual = descriptor_pb2.FileDescriptorProto.FromString(
+            response.file_descriptor_response.file_descriptor_proto[0]
+        )
         assert actual == expected
 
         requests.close()

@@ -25,6 +25,7 @@ def test_deprecated_message():
     assert len(record) == 1
     assert str(record[0].message) == f"{Message.__name__} is deprecated"
 
+
 def test_deprecated_nested_message():
     with pytest.warns(DeprecationWarning) as record:
         Message(value="hello")

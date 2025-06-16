@@ -18,7 +18,13 @@ def get_directories(path):
         yield from directories
 
 
-async def protoc(path: str | Path, output_dir: str | Path, reference: bool = False, pydantic_dataclasses: bool = False, google_protobuf_descriptors: bool = False):
+async def protoc(
+    path: str | Path,
+    output_dir: str | Path,
+    reference: bool = False,
+    pydantic_dataclasses: bool = False,
+    google_protobuf_descriptors: bool = False,
+):
     resolved_path: Path = Path(path).resolve()
     resolved_output_dir: Path = Path(output_dir).resolve()
     python_out_option: str = "python_out" if reference else "python_betterproto2_out"

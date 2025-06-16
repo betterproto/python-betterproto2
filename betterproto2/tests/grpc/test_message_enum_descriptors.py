@@ -1,9 +1,11 @@
 import pytest
 
 from tests.output_betterproto.import_cousin_package_same_name.test.subpackage import Test
-from tests.output_betterproto_descriptor.import_cousin_package_same_name.test.subpackage import Test as TestWithDesc
+
 # importing the cousin should cause no descriptor pool errors since the subpackage imports it once already
 from tests.output_betterproto_descriptor.import_cousin_package_same_name.cousin.subpackage import CousinMessage
+from tests.output_betterproto_descriptor.import_cousin_package_same_name.test.subpackage import Test as TestWithDesc
+
 
 def test_message_enum_descriptors():
     # Normally descriptors are not available as they require protobuf support

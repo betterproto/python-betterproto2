@@ -226,8 +226,9 @@ class OutputTemplate:
             Imports for each proto dependency of this package resolved to the output
             names, not the input file paths.
         """
+
         def dep_to_pkg_import(dep: str) -> tuple[str, str]:
-            for (output_name, pkg) in self.parent_request.output_packages.items():
+            for output_name, pkg in self.parent_request.output_packages.items():
                 if dep in pkg.input_filenames:
                     ref, ref_import = get_symbol_reference(
                         package=self.package,
@@ -235,16 +236,17 @@ class OutputTemplate:
                         source_package=output_name,
                         request=self.parent_request,
                         symbol="_COMPILER_VERSION",
-                        import_suffx="_dep"
+                        import_suffx="_dep",
                     )
 
                     # import and check compiler version for safety and to avoid this import being removed.
-                    return (ref, f'{ref_import}\nbetterproto2.check_compiler_version({ref})')
+                    return (ref, f"{ref_import}\nbetterproto2.check_compiler_version({ref})")
             raise ValueError(f"cannot find which output package {dep} belongs to")
+
         return dict([dep_to_pkg_import(dep) for dep in self.package_proto_obj.dependency]).values()
 
     def get_descriptor_name(self, source_file: FileDescriptorProto):
-        return f'{source_file.name.replace('/', '_').replace('.', '_').upper()}_DESCRIPTOR'
+        return f"{source_file.name.replace('/', '_').replace('.', '_').upper()}_DESCRIPTOR"
 
     @property
     def descriptors(self):
@@ -255,7 +257,13 @@ class OutputTemplate:
         str
             A list of pool registrations for proto descriptors.
         """
-        return '\n'.join([f'{self.get_descriptor_name(input_file)} = _descriptor_pool.Default().AddSerializedFile({input_file.SerializeToString()})' for input_file in self.input_files])
+        return "\n".join(
+            [
+                f"{self.get_descriptor_name(f)} = _descriptor_pool.Default().AddSerializedFile({f.SerializeToString()})"
+                for f in self.input_files
+            ]
+        )
+
 
 @dataclass(kw_only=True)
 class MessageCompiler(ProtoContentBase):
