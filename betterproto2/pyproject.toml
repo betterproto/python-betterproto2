@@ -47,7 +47,7 @@ test = [
 
 [tool.uv]
 package = true
-default-groups = ["all"]
+default-groups = "all"
 
 [build-system]
 requires = ["hatchling"]

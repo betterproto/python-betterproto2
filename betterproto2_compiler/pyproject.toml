@@ -44,7 +44,7 @@ test = [
 
 [tool.uv]
 package = true
-default-groups = ["all"]
+default-groups = "all"
 
 # [tool.hatch.build.targets.sdist]
 # include = ["src/betterproto2_compiler"]
