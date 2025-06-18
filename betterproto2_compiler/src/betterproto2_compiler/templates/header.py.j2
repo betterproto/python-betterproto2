@@ -32,14 +32,19 @@ import betterproto2
 from betterproto2.grpc.grpclib_server import ServiceBase
 import grpc
 import grpclib
-from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf.descriptor import Descriptor, EnumDescriptor
 
 {# Import the message pool of the generated code. #}
 {% if output_file.package %}
 from {{ "." * output_file.package.count(".") }}..message_pool import default_message_pool
+{% if output_file.settings.google_protobuf_descriptors %}
+from {{ "." * output_file.package.count(".") }}..google_proto_descriptor_pool import default_google_proto_descriptor_pool
+{% endif %}
 {% else %}
 from .message_pool import default_message_pool
+{% if output_file.settings.google_protobuf_descriptors %}
+from .google_proto_descriptor_pool import default_google_proto_descriptor_pool
+{% endif %}
 {% endif %}
 
 if TYPE_CHECKING:

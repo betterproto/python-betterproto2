@@ -169,6 +169,15 @@ def generate_code(request: CodeGeneratorRequest) -> CodeGeneratorResponse:
         )
     )
 
+    if settings.google_protobuf_descriptors:
+        response.file.append(
+            CodeGeneratorResponseFile(
+                name="google_proto_descriptor_pool.py",
+                content="from google.protobuf import descriptor_pool\n\n"
+                + "default_google_proto_descriptor_pool = descriptor_pool.DescriptorPool()\n",
+            )
+        )
+
     for output_package_name in sorted(output_paths.union(init_files)):
         print(f"Writing {output_package_name}", file=sys.stderr)
 

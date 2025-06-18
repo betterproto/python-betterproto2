@@ -4,6 +4,8 @@ from typing import Generic, TypeVar
 import pytest
 from google.protobuf import descriptor_pb2
 from grpclib.reflection.service import ServerReflection
+from grpclib.reflection.v1.reflection_grpc import ServerReflectionBase as ServerReflectionBaseV1
+from grpclib.reflection.v1alpha.reflection_grpc import ServerReflectionBase as ServerReflectionBaseV1Alpha
 from grpclib.testing import ChannelFor
 
 from tests.output_betterproto.example_service import TestBase
@@ -14,6 +16,7 @@ from tests.output_betterproto.grpc.reflection.v1 import (
     ServerReflectionStub,
     ServiceResponse,
 )
+from tests.output_betterproto_descriptor.google_proto_descriptor_pool import default_google_proto_descriptor_pool
 
 
 class TestService(TestBase):
@@ -50,6 +53,11 @@ class AsyncIterableQueue(Generic[T]):
 async def test_grpclib_reflection():
     service = TestService()
     services = ServerReflection.extend([service])
+    for service in services:
+        # This won't be needed once https://github.com/vmagamedov/grpclib/pull/204 is in.
+        if isinstance(service, ServerReflectionBaseV1Alpha | ServerReflectionBaseV1):
+            service._pool = default_google_proto_descriptor_pool
+
     async with ChannelFor(services) as channel:
         requests = AsyncIterableQueue[ServerReflectionRequest]()
         responses = ServerReflectionStub(channel).server_reflection_info(requests)

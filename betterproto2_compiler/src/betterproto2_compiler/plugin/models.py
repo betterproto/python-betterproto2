@@ -259,7 +259,8 @@ class OutputTemplate:
         """
         return "\n".join(
             [
-                f"{self.get_descriptor_name(f)} = _descriptor_pool.Default().AddSerializedFile({f.SerializeToString()})"
+                f"{self.get_descriptor_name(f)} = "
+                + f"default_google_proto_descriptor_pool.AddSerializedFile({f.SerializeToString()})"
                 for f in self.input_files
             ]
         )
