@@ -6,6 +6,9 @@ package deprecated;
 message Test {
     Message message = 1 [deprecated=true];
     int32 value = 2;
+    message Nested {
+        int32 nested_value = 1 [deprecated=true];
+    }
 }
 
 message Message {

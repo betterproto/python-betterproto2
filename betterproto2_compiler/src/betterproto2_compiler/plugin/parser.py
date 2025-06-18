@@ -44,10 +44,10 @@ def traverse(
     ) -> Generator[tuple[EnumDescriptorProto | DescriptorProto, list[int]], None, None]:
         for i, item in enumerate(items):
             # Adjust the name since we flatten the hierarchy.
-            # Todo: don't change the name, but include full name in returned tuple
             should_rename = not isinstance(item, DescriptorProto) or not item.options or not item.options.map_entry
 
-            item.name = next_prefix = f"{prefix}.{item.name}" if prefix and should_rename else item.name
+            # Record prefixed name but *do not* mutate original file.
+            item.prefixed_name = next_prefix = f"{prefix}.{item.name}" if prefix and should_rename else item.name
             yield item, [*path, i]
 
             if isinstance(item, DescriptorProto):
@@ -81,6 +81,7 @@ def get_settings(plugin_options: list[str]) -> Settings:
 
     return Settings(
         pydantic_dataclasses="pydantic_dataclasses" in plugin_options,
+        google_protobuf_descriptors="google_protobuf_descriptors" in plugin_options,
         client_generation=client_generation,
         server_generation=server_generation,
     )
@@ -168,6 +169,15 @@ def generate_code(request: CodeGeneratorRequest) -> CodeGeneratorResponse:
         )
     )
 
+    if settings.google_protobuf_descriptors:
+        response.file.append(
+            CodeGeneratorResponseFile(
+                name="google_proto_descriptor_pool.py",
+                content="from google.protobuf import descriptor_pool\n\n"
+                + "default_google_proto_descriptor_pool = descriptor_pool.DescriptorPool()\n",
+            )
+        )
+
     for output_package_name in sorted(output_paths.union(init_files)):
         print(f"Writing {output_package_name}", file=sys.stderr)
 
@@ -191,7 +201,7 @@ def read_protobuf_type(
             proto_obj=item,
             path=path,
         )
-        output_package.messages[message_data.proto_name] = message_data
+        output_package.messages[message_data.prefixed_proto_name] = message_data
 
         for index, field in enumerate(item.field):
             if is_map(field, item):
@@ -246,7 +256,7 @@ def read_protobuf_type(
             proto_obj=item,
             path=path,
         )
-        output_package.enums[enum.proto_name] = enum
+        output_package.enums[enum.prefixed_proto_name] = enum
 
 
 def read_protobuf_service(

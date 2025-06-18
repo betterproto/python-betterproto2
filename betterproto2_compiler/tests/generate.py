@@ -9,6 +9,7 @@ from tests.util import (
     get_directories,
     inputs_path,
     output_path_betterproto,
+    output_path_betterproto_descriptor,
     output_path_betterproto_pydantic,
     output_path_reference,
     protoc,
@@ -57,23 +58,28 @@ async def generate_test_case_output(test_case_input_path: Path, test_case_name: 
     test_case_output_path_reference = output_path_reference.joinpath(test_case_name)
     test_case_output_path_betterproto = output_path_betterproto
     test_case_output_path_betterproto_pyd = output_path_betterproto_pydantic
+    test_case_output_path_betterproto_desc = output_path_betterproto_descriptor
 
     os.makedirs(test_case_output_path_reference, exist_ok=True)
     os.makedirs(test_case_output_path_betterproto, exist_ok=True)
     os.makedirs(test_case_output_path_betterproto_pyd, exist_ok=True)
+    os.makedirs(test_case_output_path_betterproto_desc, exist_ok=True)
 
     clear_directory(test_case_output_path_reference)
     clear_directory(test_case_output_path_betterproto)
     clear_directory(test_case_output_path_betterproto_pyd)
+    clear_directory(test_case_output_path_betterproto_desc)
 
     (
         (ref_out, ref_err, ref_code),
         (plg_out, plg_err, plg_code),
         (plg_out_pyd, plg_err_pyd, plg_code_pyd),
+        (plg_out_desc, plg_err_desc, plg_code_desc),
     ) = await asyncio.gather(
         protoc(test_case_input_path, test_case_output_path_reference, True),
         protoc(test_case_input_path, test_case_output_path_betterproto, False),
         protoc(test_case_input_path, test_case_output_path_betterproto_pyd, False, True),
+        protoc(test_case_input_path, test_case_output_path_betterproto_desc, False, False, True),
     )
 
     if ref_code == 0:
@@ -127,7 +133,26 @@ async def generate_test_case_output(test_case_input_path: Path, test_case_name: 
             sys.stderr.buffer.write(plg_err_pyd)
             sys.stderr.buffer.flush()
 
-    return max(ref_code, plg_code, plg_code_pyd)
+    if plg_code_desc == 0:
+        print(f"\033[31;1;4mGenerated plugin (google protobuf descriptor) output for {test_case_name!r}\033[0m")
+    else:
+        print(
+            f"\033[31;1;4mFailed to generate plugin (google protobuf descriptor) output for {test_case_name!r}\033[0m"
+        )
+        print(plg_err_desc.decode())
+
+    if verbose:
+        if plg_out_desc:
+            print("Plugin stdout:")
+            sys.stdout.buffer.write(plg_out_desc)
+            sys.stdout.buffer.flush()
+
+        if plg_err_desc:
+            print("Plugin stderr:")
+            sys.stderr.buffer.write(plg_err_desc)
+            sys.stderr.buffer.flush()
+
+    return max(ref_code, plg_code, plg_code_pyd, plg_code_desc)
 
 
 def main():
