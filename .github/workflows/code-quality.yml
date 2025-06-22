@@ -25,6 +25,14 @@ jobs:
         version: "0.7.5"
         python-version: "3.10"
 
+    - name: Install betterproto2
+      working-directory: ./betterproto2
+      run: uv sync --locked --all-extras --all-groups
+
+    - name: Install betterproto2_compiler
+      working-directory: ./betterproto2_compiler
+      run: uv sync --locked --all-extras --all-groups
+
     - name: Pyright
       working-directory: ./betterproto2
       shell: bash
