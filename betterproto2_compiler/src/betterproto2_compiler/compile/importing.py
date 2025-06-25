@@ -61,7 +61,6 @@ def get_symbol_reference(
     imports: set,
     source_package: str,
     symbol: str,
-    import_suffx: str = "",
 ) -> tuple[str, str | None]:
     """
     Return a Python symbol within a proto package. Adds the import if
@@ -74,12 +73,12 @@ def get_symbol_reference(
         return (reference_sibling(symbol), None)
 
     if py_package[: len(current_package)] == current_package:
-        return reference_descendent(current_package, imports, py_package, symbol, import_suffx)
+        return reference_descendent(current_package, imports, py_package, symbol)
 
     if current_package[: len(py_package)] == py_package:
-        return reference_ancestor(current_package, imports, py_package, symbol, import_suffx)
+        return reference_ancestor(current_package, imports, py_package, symbol)
 
-    return reference_cousin(current_package, imports, py_package, symbol, import_suffx)
+    return reference_cousin(current_package, imports, py_package, symbol)
 
 
 def get_type_reference(
@@ -129,7 +128,7 @@ def reference_sibling(py_type: str) -> str:
 
 
 def reference_descendent(
-    current_package: list[str], imports: set[str], py_package: list[str], py_type: str, import_suffix: str = ""
+    current_package: list[str], imports: set[str], py_package: list[str], py_type: str
 ) -> tuple[str, str]:
     """
     Returns a reference to a python type in a package that is a descendent of the
@@ -140,7 +139,7 @@ def reference_descendent(
     string_from = ".".join(importing_descendent[:-1])
     string_import = importing_descendent[-1]
     if string_from:
-        string_alias = f"{'_'.join(importing_descendent)}{import_suffix}"
+        string_alias = f"{'_'.join(importing_descendent)}"
         import_to_add = f"from .{string_from} import {string_import} as {string_alias}"
         imports.add(import_to_add)
         return (f"{string_alias}.{py_type}", import_to_add)
@@ -151,7 +150,7 @@ def reference_descendent(
 
 
 def reference_ancestor(
-    current_package: list[str], imports: set[str], py_package: list[str], py_type: str, import_suffix: str = ""
+    current_package: list[str], imports: set[str], py_package: list[str], py_type: str
 ) -> tuple[str, str]:
     """
     Returns a reference to a python type in a package which is an ancestor to the
@@ -163,20 +162,20 @@ def reference_ancestor(
     distance_up = len(current_package) - len(py_package)
     if py_package:
         string_import = py_package[-1]
-        string_alias = f"_{'_' * distance_up}{string_import}__{import_suffix}"
+        string_alias = f"_{'_' * distance_up}{string_import}__"
         string_from = f"..{'.' * distance_up}"
         import_to_add = f"from {string_from} import {string_import} as {string_alias}"
         imports.add(import_to_add)
         return (f"{string_alias}.{py_type}", import_to_add)
     else:
-        string_alias = f"{'_' * distance_up}{py_type}__{import_suffix}"
+        string_alias = f"{'_' * distance_up}{py_type}__"
         import_to_add = f"from .{'.' * distance_up} import {py_type} as {string_alias}"
         imports.add(import_to_add)
         return (string_alias, import_to_add)
 
 
 def reference_cousin(
-    current_package: list[str], imports: set[str], py_package: list[str], py_type: str, import_suffix: str = ""
+    current_package: list[str], imports: set[str], py_package: list[str], py_type: str
 ) -> tuple[str, str]:
     """
     Returns a reference to a python type in a package that is not descendent, ancestor
@@ -192,7 +191,6 @@ def reference_cousin(
         f"{'_' * distance_up}"
         + "__".join([safe_snake_case(name) for name in py_package[len(shared_ancestry) :]])
         + "__"
-        + import_suffix
     )
     import_to_add = f"from {string_from} import {string_import} as {string_alias}"
     imports.add(import_to_add)
