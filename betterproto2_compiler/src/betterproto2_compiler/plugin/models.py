@@ -34,7 +34,7 @@ from dataclasses import (
 
 from betterproto2 import unwrap
 
-from betterproto2_compiler.compile.importing import get_symbol_reference, get_type_reference, parse_source_type_name
+from betterproto2_compiler.compile.importing import get_type_reference, parse_source_type_name
 from betterproto2_compiler.compile.naming import (
     pythonize_class_name,
     pythonize_enum_member_name,
