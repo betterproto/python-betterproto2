@@ -53,6 +53,7 @@ from betterproto2_compiler.lib.google.protobuf import (
     MethodDescriptorProto,
     OneofDescriptorProto,
     ServiceDescriptorProto,
+    SourceCodeInfo,
 )
 from betterproto2_compiler.lib.google.protobuf.compiler import CodeGeneratorRequest
 from betterproto2_compiler.settings import Settings
@@ -228,13 +229,20 @@ class OutputTemplate:
         str
             A list of pool registrations for proto descriptors.
         """
-        return "\n".join(
-            [
-                f"{self.get_descriptor_name(f)} = "
-                + f"default_google_proto_descriptor_pool.AddSerializedFile({f.SerializeToString()})"
-                for f in self.input_files
-            ]
-        )
+        descriptors: list[str] = []
+
+        for f in self.input_files:
+            # Remove the source_code_info field since it is not needed at runtime.
+            source_code_info: SourceCodeInfo | None = f.source_code_info
+            f.source_code_info = None
+
+            descriptors.append(
+                f"{self.get_descriptor_name(f)} = default_google_proto_descriptor_pool.AddSerializedFile({bytes(f)})"
+            )
+
+            f.source_code_info = source_code_info
+
+        return "\n".join(descriptors)
 
 
 @dataclass(kw_only=True)
