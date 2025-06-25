@@ -116,6 +116,11 @@ default_message_pool.register_message("{{ output_file.package }}", "{{ message.p
 {{ i }}
 {% endfor %}
 
+{% if output_file.settings.google_protobuf_descriptors %}
+{# Add descriptors to Google protobuf's default pool to be more drop-in compatible with other libraries. #}
+{{ output_file.descriptors }}
+{% endif %}
+
 {% if output_file.settings.server_generation == "async" %}
 {% for _, service in output_file.services|dictsort(by="key") %}
 class {{ (service.py_name + "Base") | add_to_all }}(ServiceBase):

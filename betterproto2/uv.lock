@@ -68,6 +68,7 @@ dependencies = [
 all = [
     { name = "grpcio" },
     { name = "grpclib" },
+    { name = "protobuf" },
     { name = "pydantic" },
 ]
 grpcio = [
@@ -75,6 +76,9 @@ grpcio = [
 ]
 grpclib = [
     { name = "grpclib" },
+]
+protobuf = [
+    { name = "protobuf" },
 ]
 pydantic = [
     { name = "pydantic" },
@@ -93,7 +97,6 @@ dev = [
 test = [
     { name = "cachelib" },
     { name = "poethepoet" },
-    { name = "protobuf" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
@@ -106,12 +109,14 @@ requires-dist = [
     { name = "grpcio", marker = "extra == 'grpcio'", specifier = ">=1.72.1" },
     { name = "grpclib", marker = "extra == 'all'", specifier = ">=0.4.8" },
     { name = "grpclib", marker = "extra == 'grpclib'", specifier = ">=0.4.8" },
+    { name = "protobuf", marker = "extra == 'all'", specifier = ">=5.29.3" },
+    { name = "protobuf", marker = "extra == 'protobuf'", specifier = ">=5.29.3" },
     { name = "pydantic", marker = "extra == 'all'", specifier = ">=2.11.5" },
     { name = "pydantic", marker = "extra == 'pydantic'", specifier = ">=2.11.5" },
     { name = "python-dateutil", specifier = ">=2.9.0.post0" },
     { name = "typing-extensions", specifier = ">=4.14.0" },
 ]
-provides-extras = ["grpcio", "grpclib", "pydantic", "all"]
+provides-extras = ["grpcio", "grpclib", "pydantic", "protobuf", "all"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -126,7 +131,6 @@ dev = [
 test = [
     { name = "cachelib", specifier = ">=0.13.0" },
     { name = "poethepoet", specifier = ">=0.34.0" },
-    { name = "protobuf", specifier = ">=5.29.3" },
     { name = "pytest", specifier = ">=8.4.0" },
     { name = "pytest-asyncio", specifier = ">=1.0.0" },
     { name = "pytest-cov", specifier = ">=6.1.1" },

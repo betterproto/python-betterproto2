@@ -54,14 +54,3 @@ if TYPE_CHECKING:
 
 _COMPILER_VERSION="{{ version }}"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
-
-{% if output_file.settings.google_protobuf_descriptors %}
-
-{% for import in output_file.dependency_imports %}
-{{ import.rstrip() }}
-{{ "\n" }}
-{% endfor %}
-
-{# Add descriptors to Google protobuf's default pool to be more drop-in compatible with other libraries. #}
-{{ output_file.descriptors }}
-{% endif %}

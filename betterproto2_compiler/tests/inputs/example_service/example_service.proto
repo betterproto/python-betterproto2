@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package example_service;
 
+import "google/protobuf/struct.proto";
+
 service Test {
   rpc ExampleUnaryUnary(ExampleRequest) returns (ExampleResponse);
   rpc ExampleUnaryStream(ExampleRequest) returns (stream ExampleResponse);
@@ -12,9 +14,11 @@ service Test {
 message ExampleRequest {
   string example_string = 1;
   int64  example_integer = 2;
+  google.protobuf.Struct example_struct = 3;
 }
 
 message ExampleResponse {
   string example_string = 1;
   int64  example_integer = 2;
+  google.protobuf.Struct example_struct = 3;
 }

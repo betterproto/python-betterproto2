@@ -7,6 +7,7 @@ from tests.output_betterproto.deprecated import (
     Empty,
     Message,
     Test,
+    TestNested,
     TestServiceStub,
 )
 
@@ -26,12 +27,12 @@ def test_deprecated_message():
     assert str(record[0].message) == f"{Message.__name__} is deprecated"
 
 
-def test_deprecated_nested_message():
+def test_deprecated_nested_message_field():
     with pytest.warns(DeprecationWarning) as record:
-        Message(value="hello")
+        TestNested(nested_value="hello")
 
     assert len(record) == 1
-    assert str(record[0].message) == f"{Message.__name__} is deprecated"
+    assert str(record[0].message) == f"TestNested.nested_value is deprecated"
 
 
 def test_message_with_deprecated_field(message):

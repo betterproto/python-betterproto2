@@ -35,20 +35,21 @@ from .models import (
 
 def traverse(
     proto_file: FileDescriptorProto,
-) -> Generator[tuple[EnumDescriptorProto | DescriptorProto, list[int]], None, None]:
+) -> Generator[tuple[EnumDescriptorProto | DescriptorProto, list[int], str], None, None]:
     # Todo: Keep information about nested hierarchy
     def _traverse(
         path: list[int],
         items: list[EnumDescriptorProto] | list[DescriptorProto],
         prefix: str = "",
-    ) -> Generator[tuple[EnumDescriptorProto | DescriptorProto, list[int]], None, None]:
+    ) -> Generator[tuple[EnumDescriptorProto | DescriptorProto, list[int], str], None, None]:
         for i, item in enumerate(items):
             # Adjust the name since we flatten the hierarchy.
             should_rename = not isinstance(item, DescriptorProto) or not item.options or not item.options.map_entry
 
             # Record prefixed name but *do not* mutate original file.
-            item.prefixed_name = next_prefix = f"{prefix}.{item.name}" if prefix and should_rename else item.name
-            yield item, [*path, i]
+            # We use this prefixed name to create pythonized names.
+            prefixed_name = next_prefix = f"{prefix}.{item.name}" if prefix and should_rename else item.name
+            yield item, [*path, i], prefixed_name
 
             if isinstance(item, DescriptorProto):
                 # Get nested types.
@@ -110,12 +111,13 @@ def generate_code(request: CodeGeneratorRequest) -> CodeGeneratorResponse:
     # get the references to input/output messages for each service
     for output_package_name, output_package in request_data.output_packages.items():
         for proto_input_file in output_package.input_files:
-            for item, path in traverse(proto_input_file):
+            for item, path, prefixed_proto_name in traverse(proto_input_file):
                 read_protobuf_type(
                     source_file=proto_input_file,
                     item=item,
                     path=path,
                     output_package=output_package,
+                    prefixed_proto_name=prefixed_proto_name,
                 )
 
     # Read Services
@@ -189,6 +191,7 @@ def read_protobuf_type(
     path: list[int],
     source_file: "FileDescriptorProto",
     output_package: OutputTemplate,
+    prefixed_proto_name: str,
 ) -> None:
     if isinstance(item, DescriptorProto):
         if item.options and item.options.map_entry:
@@ -198,6 +201,7 @@ def read_protobuf_type(
         message_data = MessageCompiler(
             source_file=source_file,
             output_file=output_package,
+            prefixed_proto_name=prefixed_proto_name,
             proto_obj=item,
             path=path,
         )
@@ -253,6 +257,7 @@ def read_protobuf_type(
         enum = EnumDefinitionCompiler(
             source_file=source_file,
             output_file=output_package,
+            prefixed_proto_name=prefixed_proto_name,
             proto_obj=item,
             path=path,
         )

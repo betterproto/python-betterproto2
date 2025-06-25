@@ -61,7 +61,6 @@ def get_symbol_reference(
     imports: set,
     source_package: str,
     symbol: str,
-    request: PluginRequestCompiler,
     import_suffx: str = "",
 ) -> tuple[str, str | None]:
     """
@@ -107,7 +106,6 @@ def get_type_reference(
         imports=imports,
         source_package=source_package,
         symbol=py_type,
-        request=request,
     )
     return ref
 
