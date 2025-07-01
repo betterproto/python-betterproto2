@@ -90,8 +90,13 @@ async def main_async():
         generate_test("deprecated", semaphore),
         generate_test("enum", semaphore),
         generate_test("google", semaphore),
+        generate_test("map", semaphore),
         generate_test("mapmessage", semaphore),
+        generate_test("nested", semaphore),
+        generate_test("oneof", semaphore),
         generate_test("pickling", semaphore),
+        generate_test("repeated", semaphore),
+        generate_test("repeatedpacked", semaphore),
         generate_test("service", semaphore),
         generate_test("simple_service", semaphore),
     ]
