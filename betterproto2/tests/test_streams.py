@@ -6,13 +6,11 @@ from subprocess import run
 import pytest
 
 import betterproto2
-from tests.output_betterproto import (
-    map,
-    nested,
-    oneof,
-    repeated,
-    repeatedpacked,
-)
+from tests.outputs.map import map
+from tests.outputs.nested import nested
+from tests.outputs.oneof import oneof
+from tests.outputs.repeated import repeated
+from tests.outputs.repeatedpacked import repeatedpacked
 
 oneof_example = oneof.Test().from_dict({"pitied": 1, "just_a_regular_field": 123456789, "bar_name": "Testing"})
 

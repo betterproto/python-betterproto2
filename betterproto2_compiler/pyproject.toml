@@ -88,7 +88,8 @@ cmd = "pytest"
 help = "Run tests"
 
 [tool.poe.tasks.generate]
-sequence = ["_generate_tests", "_generate_tests_lib"]
+# sequence = ["_generate_tests", "_generate_tests_lib"]
+sequence = ["_generate_tests"]
 help = "Generate test cases"
 
 [tool.poe.tasks._generate_tests]

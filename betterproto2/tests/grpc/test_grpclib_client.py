@@ -9,7 +9,7 @@ import pytest
 from grpclib.testing import ChannelFor
 
 from tests.grpc.async_channel import AsyncChannel
-from tests.output_betterproto.service import (
+from tests.outputs.service.service import (
     DoThingRequest,
     DoThingResponse,
     GetThingRequest,

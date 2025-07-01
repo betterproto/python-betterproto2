@@ -3,7 +3,7 @@ import warnings
 import pytest
 
 from tests.mocks import MockChannel
-from tests.output_betterproto.deprecated import (
+from tests.outputs.deprecated.deprecated import (
     Empty,
     Message,
     Test,

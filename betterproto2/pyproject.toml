@@ -92,7 +92,7 @@ addopts = "-p no:warnings"
 # Dev workflow tasks
 [tool.poe.tasks.get-local-compiled-tests]
 # task useful for local development. Copies the compiled test files from the compiler folder to the tests folder
-shell = "rm -rf tests/output_* && cp -r ../betterproto2_compiler/tests/output_* tests"
+shell = "rm -rf tests/outputs* && cp -r ../betterproto2_compiler/tests/outputs tests"
 
 [tool.poe.tasks.test]
 cmd = "pytest"
@@ -137,18 +137,6 @@ rm -rf .coverage .mypy_cache .pytest_cache
        testsoutput_*
 """
 help = "Clean out generated files from the workspace"
-
-[tool.poe.tasks.pull-compiled-tests]
-shell  = """
-rm -rf tests/output_* &&
-git clone https://github.com/betterproto/python-betterproto2-compiler --branch compiled-test-files --single-branch compiled_files &&
-mv compiled_files/tests_betterproto tests/output_betterproto &&
-mv compiled_files/tests_betterproto_pydantic tests/output_betterproto_pydantic &&
-mv compiled_files/tests_betterproto_pydantic tests/output_betterproto_descriptor &&
-mv compiled_files/tests_reference tests/output_reference &&
-rm -rf compiled_files
-"""
-help = "Pulls the compiled test files from the betterproto2-compiler repository"
 
 [tool.poe.tasks.serve-docs]
 cmd = "mkdocs serve"
