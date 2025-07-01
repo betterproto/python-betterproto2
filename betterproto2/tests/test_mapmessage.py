@@ -1,4 +1,4 @@
-from tests.output_betterproto.mapmessage import (
+from tests.outputs.mapmessage.mapmessage import (
     Nested,
     Test,
 )

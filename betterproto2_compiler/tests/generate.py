@@ -87,11 +87,9 @@ async def main_async():
     semaphore = asyncio.Semaphore(4)
 
     tasks = [
-        generate_test("any", semaphore, reference=True),
-        generate_test("any", semaphore),
-        generate_test("any", semaphore, pydantic=True),
-        generate_test("any", semaphore, descriptors=True),
-        generate_test("any", semaphore, pydantic=True, descriptors=True),
+        generate_test("deprecated", semaphore),
+        generate_test("mapmessage", semaphore),
+        generate_test("simple_service", semaphore),
     ]
     await asyncio.gather(*tasks)
 

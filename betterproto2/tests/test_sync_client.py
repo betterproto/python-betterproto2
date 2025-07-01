@@ -6,7 +6,7 @@ import grpc
 import pytest
 from grpclib.server import Server
 
-from tests.output_betterproto.simple_service import Request, Response, SimpleServiceBase, SimpleServiceSyncStub
+from tests.outputs.simple_service.simple_service import Request, Response, SimpleServiceBase, SimpleServiceSyncStub
 
 
 class SimpleService(SimpleServiceBase):
