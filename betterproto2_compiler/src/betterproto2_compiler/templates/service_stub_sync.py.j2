@@ -29,24 +29,22 @@
 {% block method_body %}
     {% if method.server_streaming %}
       {% if method.client_streaming %}
-        for response in self._channel.stream_stream(
+        yield from self._channel.stream_stream(
             "{{ method.route }}",
             {{ method.py_input_message_type }}.SerializeToString,
             {{ method.py_output_message_type }}.FromString,
-        )(iter(messages)):
-            yield response
+        )(iter(messages))
       {% else %}
         {% if method.is_input_msg_empty %}
         if message is None:
             message = {{ method.py_input_message_type }}()
 
         {% endif %}
-        for response in self._channel.unary_stream(
+        yield from self._channel.unary_stream(
             "{{ method.route }}",
             {{ method.py_input_message_type }}.SerializeToString,
             {{ method.py_output_message_type }}.FromString,
-        )(message):
-            yield response
+        )(message)
 
       {% endif %}
     {% else %}

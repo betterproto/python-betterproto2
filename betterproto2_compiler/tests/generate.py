@@ -88,7 +88,11 @@ async def main_async():
 
     tasks = [
         generate_test("deprecated", semaphore),
+        generate_test("enum", semaphore),
+        generate_test("google", semaphore),
         generate_test("mapmessage", semaphore),
+        generate_test("pickling", semaphore),
+        generate_test("service", semaphore),
         generate_test("simple_service", semaphore),
     ]
     await asyncio.gather(*tasks)

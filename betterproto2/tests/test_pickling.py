@@ -3,8 +3,8 @@ from copy import copy, deepcopy
 
 import cachelib
 
-from tests.output_betterproto.google import protobuf as google
-from tests.output_betterproto.pickling import Complex, Fe, Fi, NestedData, PickledMessage
+from tests.outputs.pickling.google import protobuf as google
+from tests.outputs.pickling.pickling import Complex, Fe, Fi, NestedData, PickledMessage
 
 
 def unpickled(message):

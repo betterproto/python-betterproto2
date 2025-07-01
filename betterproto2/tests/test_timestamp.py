@@ -5,7 +5,7 @@ from datetime import (
 
 import pytest
 
-from tests.output_betterproto.google.protobuf import Timestamp
+from tests.outputs.google.google.protobuf import Timestamp
 
 
 @pytest.mark.parametrize(
