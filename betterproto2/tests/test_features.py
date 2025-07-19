@@ -17,7 +17,7 @@ from betterproto2 import OutputFormat
 
 
 def test_class_init():
-    from tests.output_betterproto.features import Bar, Foo
+    from tests.outputs.features.features import Bar, Foo
 
     foo = Foo(name="foo", child=Bar(name="bar"))
 
@@ -26,7 +26,7 @@ def test_class_init():
 
 
 def test_enum_as_int_json():
-    from tests.output_betterproto.features import Enum, EnumMsg
+    from tests.outputs.features.features import Enum, EnumMsg
 
     # JSON strings are supported, but ints should still be supported too.
     enum_msg = EnumMsg().from_dict({"enum": 1})
@@ -43,7 +43,7 @@ def test_enum_as_int_json():
 
 
 def test_unknown_fields():
-    from tests.output_betterproto.features import Newer, Older
+    from tests.outputs.features.features import Newer, Older
 
     newer = Newer(x=True, y=1, z="Hello")
     serialized_newer = bytes(newer)
@@ -57,7 +57,7 @@ def test_unknown_fields():
 
 
 def test_from_dict_unknown_fields():
-    from tests.output_betterproto.features import Older
+    from tests.outputs.features.features import Older
 
     with pytest.raises(KeyError):
         Older.from_dict({"x": True, "y": 1})
@@ -66,7 +66,7 @@ def test_from_dict_unknown_fields():
 
 
 def test_from_json_unknown_fields():
-    from tests.output_betterproto.features import Older
+    from tests.outputs.features.features import Older
 
     with pytest.raises(KeyError):
         Older.from_json('{"x": true, "y": 1}')
@@ -75,7 +75,7 @@ def test_from_json_unknown_fields():
 
 
 def test_oneof_support():
-    from tests.output_betterproto.features import IntMsg, OneofMsg
+    from tests.outputs.features.features import IntMsg, OneofMsg
 
     msg = OneofMsg()
 
@@ -111,7 +111,7 @@ def test_oneof_support():
 
 
 def test_json_casing():
-    from tests.output_betterproto.features import JsonCasingMsg
+    from tests.outputs.features.features import JsonCasingMsg
 
     # Parsing should accept almost any input
     msg = JsonCasingMsg().from_dict({"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4})
@@ -135,7 +135,7 @@ def test_json_casing():
 
 
 def test_dict_casing():
-    from tests.output_betterproto.features import JsonCasingMsg
+    from tests.outputs.features.features import JsonCasingMsg
 
     # Parsing should accept almost any input
     msg = JsonCasingMsg().from_dict({"PascalCase": 1, "camelCase": 2, "snake_case": 3, "kabob-case": 4})
@@ -159,7 +159,7 @@ def test_dict_casing():
 
 
 def test_optional_flag():
-    from tests.output_betterproto.features import OptionalBoolMsg
+    from tests.outputs.features.features import OptionalBoolMsg
 
     # Serialization of not passed vs. set vs. zero-value.
     assert bytes(OptionalBoolMsg()) == b""
@@ -172,7 +172,7 @@ def test_optional_flag():
 
 
 def test_optional_datetime_to_dict():
-    from tests.output_betterproto.features import OptionalDatetimeMsg
+    from tests.outputs.features.features import OptionalDatetimeMsg
 
     # Check dict serialization
     assert OptionalDatetimeMsg().to_dict() == {}
@@ -198,7 +198,7 @@ def test_optional_datetime_to_dict():
 
 
 def test_to_json_default_values():
-    from tests.output_betterproto.features import MsgA
+    from tests.outputs.features.features import MsgA
 
     # Empty dict
     test = MsgA().from_dict({})
@@ -222,7 +222,7 @@ def test_to_json_default_values():
 
 
 def test_to_dict_default_values():
-    from tests.output_betterproto.features import MsgA, MsgB
+    from tests.outputs.features.features import MsgA, MsgB
 
     # Empty dict
     test = MsgA()
@@ -268,7 +268,7 @@ def test_to_dict_default_values():
 
 
 def test_to_dict_datetime_values():
-    from tests.output_betterproto.features import TimeMsg
+    from tests.outputs.features.features import TimeMsg
 
     test = TimeMsg.from_dict({"timestamp": "2020-01-01T00:00:00Z", "duration": "86400s"})
     assert test.to_dict() == {"timestamp": "2020-01-01T00:00:00Z", "duration": "86400s"}
@@ -288,7 +288,7 @@ def test_to_dict_datetime_values():
 
 
 def test_oneof_default_value_set_causes_writes_wire():
-    from tests.output_betterproto.features import Empty, MsgC
+    from tests.outputs.features.features import Empty, MsgC
 
     def _round_trip_serialization(msg: MsgC) -> MsgC:
         return MsgC.parse(bytes(msg))
@@ -328,7 +328,7 @@ def test_oneof_default_value_set_causes_writes_wire():
 
 
 def test_message_repr():
-    from tests.output_betterproto.recursivemessage import Test
+    from tests.outputs.recursivemessage.recursivemessage import Test
 
     assert repr(Test(name="Loki")) == "Test(name='Loki')"
     assert repr(Test(child=Test(), name="Loki")) == "Test(name='Loki', child=Test())"
@@ -346,7 +346,7 @@ def test_bool():
     >>> bool(test)
     ... False
     """
-    from tests.output_betterproto.features import Empty, IntMsg
+    from tests.outputs.features.features import Empty, IntMsg
 
     assert not Empty()
     t = IntMsg()
@@ -400,7 +400,7 @@ iso_candidates = """2009-12-12T12:34
 
 
 def test_iso_datetime():
-    from tests.output_betterproto.features import TimeMsg
+    from tests.outputs.features.features import TimeMsg
 
     for _, candidate in enumerate(iso_candidates):
         msg = TimeMsg.from_dict({"timestamp": candidate})
@@ -408,7 +408,7 @@ def test_iso_datetime():
 
 
 def test_iso_datetime_list():
-    from tests.output_betterproto.features import MsgD
+    from tests.outputs.features.features import MsgD
 
     msg = MsgD()
 
@@ -417,7 +417,7 @@ def test_iso_datetime_list():
 
 
 def test_service_argument__expected_parameter():
-    from tests.output_betterproto.service import TestStub
+    from tests.outputs.service.service import TestStub
 
     sig = signature(TestStub.do_thing)
     do_thing_request_parameter = sig.parameters["message"]
@@ -426,7 +426,7 @@ def test_service_argument__expected_parameter():
 
 
 def test_is_set():
-    from tests.output_betterproto.features import MsgE
+    from tests.outputs.features.features import MsgE
 
     assert not MsgE().is_set("bool_field")
     assert not MsgE().is_set("int_field")
@@ -435,7 +435,7 @@ def test_is_set():
 
 
 def test_equality_comparison():
-    from tests.output_betterproto.bool import Test as TestMessage
+    from tests.outputs.bool.bool import Test as TestMessage
 
     msg = TestMessage(value=True)
 

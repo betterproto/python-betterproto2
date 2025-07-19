@@ -88,14 +88,17 @@ async def main_async():
 
     tasks = [
         generate_test("any", semaphore),
+        generate_test("bool", semaphore),
         generate_test("deprecated", semaphore),
         generate_test("enum", semaphore),
+        generate_test("features", semaphore),
         generate_test("google", semaphore),
         generate_test("map", semaphore),
         generate_test("mapmessage", semaphore),
         generate_test("nested", semaphore),
         generate_test("oneof", semaphore),
         generate_test("pickling", semaphore),
+        generate_test("recursivemessage", semaphore),
         generate_test("repeated", semaphore),
         generate_test("repeatedpacked", semaphore),
         generate_test("service", semaphore),
