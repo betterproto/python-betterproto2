@@ -105,6 +105,7 @@ async def main_async():
         generate_test("repeated", semaphore),
         generate_test("repeatedpacked", semaphore),
         generate_test("service", semaphore),
+        generate_test("service_uppercase", semaphore),
         generate_test("simple_service", semaphore),
     ]
     await asyncio.gather(*tasks)
