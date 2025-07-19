@@ -96,6 +96,8 @@ async def main_async():
         generate_test("google", semaphore),
         generate_test("grpclib_reflection", semaphore),
         generate_test("grpclib_reflection", semaphore, descriptors=True),
+        generate_test("import_cousin_package_same_name", semaphore),
+        generate_test("import_cousin_package_same_name", semaphore, descriptors=True),
         generate_test("map", semaphore),
         generate_test("mapmessage", semaphore),
         generate_test("nested", semaphore),
