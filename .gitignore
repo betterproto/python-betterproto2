@@ -7,7 +7,7 @@
 .python-version
 build/
 */tests/output_*
-*/tests/outputs
+*/tests/outputs/*
 **/__pycache__
 dist
 **/*.egg-info

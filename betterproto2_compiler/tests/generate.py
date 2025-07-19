@@ -87,6 +87,7 @@ async def main_async():
     semaphore = asyncio.Semaphore(4)
 
     tasks = [
+        generate_test("any", semaphore),
         generate_test("deprecated", semaphore),
         generate_test("enum", semaphore),
         generate_test("google", semaphore),

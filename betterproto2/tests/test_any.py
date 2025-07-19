@@ -1,7 +1,7 @@
 def test_any() -> None:
     # TODO using a custom message pool will no longer be necessary when the well-known types will be compiled as well
-    from tests.output_betterproto.any import Person
-    from tests.output_betterproto.google.protobuf import Any
+    from tests.outputs.any.any import Person
+    from tests.outputs.any.google.protobuf import Any
 
     person = Person(first_name="John", last_name="Smith")
 
@@ -14,8 +14,8 @@ def test_any() -> None:
 
 
 def test_any_to_dict() -> None:
-    from tests.output_betterproto.any import Person
-    from tests.output_betterproto.google.protobuf import Any
+    from tests.outputs.any.any import Person
+    from tests.outputs.any.google.protobuf import Any
 
     person = Person(first_name="John", last_name="Smith")
 
