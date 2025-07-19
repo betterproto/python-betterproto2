@@ -89,6 +89,7 @@ async def main_async():
     tasks = [
         generate_test("any", semaphore),
         generate_test("bool", semaphore),
+        generate_test("casing", semaphore),
         generate_test("deprecated", semaphore),
         generate_test("enum", semaphore),
         generate_test("example_service", semaphore),
