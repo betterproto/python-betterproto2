@@ -8,15 +8,15 @@ from grpclib.reflection.v1.reflection_grpc import ServerReflectionBase as Server
 from grpclib.reflection.v1alpha.reflection_grpc import ServerReflectionBase as ServerReflectionBaseV1Alpha
 from grpclib.testing import ChannelFor
 
-from tests.output_betterproto.example_service import TestBase
-from tests.output_betterproto.grpc.reflection.v1 import (
+from tests.outputs.grpclib_reflection.example_service import TestBase
+from tests.outputs.grpclib_reflection.grpc.reflection.v1 import (
     ErrorResponse,
     ListServiceResponse,
     ServerReflectionRequest,
     ServerReflectionStub,
     ServiceResponse,
 )
-from tests.output_betterproto_descriptor.google_proto_descriptor_pool import default_google_proto_descriptor_pool
+from tests.outputs.grpclib_reflection_descriptors.google_proto_descriptor_pool import default_google_proto_descriptor_pool 
 
 
 class TestService(TestBase):
@@ -78,7 +78,7 @@ async def test_grpclib_reflection():
         assert response.file_descriptor_response is None
 
         # now it should work
-        import tests.output_betterproto_descriptor.example_service as example_service_with_desc
+        import tests.outputs.grpclib_reflection_descriptors.example_service as example_service_with_desc
 
         requests.put(ServerReflectionRequest(file_containing_symbol="example_service.Test"))
         response = await anext(responses)
