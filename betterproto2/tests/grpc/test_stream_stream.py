@@ -4,7 +4,7 @@ from collections.abc import AsyncIterator
 import pytest
 
 from tests.grpc.async_channel import AsyncChannel
-from tests.output_betterproto.stream_stream import Message
+from tests.outputs.stream_stream.stream_stream import Message
 
 
 @pytest.fixture
