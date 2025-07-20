@@ -101,6 +101,7 @@ async def main_async():
         generate_test("import_cousin_package_same_name", semaphore, descriptors=True),
         generate_test("map", semaphore),
         generate_test("mapmessage", semaphore),
+        generate_test("nestedtwice", semaphore),
         generate_test("nested", semaphore),
         generate_test("oneof", semaphore),
         generate_test("pickling", semaphore),
