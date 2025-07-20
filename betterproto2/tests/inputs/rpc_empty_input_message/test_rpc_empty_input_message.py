@@ -4,7 +4,7 @@ from grpclib.testing import ChannelFor
 
 @pytest.mark.asyncio
 async def test_rpc_input_message():
-    from tests.output_betterproto.rpc_empty_input_message import (
+    from tests.outputs.rpc_empty_input_message.rpc_empty_input_message import (
         Response,
         ServiceBase,
         ServiceStub,

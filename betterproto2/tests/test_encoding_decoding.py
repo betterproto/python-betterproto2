@@ -1,6 +1,6 @@
 def test_int_overflow():
     """Make sure that overflows in encoded values are handled correctly."""
-    from tests.output_betterproto_pydantic.encoding_decoding import Overflow32, Overflow64
+    from tests.outputs.encoding_decoding.encoding_decoding import Overflow32, Overflow64
 
     b = bytes(Overflow64(uint=2**50 + 42))
     msg = Overflow32.parse(b)

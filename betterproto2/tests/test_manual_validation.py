@@ -3,7 +3,7 @@ import pytest
 
 
 def test_manual_validation():
-    from tests.output_betterproto_pydantic.manual_validation import Msg
+    from tests.outputs.manual_validation_pydantic.manual_validation import Msg
 
     msg = Msg()
 
@@ -16,7 +16,7 @@ def test_manual_validation():
 
 
 def test_manual_validation_non_pydantic():
-    from tests.output_betterproto.manual_validation import Msg
+    from tests.outputs.manual_validation.manual_validation import Msg
 
     # Validation is not available for non-pydantic messages
     with pytest.raises(TypeError):

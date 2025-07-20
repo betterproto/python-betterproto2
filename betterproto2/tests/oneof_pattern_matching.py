@@ -2,7 +2,7 @@ import pytest
 
 
 def test_oneof_pattern_matching():
-    from tests.output_betterproto.features import IntMsg, OneofMsg
+    from tests.outputs.features.features import IntMsg, OneofMsg
 
     msg = OneofMsg(y="test1", b="test2")
 

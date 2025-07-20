@@ -46,7 +46,7 @@ def test_pickling_complex_message():
 
 
 def test_recursive_message_defaults():
-    from tests.output_betterproto.recursivemessage import Intermediate, Test as RecursiveMessage
+    from tests.outputs.recursivemessage.recursivemessage import Intermediate, Test as RecursiveMessage
 
     msg = RecursiveMessage(name="bob", intermediate=Intermediate(42))
     msg = unpickled(msg)

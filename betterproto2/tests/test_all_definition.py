@@ -4,8 +4,8 @@ def test_all_definition():
 
     These modules have been chosen since they contain messages, services and enums.
     """
-    import tests.output_betterproto.enum as enum
-    import tests.output_betterproto.service as service
+    import tests.outputs.enum.enum as enum
+    import tests.outputs.service.service as service
 
     assert service.__all__ == (
         "DoThingRequest",

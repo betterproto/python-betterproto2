@@ -3,7 +3,7 @@ import pytest
 
 def test_unwrap() -> None:
     from betterproto2 import unwrap
-    from tests.output_betterproto.unwrap import Message, NestedMessage
+    from tests.outputs.unwrap.unwrap import Message, NestedMessage
 
     with pytest.raises(ValueError):
         unwrap(Message().x)
