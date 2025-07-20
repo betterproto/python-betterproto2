@@ -89,9 +89,11 @@ async def main_async():
     tasks = [
         generate_test("any", semaphore),
         generate_test("bool", semaphore),
+        generate_test("bool", semaphore, pydantic=True),
         generate_test("casing", semaphore),
         generate_test("casing_inner_class", semaphore),
         generate_test("deprecated", semaphore),
+        generate_test("documentation", semaphore),
         generate_test("enum", semaphore),
         generate_test("example_service", semaphore),
         generate_test("features", semaphore),
@@ -111,6 +113,7 @@ async def main_async():
         generate_test("nestedtwice", semaphore),
         generate_test("nested", semaphore),
         generate_test("oneof", semaphore),
+        generate_test("oneof", semaphore, pydantic=True),
         generate_test("oneof_enum", semaphore),
         generate_test("oneof_default_value_serialization", semaphore),
         generate_test("pickling", semaphore),
@@ -127,6 +130,7 @@ async def main_async():
         generate_test("simple_service", semaphore),
         generate_test("stream_stream", semaphore),
         generate_test("timestamp_dict_encode", semaphore),
+        generate_test("validation", semaphore, pydantic=True),
     ]
     await asyncio.gather(*tasks)
 

@@ -11,7 +11,7 @@ def check(generated_doc: str, type: str) -> None:
 
 
 def test_documentation() -> None:
-    from .output_betterproto.documentation import (
+    from .outputs.documentation.documentation import (
         Enum,
         ServiceBase,
         ServiceStub,
@@ -39,7 +39,7 @@ def test_documentation() -> None:
 
 
 def test_escaping() -> None:
-    from .output_betterproto.documentation import ComplexDocumentation
+    from .outputs.documentation.documentation import ComplexDocumentation
 
     ComplexDocumentation.__doc__ == """
     A comment with backslashes \\ and triple quotes \"\"\"

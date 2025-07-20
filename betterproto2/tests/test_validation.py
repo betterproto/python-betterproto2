@@ -3,7 +3,7 @@ import pytest
 
 
 def test_int32_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(int32_value=1)
@@ -18,7 +18,7 @@ def test_int32_validation():
 
 
 def test_int64_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(int64_value=1)
@@ -33,7 +33,7 @@ def test_int64_validation():
 
 
 def test_uint32_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(uint32_value=0)
@@ -47,7 +47,7 @@ def test_uint32_validation():
 
 
 def test_uint64_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(uint64_value=0)
@@ -61,7 +61,7 @@ def test_uint64_validation():
 
 
 def test_sint32_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(sint32_value=1)
@@ -76,7 +76,7 @@ def test_sint32_validation():
 
 
 def test_sint64_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(sint64_value=1)
@@ -91,7 +91,7 @@ def test_sint64_validation():
 
 
 def test_fixed32_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(fixed32_value=0)
@@ -105,7 +105,7 @@ def test_fixed32_validation():
 
 
 def test_fixed64_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(fixed64_value=0)
@@ -119,7 +119,7 @@ def test_fixed64_validation():
 
 
 def test_sfixed32_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(sfixed32_value=1)
@@ -134,7 +134,7 @@ def test_sfixed32_validation():
 
 
 def test_sfixed64_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(sfixed64_value=1)
@@ -149,7 +149,7 @@ def test_sfixed64_validation():
 
 
 def test_float_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(float_value=0.0)
@@ -161,7 +161,7 @@ def test_float_validation():
 
 
 def test_string_validation():
-    from .output_betterproto_pydantic.validation import Message
+    from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
     Message(string_value="")

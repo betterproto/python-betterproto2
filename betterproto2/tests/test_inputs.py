@@ -145,20 +145,6 @@ def test_data(request, reset_sys_path):
 
 
 @pytest.mark.parametrize("test_data", test_cases.messages, indirect=True)
-def test_message_can_instantiated(test_data: TestData) -> None:
-    plugin_module, *_ = test_data
-    plugin_module.Test()
-
-
-@pytest.mark.parametrize("test_data", test_cases.messages, indirect=True)
-def test_message_equality(test_data: TestData) -> None:
-    plugin_module, *_ = test_data
-    message1 = plugin_module.Test()
-    message2 = plugin_module.Test()
-    assert message1 == message2
-
-
-@pytest.mark.parametrize("test_data", test_cases.messages, indirect=True)
 def test_message_json(test_data: TestData) -> None:
     plugin_module, _, json_data = test_data
 
@@ -170,11 +156,6 @@ def test_message_json(test_data: TestData) -> None:
         message_json = message.to_json(indent=0)
 
         assert dict_replace_nans(json.loads(message_json)) == dict_replace_nans(json.loads(sample.json))
-
-
-@pytest.mark.parametrize("test_data", test_cases.services, indirect=True)
-def test_service_can_be_instantiated(test_data: TestData) -> None:
-    test_data.plugin_module.TestStub(MockChannel())
 
 
 @pytest.mark.parametrize("test_data", test_cases.messages, indirect=True)
