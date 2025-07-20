@@ -1,8 +1,6 @@
 import json
 
-from tests.output_betterproto.proto3_field_presence import (
-    Test,
-)
+from tests.outputs.proto3_field_presence.proto3_field_presence import Test
 
 
 def test_null_fields_json():

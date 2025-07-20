@@ -1,5 +1,5 @@
 import betterproto2
-from tests.output_betterproto.oneof_enum import Move, Signal, Test
+from tests.outputs.oneof_enum.oneof_enum import Move, Signal, Test
 from tests.util import get_test_case_json_data
 
 

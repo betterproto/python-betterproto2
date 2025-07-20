@@ -1,7 +1,7 @@
 import datetime
 
 import betterproto2
-from tests.output_betterproto.oneof_default_value_serialization import (
+from tests.outputs.oneof_default_value_serialization.oneof_default_value_serialization import (
     Message,
     NestedMessage,
     Test,
