@@ -7,14 +7,14 @@ import pytest
 from google.protobuf import json_format
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from tests.output_betterproto.google_impl_behavior_equivalence import (
+from tests.outputs.google_impl_behavior_equivalence.google_impl_behavior_equivalence import (
     Empty,
     Foo,
     Request,
     Spam,
     Test,
 )
-from tests.output_reference.google_impl_behavior_equivalence.google_impl_behavior_equivalence_pb2 import (
+from tests.outputs.google_impl_behavior_equivalence_reference.google_impl_behavior_equivalence_pb2 import (
     Empty as ReferenceEmpty,
     Foo as ReferenceFoo,
     Request as ReferenceRequest,

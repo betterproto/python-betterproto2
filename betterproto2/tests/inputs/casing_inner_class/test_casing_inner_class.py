@@ -1,4 +1,4 @@
-import tests.output_betterproto.casing_inner_class as casing_inner_class
+import tests.outputs.casing_inner_class.casing_inner_class as casing_inner_class
 
 
 def test_message_casing_inner_class_name():

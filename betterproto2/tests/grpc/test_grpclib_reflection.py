@@ -16,7 +16,9 @@ from tests.outputs.grpclib_reflection.grpc.reflection.v1 import (
     ServerReflectionStub,
     ServiceResponse,
 )
-from tests.outputs.grpclib_reflection_descriptors.google_proto_descriptor_pool import default_google_proto_descriptor_pool 
+from tests.outputs.grpclib_reflection_descriptors.google_proto_descriptor_pool import (
+    default_google_proto_descriptor_pool,
+)
 
 
 class TestService(TestBase):

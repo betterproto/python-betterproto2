@@ -9,12 +9,9 @@ from typing import (
 
 import pytest
 
-import tests.output_betterproto.google.protobuf as protobuf
+import tests.outputs.googletypes_request.google.protobuf as protobuf
 from tests.mocks import MockChannel
-from tests.output_betterproto.googletypes_request import (
-    Input,
-    TestStub,
-)
+from tests.outputs.googletypes_request.googletypes_request import Input, TestStub
 
 test_cases = [
     (TestStub.send_double, protobuf.DoubleValue, 2.5),
