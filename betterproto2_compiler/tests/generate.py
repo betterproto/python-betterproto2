@@ -84,7 +84,7 @@ async def generate_test(
 
 async def main_async():
     # Don't compile too many tests in parallel
-    semaphore = asyncio.Semaphore(4)
+    semaphore = asyncio.Semaphore(os.cpu_count() or 1)
 
     tasks = [
         generate_test("any", semaphore),
@@ -115,13 +115,18 @@ async def main_async():
         generate_test("oneof_default_value_serialization", semaphore),
         generate_test("pickling", semaphore),
         generate_test("proto3_field_presence", semaphore),
+        generate_test("proto3_field_presence_oneof", semaphore),
         generate_test("recursivemessage", semaphore),
+        generate_test("regression_387", semaphore),
+        generate_test("regression_414", semaphore),
         generate_test("repeated", semaphore),
         generate_test("repeatedpacked", semaphore),
+        generate_test("repeated_duration_timestamp", semaphore),
         generate_test("service", semaphore),
         generate_test("service_uppercase", semaphore),
         generate_test("simple_service", semaphore),
         generate_test("stream_stream", semaphore),
+        generate_test("timestamp_dict_encode", semaphore),
     ]
     await asyncio.gather(*tasks)
 

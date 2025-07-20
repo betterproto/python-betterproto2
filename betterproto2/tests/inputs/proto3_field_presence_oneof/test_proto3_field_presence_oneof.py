@@ -1,8 +1,4 @@
-from tests.output_betterproto.proto3_field_presence_oneof import (
-    Nested,
-    Test,
-    WithOptional,
-)
+from tests.outputs.proto3_field_presence_oneof.proto3_field_presence_oneof import Nested, Test, WithOptional
 
 
 def test_serialization():

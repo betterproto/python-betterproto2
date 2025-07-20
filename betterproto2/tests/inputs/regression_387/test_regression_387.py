@@ -1,4 +1,4 @@
-from tests.output_betterproto.regression_387 import ParentElement, Test
+from tests.outputs.regression_387.regression_387 import ParentElement, Test
 
 
 def test_regression_387():
