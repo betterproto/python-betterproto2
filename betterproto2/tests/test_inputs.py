@@ -149,9 +149,6 @@ def test_message_json(test_data: TestData) -> None:
     plugin_module, _, json_data = test_data
 
     for sample in json_data:
-        if sample.belongs_to(test_input_config.non_symmetrical_json):
-            continue
-
         message: betterproto2.Message = plugin_module.Test.from_json(sample.json)
         message_json = message.to_json(indent=0)
 
