@@ -12,7 +12,6 @@ import pytest
 
 import betterproto2
 from tests.inputs import config as test_input_config
-from tests.mocks import MockChannel
 from tests.util import find_module, get_directories, get_test_case_json_data, inputs_path
 
 # Force pure-python implementation instead of C++, otherwise imports
