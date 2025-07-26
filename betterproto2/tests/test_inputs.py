@@ -28,6 +28,7 @@ class TestCase:
     jsons: list[str]
     plugin_package: str
     reference_package: str
+    xfail: bool = False
 
 
 class TestCases:
@@ -57,11 +58,6 @@ test_cases = TestCases(
     services=test_input_config.services,
     xfail=test_input_config.xfail,
 )
-
-plugin_output_package = "tests.output_betterproto"
-reference_output_package = "tests.output_reference"
-
-TestData = namedtuple("TestData", ["plugin_module", "reference_module", "json_data"])
 
 
 def module_has_entry_point(module: ModuleType):
@@ -124,45 +120,6 @@ def reset_sys_path():
     sys.path = original
 
 
-@pytest.fixture
-def test_data(request, reset_sys_path):
-    test_case_name = request.param
-
-    reference_module_root = os.path.join(*reference_output_package.split("."), test_case_name)
-    sys.path.append(reference_module_root)
-
-    plugin_module = importlib.import_module(f"{plugin_output_package}.{test_case_name}")
-
-    plugin_module_entry_point = find_module(plugin_module, module_has_entry_point)
-
-    if not plugin_module_entry_point:
-        raise Exception(
-            f"Test case {repr(test_case_name)} has no entry point. "
-            "Please add a proto message or service called Test and recompile."
-        )
-
-    yield (
-        TestData(
-            plugin_module=plugin_module_entry_point,
-            reference_module=lambda: importlib.import_module(
-                f"{reference_output_package}.{test_case_name}.{test_case_name}_pb2"
-            ),
-            json_data=get_test_case_json_data(test_case_name),
-        )
-    )
-
-
-# @pytest.mark.parametrize("test_data", test_cases.messages, indirect=True)
-# def test_message_json(test_data: TestData) -> None:
-#     plugin_module, _, json_data = test_data
-
-#     for sample in json_data:
-#         message: betterproto2.Message = plugin_module.Test.from_json(sample.json)
-#         message_json = message.to_json(indent=0)
-
-#         assert dict_replace_nans(json.loads(message_json)) == dict_replace_nans(json.loads(sample.json))
-
-
 # ./inputs/enum/enum.json
 # ./inputs/field_name_identical_to_type/field_name_identical_to_type.json
 # ./inputs/fixed/fixed.json
@@ -212,11 +169,37 @@ TEST_CASES = [
         "field_name_identical_to_type.field_name_identical_to_type",
         "field_name_identical_to_type_reference.field_name_identical_to_type_pb2",
     ),
+    TestCase(["fixed/fixed.json"], "fixed.fixed", "fixed_reference.fixed_pb2"),
+    TestCase(["float/float.json"], "float.float", "float_reference.float_pb2"),
+    TestCase(
+        ["googletypes/googletypes.json", "googletypes/googletypes-missing.json"],
+        "googletypes.googletypes",
+        "googletypes_reference.googletypes_pb2",
+    ),
+    TestCase(
+        ["googletypes_struct/googletypes_struct.json"],
+        "googletypes_struct.googletypes_struct",
+        "googletypes_struct_reference.googletypes_struct_pb2",
+        xfail=True,
+    ),
+    TestCase(
+        ["googletypes_value/googletypes_value.json"],
+        "googletypes_value.googletypes_value",
+        "googletypes_value_reference.googletypes_value_pb2",
+        xfail=True,
+    ),
+    TestCase(["int32/int32.json"], "int32.int32", "int32_reference.int32_pb2"),
+    TestCase(["map/map.json"], "map.map", "map_reference.map_pb2"),
+    TestCase(["mapmessage/mapmessage.json"], "mapmessage.mapmessage", "mapmessage_reference.mapmessage_pb2"),
+    
 ]
 
 
-@pytest.mark.parametrize("test_case", TEST_CASES)
+@pytest.mark.parametrize("test_case", TEST_CASES, ids=lambda x: x.plugin_package)
 def test_message_json(test_case: TestCase) -> None:
+    if test_case.xfail:
+        pytest.xfail(f"Test case {test_case.plugin_package} is expected to fail.")
+
     plugin_module = importlib.import_module(f"tests.outputs.{test_case.plugin_package}")
 
     current_dir = Path(os.path.dirname(os.path.abspath(__file__)))
@@ -231,8 +214,11 @@ def test_message_json(test_case: TestCase) -> None:
         assert dict_replace_nans(json.loads(message_json)) == dict_replace_nans(json.loads(json_data))
 
 
-@pytest.mark.parametrize("test_case", TEST_CASES)
+@pytest.mark.parametrize("test_case", TEST_CASES, ids=lambda x: x.plugin_package)
 def test_binary_compatibility(test_case: TestCase) -> None:
+    if test_case.xfail:
+        pytest.xfail(f"Test case {test_case.plugin_package} is expected to fail.")
+
     plugin_module = importlib.import_module(f"tests.outputs.{test_case.plugin_package}")
     reference_module = importlib.import_module(f"tests.outputs.{test_case.reference_package}")
 
