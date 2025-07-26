@@ -3,35 +3,11 @@ import asyncio
 import os
 import shutil
 
-from tests.util import (
-    # TODO delete definitions?
-    # get_directories,
-    # inputs_path,
-    # output_path_betterproto,
-    # output_path_betterproto_descriptor,
-    # output_path_betterproto_pydantic,
-    # output_path_reference,
-    protoc,
-)
+from tests.util import protoc
 
 # Force pure-python implementation instead of C++, otherwise imports
 # break things because we can't properly reset the symbol database.
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
-
-
-# async def generate(verbose: bool):
-#     failed_test_cases = []
-#     # Wait for all subprocs and match any failures to names to report
-#     for test_case_name, result in zip(sorted(test_case_names), await asyncio.gather(*generation_tasks)):
-#         if result != 0:
-#             failed_test_cases.append(test_case_name)
-
-#     if len(failed_test_cases) > 0:
-#         sys.stderr.write("\n\033[31;1;4mFailed to generate the following test cases:\033[0m\n")
-#         for failed_test_case in failed_test_cases:
-#             sys.stderr.write(f"- {failed_test_case}\n")
-
-#         sys.exit(1)
 
 
 async def generate_test(

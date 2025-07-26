@@ -5,18 +5,6 @@ from pathlib import Path
 
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
-root_path = Path(__file__).resolve().parent
-inputs_path = root_path.joinpath("inputs")
-output_path_reference = root_path.joinpath("output_reference")
-output_path_betterproto = root_path.joinpath("output_betterproto")
-output_path_betterproto_pydantic = root_path.joinpath("output_betterproto_pydantic")
-output_path_betterproto_descriptor = root_path.joinpath("output_betterproto_descriptor")
-
-
-def get_directories(path):
-    for root, directories, files in os.walk(path):
-        yield from directories
-
 
 async def protoc(
     path: str | Path,

@@ -84,43 +84,6 @@ def reset_sys_path():
     sys.path = original
 
 
-# ./inputs/enum/enum.json
-# ./inputs/field_name_identical_to_type/field_name_identical_to_type.json
-# ./inputs/fixed/fixed.json
-# ./inputs/float/float.json
-# ./inputs/googletypes/googletypes.json
-# ./inputs/googletypes/googletypes-missing.json
-# ./inputs/googletypes_struct/googletypes_struct.json
-# ./inputs/googletypes_value/googletypes_value.json
-# ./inputs/int32/int32.json
-# ./inputs/map/map.json
-# ./inputs/mapmessage/mapmessage.json
-# ./inputs/namespace_builtin_types/namespace_builtin_types.json
-# ./inputs/namespace_keywords/namespace_keywords.json
-# ./inputs/nested/nested.json
-# ./inputs/nestedtwice/nestedtwice.json
-# ./inputs/oneof_empty/oneof_empty.json
-# ./inputs/oneof_empty/oneof_empty_maybe1.json
-# ./inputs/oneof_empty/oneof_empty_maybe2.json
-# ./inputs/oneof_enum/oneof_enum-enum-0.json
-# ./inputs/oneof_enum/oneof_enum-enum-1.json
-# ./inputs/oneof_enum/oneof_enum.json
-# ./inputs/oneof/oneof.json
-# ./inputs/oneof/oneof-name.json
-# ./inputs/oneof/oneof_name.json
-# ./inputs/proto3_field_presence_oneof/proto3_field_presence_oneof.json
-# ./inputs/proto3_field_presence/proto3_field_presence_default.json
-# ./inputs/proto3_field_presence/proto3_field_presence.json
-# ./inputs/proto3_field_presence/proto3_field_presence_missing.json
-# ./inputs/recursivemessage/recursivemessage.json
-# ./inputs/ref/ref.json
-# ./inputs/repeated_duration_timestamp/repeated_duration_timestamp.json
-# ./inputs/repeatedmessage/repeatedmessage.json
-# ./inputs/repeatedpacked/repeatedpacked.json
-# ./inputs/repeated/repeated.json
-# ./inputs/signed/signed.json
-# ./inputs/timestamp_dict_encode/timestamp_dict_encode.json
-
 TEST_CASES = [
     TestCase(["bool/bool.json"], "bool.bool", "bool_reference.bool_pb2"),
     TestCase(["bytes/bytes.json"], "bytes.bytes", "bytes_reference.bytes_pb2"),
