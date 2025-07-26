@@ -3,7 +3,7 @@ import pytest
 from tests.outputs.import_cousin_package_same_name.import_cousin_package_same_name.test.subpackage import Test
 
 # importing the cousin should cause no descriptor pool errors since the subpackage imports it once already
-from tests.outputs.import_cousin_package_same_name_descriptors.import_cousin_package_same_name.cousin.subpackage import (
+from tests.outputs.import_cousin_package_same_name_descriptors.import_cousin_package_same_name.cousin.subpackage import (  # noqa: E501
     CousinMessage,
 )
 from tests.outputs.import_cousin_package_same_name_descriptors.import_cousin_package_same_name.test.subpackage import (
