@@ -203,6 +203,28 @@ TEST_CASES = [
         "recursivemessage_reference.recursivemessage_pb2",
     ),
     TestCase(["ref/ref.json"], "ref.ref", "ref_reference.ref_pb2", reference_path=["ref_reference"]),
+    TestCase(
+        ["repeated_duration_timestamp/repeated_duration_timestamp.json"],
+        "repeated_duration_timestamp.repeated_duration_timestamp",
+        "repeated_duration_timestamp_reference.repeated_duration_timestamp_pb2",
+    ),
+    TestCase(
+        ["repeatedmessage/repeatedmessage.json"],
+        "repeatedmessage.repeatedmessage",
+        "repeatedmessage_reference.repeatedmessage_pb2",
+    ),
+    TestCase(
+        ["repeatedpacked/repeatedpacked.json"],
+        "repeatedpacked.repeatedpacked",
+        "repeatedpacked_reference.repeatedpacked_pb2",
+    ),
+    TestCase(["repeated/repeated.json"], "repeated.repeated", "repeated_reference.repeated_pb2"),
+    TestCase(["signed/signed.json"], "signed.signed", "signed_reference.signed_pb2"),
+    TestCase(
+        ["timestamp_dict_encode/timestamp_dict_encode.json"],
+        "timestamp_dict_encode.timestamp_dict_encode",
+        "timestamp_dict_encode_reference.timestamp_dict_encode_pb2",
+    ),
 ]
 
 
