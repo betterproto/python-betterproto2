@@ -4,17 +4,13 @@ import json
 import math
 import os
 import sys
-from collections import namedtuple
 from dataclasses import dataclass
 from pathlib import Path
-from types import ModuleType
 from typing import Any
 
 import pytest
 
 import betterproto2
-from tests.inputs import config as test_input_config
-from tests.util import find_module, get_directories, get_test_case_json_data, inputs_path
 
 # Force pure-python implementation instead of C++, otherwise imports
 # break things because we can't properly reset the symbol database.
@@ -28,40 +24,8 @@ class TestCase:
     jsons: list[str]
     plugin_package: str
     reference_package: str
+    reference_path: list[str] | None = None
     xfail: bool = False
-
-
-class TestCases:
-    def __init__(
-        self,
-        path,
-        services: set[str],
-        xfail: set[str],
-    ):
-        all = set(get_directories(path)) - {"__pycache__"}
-        messages = {test for test in all - services if get_test_case_json_data(test)}
-
-        unknown_xfail_tests = xfail - all
-        if unknown_xfail_tests:
-            raise Exception(f"Unknown test(s) in config.py: {unknown_xfail_tests}")
-
-        self.services = self.apply_xfail_marks(services, xfail)
-        self.messages = self.apply_xfail_marks(messages, xfail)
-
-    @staticmethod
-    def apply_xfail_marks(test_set: set[str], xfail: set[str]):
-        return [pytest.param(test, marks=pytest.mark.xfail) if test in xfail else test for test in test_set]
-
-
-test_cases = TestCases(
-    path=inputs_path,
-    services=test_input_config.services,
-    xfail=test_input_config.xfail,
-)
-
-
-def module_has_entry_point(module: ModuleType):
-    return any(hasattr(module, attr) for attr in ["Test", "TestStub"])
 
 
 def list_replace_nans(items: list) -> list[Any]:
@@ -191,7 +155,54 @@ TEST_CASES = [
     TestCase(["int32/int32.json"], "int32.int32", "int32_reference.int32_pb2"),
     TestCase(["map/map.json"], "map.map", "map_reference.map_pb2"),
     TestCase(["mapmessage/mapmessage.json"], "mapmessage.mapmessage", "mapmessage_reference.mapmessage_pb2"),
-    
+    TestCase(
+        ["namespace_builtin_types/namespace_builtin_types.json"],
+        "namespace_builtin_types.namespace_builtin_types",
+        "namespace_builtin_types_reference.namespace_builtin_types_pb2",
+    ),
+    TestCase(
+        ["namespace_keywords/namespace_keywords.json"],
+        "namespace_keywords.namespace_keywords",
+        "namespace_keywords_reference.namespace_keywords_pb2",
+        xfail=True,
+    ),
+    TestCase(["nested/nested.json"], "nested.nested", "nested_reference.nested_pb2"),
+    TestCase(["nestedtwice/nestedtwice.json"], "nestedtwice.nestedtwice", "nestedtwice_reference.nestedtwice_pb2"),
+    TestCase(
+        ["oneof_empty/oneof_empty.json", "oneof_empty/oneof_empty_maybe1.json", "oneof_empty/oneof_empty_maybe2.json"],
+        "oneof_empty.oneof_empty",
+        "oneof_empty_reference.oneof_empty_pb2",
+    ),
+    TestCase(
+        ["oneof_enum/oneof_enum-enum-0.json", "oneof_enum/oneof_enum-enum-1.json", "oneof_enum/oneof_enum.json"],
+        "oneof_enum.oneof_enum",
+        "oneof_enum_reference.oneof_enum_pb2",
+    ),
+    TestCase(
+        ["oneof/oneof.json", "oneof/oneof-name.json", "oneof/oneof_name.json"],
+        "oneof.oneof",
+        "oneof_reference.oneof_pb2",
+    ),
+    TestCase(
+        ["proto3_field_presence_oneof/proto3_field_presence_oneof.json"],
+        "proto3_field_presence_oneof.proto3_field_presence_oneof",
+        "proto3_field_presence_oneof_reference.proto3_field_presence_oneof_pb2",
+    ),
+    TestCase(
+        [
+            "proto3_field_presence/proto3_field_presence_default.json",
+            "proto3_field_presence/proto3_field_presence.json",
+            "proto3_field_presence/proto3_field_presence_missing.json",
+        ],
+        "proto3_field_presence.proto3_field_presence",
+        "proto3_field_presence_reference.proto3_field_presence_pb2",
+    ),
+    TestCase(
+        ["recursivemessage/recursivemessage.json"],
+        "recursivemessage.recursivemessage",
+        "recursivemessage_reference.recursivemessage_pb2",
+    ),
+    TestCase(["ref/ref.json"], "ref.ref", "ref_reference.ref_pb2", reference_path=["ref_reference"]),
 ]
 
 
@@ -215,14 +226,18 @@ def test_message_json(test_case: TestCase) -> None:
 
 
 @pytest.mark.parametrize("test_case", TEST_CASES, ids=lambda x: x.plugin_package)
-def test_binary_compatibility(test_case: TestCase) -> None:
+def test_binary_compatibility(test_case: TestCase, reset_sys_path) -> None:
     if test_case.xfail:
         pytest.xfail(f"Test case {test_case.plugin_package} is expected to fail.")
 
+    current_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+
+    if test_case.reference_path:
+        for path in test_case.reference_path:
+            sys.path.append(str(current_dir / "outputs" / path))
+
     plugin_module = importlib.import_module(f"tests.outputs.{test_case.plugin_package}")
     reference_module = importlib.import_module(f"tests.outputs.{test_case.reference_package}")
-
-    current_dir = Path(os.path.dirname(os.path.abspath(__file__)))
 
     # TODO fix and delete
     if "map" in plugin_module.__file__.replace("\\", "/").split("/"):
