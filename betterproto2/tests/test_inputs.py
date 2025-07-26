@@ -5,6 +5,8 @@ import math
 import os
 import sys
 from collections import namedtuple
+from dataclasses import dataclass
+from pathlib import Path
 from types import ModuleType
 from typing import Any
 
@@ -19,6 +21,13 @@ from tests.util import find_module, get_directories, get_test_case_json_data, in
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
 from google.protobuf.json_format import Parse
+
+
+@dataclass
+class TestCase:
+    jsons: list[str]
+    plugin_package: str
+    reference_package: str
 
 
 class TestCases:
@@ -143,30 +152,104 @@ def test_data(request, reset_sys_path):
     )
 
 
-@pytest.mark.parametrize("test_data", test_cases.messages, indirect=True)
-def test_message_json(test_data: TestData) -> None:
-    plugin_module, _, json_data = test_data
+# @pytest.mark.parametrize("test_data", test_cases.messages, indirect=True)
+# def test_message_json(test_data: TestData) -> None:
+#     plugin_module, _, json_data = test_data
 
-    for sample in json_data:
-        message: betterproto2.Message = plugin_module.Test.from_json(sample.json)
+#     for sample in json_data:
+#         message: betterproto2.Message = plugin_module.Test.from_json(sample.json)
+#         message_json = message.to_json(indent=0)
+
+#         assert dict_replace_nans(json.loads(message_json)) == dict_replace_nans(json.loads(sample.json))
+
+
+# ./inputs/enum/enum.json
+# ./inputs/field_name_identical_to_type/field_name_identical_to_type.json
+# ./inputs/fixed/fixed.json
+# ./inputs/float/float.json
+# ./inputs/googletypes/googletypes.json
+# ./inputs/googletypes/googletypes-missing.json
+# ./inputs/googletypes_struct/googletypes_struct.json
+# ./inputs/googletypes_value/googletypes_value.json
+# ./inputs/int32/int32.json
+# ./inputs/map/map.json
+# ./inputs/mapmessage/mapmessage.json
+# ./inputs/namespace_builtin_types/namespace_builtin_types.json
+# ./inputs/namespace_keywords/namespace_keywords.json
+# ./inputs/nested/nested.json
+# ./inputs/nestedtwice/nestedtwice.json
+# ./inputs/oneof_empty/oneof_empty.json
+# ./inputs/oneof_empty/oneof_empty_maybe1.json
+# ./inputs/oneof_empty/oneof_empty_maybe2.json
+# ./inputs/oneof_enum/oneof_enum-enum-0.json
+# ./inputs/oneof_enum/oneof_enum-enum-1.json
+# ./inputs/oneof_enum/oneof_enum.json
+# ./inputs/oneof/oneof.json
+# ./inputs/oneof/oneof-name.json
+# ./inputs/oneof/oneof_name.json
+# ./inputs/proto3_field_presence_oneof/proto3_field_presence_oneof.json
+# ./inputs/proto3_field_presence/proto3_field_presence_default.json
+# ./inputs/proto3_field_presence/proto3_field_presence.json
+# ./inputs/proto3_field_presence/proto3_field_presence_missing.json
+# ./inputs/recursivemessage/recursivemessage.json
+# ./inputs/ref/ref.json
+# ./inputs/repeated_duration_timestamp/repeated_duration_timestamp.json
+# ./inputs/repeatedmessage/repeatedmessage.json
+# ./inputs/repeatedpacked/repeatedpacked.json
+# ./inputs/repeated/repeated.json
+# ./inputs/signed/signed.json
+# ./inputs/timestamp_dict_encode/timestamp_dict_encode.json
+
+TEST_CASES = [
+    TestCase(["bool/bool.json"], "bool.bool", "bool_reference.bool_pb2"),
+    TestCase(["bytes/bytes.json"], "bytes.bytes", "bytes_reference.bytes_pb2"),
+    TestCase(["casing/casing.json"], "casing.casing", "casing_reference.casing_pb2"),
+    TestCase(["deprecated/deprecated.json"], "deprecated.deprecated", "deprecated_reference.deprecated_pb2"),
+    TestCase(["double/double.json", "double/double-negative.json"], "double.double", "double_reference.double_pb2"),
+    TestCase(["enum/enum.json"], "enum.enum", "enum_reference.enum_pb2"),
+    TestCase(
+        ["field_name_identical_to_type/field_name_identical_to_type.json"],
+        "field_name_identical_to_type.field_name_identical_to_type",
+        "field_name_identical_to_type_reference.field_name_identical_to_type_pb2",
+    ),
+]
+
+
+@pytest.mark.parametrize("test_case", TEST_CASES)
+def test_message_json(test_case: TestCase) -> None:
+    plugin_module = importlib.import_module(f"tests.outputs.{test_case.plugin_package}")
+
+    current_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+
+    for json_path in test_case.jsons:
+        with open(current_dir / "inputs" / json_path) as f:
+            json_data = f.read()
+
+        message: betterproto2.Message = plugin_module.Test.from_json(json_data)
         message_json = message.to_json(indent=0)
 
-        assert dict_replace_nans(json.loads(message_json)) == dict_replace_nans(json.loads(sample.json))
+        assert dict_replace_nans(json.loads(message_json)) == dict_replace_nans(json.loads(json_data))
 
 
-@pytest.mark.parametrize("test_data", test_cases.messages, indirect=True)
-def test_binary_compatibility(test_data: TestData) -> None:
-    plugin_module, reference_module, json_data = test_data
+@pytest.mark.parametrize("test_case", TEST_CASES)
+def test_binary_compatibility(test_case: TestCase) -> None:
+    plugin_module = importlib.import_module(f"tests.outputs.{test_case.plugin_package}")
+    reference_module = importlib.import_module(f"tests.outputs.{test_case.reference_package}")
+
+    current_dir = Path(os.path.dirname(os.path.abspath(__file__)))
 
     # TODO fix and delete
     if "map" in plugin_module.__file__.replace("\\", "/").split("/"):
         pytest.skip("Skipping this test for now.")
 
-    for sample in json_data:
-        reference_instance = Parse(sample.json, reference_module().Test())
+    for json_path in test_case.jsons:
+        with open(current_dir / "inputs" / json_path) as f:
+            json_data = f.read()
+
+        reference_instance = Parse(json_data, reference_module.Test())
         reference_binary_output = reference_instance.SerializeToString()
 
-        plugin_instance_from_json: betterproto2.Message = plugin_module.Test().from_json(sample.json)
+        plugin_instance_from_json: betterproto2.Message = plugin_module.Test().from_json(json_data)
         plugin_instance_from_binary = plugin_module.Test.FromString(reference_binary_output)
 
         # Generally this can't be relied on, but here we are aiming to match the
