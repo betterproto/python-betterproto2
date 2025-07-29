@@ -634,7 +634,7 @@ class EnumDefinitionCompiler(ProtoContentBase):
         first_entry = self.entries[0].name
 
         # Find the potential common prefix
-        enum_prefix: str | None = None
+        enum_prefix = ""
         for i in range(len(first_entry)):
             if first_entry[: i + 1].replace("_", "").lower() == enum_name_reduced:
                 enum_prefix = f"{first_entry[: i + 1]}_"
