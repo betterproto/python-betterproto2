@@ -1,5 +1,4 @@
 from tests.outputs.enum.enum import (
-    ArithmeticOperator,
     Choice,
     Test,
 )
