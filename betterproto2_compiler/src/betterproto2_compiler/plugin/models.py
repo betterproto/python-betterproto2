@@ -34,10 +34,10 @@ from dataclasses import (
 
 from betterproto2 import unwrap
 
+from betterproto2_compiler import casing
 from betterproto2_compiler.compile.importing import get_type_reference, parse_source_type_name
 from betterproto2_compiler.compile.naming import (
     pythonize_class_name,
-    pythonize_enum_member_name,
     pythonize_field_name,
     pythonize_method_name,
 )
@@ -614,15 +614,42 @@ class EnumDefinitionCompiler(ProtoContentBase):
         comment: str
 
     def __post_init__(self) -> None:
-        # Get entries/allowed values for this Enum
         self.entries = [
             self.EnumEntry(
-                name=pythonize_enum_member_name(entry_proto_value.name, self.proto_obj.name),
+                name=entry_proto_value.name,
                 value=entry_proto_value.number,
                 comment=get_comment(proto_file=self.source_file, path=self.path + [2, entry_number]),
             )
             for entry_number, entry_proto_value in enumerate(self.proto_obj.value)
         ]
+
+        if not self.entries:
+            return
+
+        # Remove enum prefixes
+        enum_name: str = self.proto_obj.name
+
+        enum_name_reduced = enum_name.replace("_", "").lower()
+
+        first_entry = self.entries[0].name
+
+        # Find the potential common prefix
+        enum_prefix: str | None = None
+        for i in range(len(first_entry)):
+            if first_entry[:i+1].replace("_", "").lower() == enum_name_reduced:
+                enum_prefix = f"{first_entry[:i+1]}_"
+                break
+
+        should_rename = enum_prefix and all(
+            entry.name.startswith(enum_prefix) for entry in self.entries
+        )
+
+        if should_rename:
+            for entry in self.entries:
+                entry.name = entry.name[len(enum_prefix) :]
+
+        for entry in self.entries:
+            entry.name = casing.sanitize_name(entry.name)
 
     @property
     def proto_name(self) -> str:

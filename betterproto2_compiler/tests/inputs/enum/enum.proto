@@ -23,3 +23,18 @@ enum ArithmeticOperator {
     ARITHMETIC_OPERATOR_MINUS = 2;
     ARITHMETIC_OPERATOR_0_PREFIXED = 3;
 }
+
+// If not all the fields are prefixed, the prefix should not be stripped at all
+enum NoStriping {
+    NO_STRIPING_NONE = 0;
+    NO_STRIPING_A = 1;
+    B = 2;
+}
+
+// Make sure that the prefix are removed even if it's difficult to infer the position
+// of underscores.
+enum HTTPCode {
+    HTTP_CODE_UNSPECIFIED = 0;
+    HTTP_CODE_OK = 200;
+    HTTP_CODE_NOT_FOUND = 404;
+}
