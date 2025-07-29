@@ -636,13 +636,11 @@ class EnumDefinitionCompiler(ProtoContentBase):
         # Find the potential common prefix
         enum_prefix: str | None = None
         for i in range(len(first_entry)):
-            if first_entry[:i+1].replace("_", "").lower() == enum_name_reduced:
-                enum_prefix = f"{first_entry[:i+1]}_"
+            if first_entry[: i + 1].replace("_", "").lower() == enum_name_reduced:
+                enum_prefix = f"{first_entry[: i + 1]}_"
                 break
 
-        should_rename = enum_prefix and all(
-            entry.name.startswith(enum_prefix) for entry in self.entries
-        )
+        should_rename = enum_prefix and all(entry.name.startswith(enum_prefix) for entry in self.entries)
 
         if should_rename:
             for entry in self.entries:
