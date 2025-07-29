@@ -91,12 +91,3 @@ def test_enum_mapped_on_parse():
 
     # bonus: defaults after empty init are also mapped
     assert Test().choice.name == Choice.ZERO.name
-
-
-def test_renamed_enum_members():
-    assert set(ArithmeticOperator.__members__) == {
-        "NONE",
-        "PLUS",
-        "MINUS",
-        "_0_PREFIXED",
-    }

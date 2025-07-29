@@ -74,3 +74,11 @@ def test_from_string(member: Colour, input_str: str) -> None:
 )
 def test_construction(member: Colour, input_int: int) -> None:
     assert Colour(input_int) == member
+
+
+def test_enum_renaming() -> None:
+    from tests.outputs.enum.enum import ArithmeticOperator, HttpCode, NoStriping
+
+    assert set(ArithmeticOperator.__members__) == {"NONE", "PLUS", "MINUS", "_0_PREFIXED"}
+    assert set(HttpCode.__members__) == {"UNSPECIFIED", "OK", "NOT_FOUND"}
+    assert set(NoStriping.__members__) == {"NO_STRIPING_NONE", "NO_STRIPING_A", "B"}
