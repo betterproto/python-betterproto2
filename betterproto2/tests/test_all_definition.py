@@ -17,4 +17,4 @@ def test_all_definition():
         "TestSyncStub",
         "ThingType",
     )
-    assert enum.__all__ == ("ArithmeticOperator", "Choice", "HttpCode", "NoStriping", "Test")
+    assert enum.__all__ == ("ArithmeticOperator", "Choice", "EnumMessage", "HttpCode", "NoStriping", "Test")

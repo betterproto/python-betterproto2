@@ -82,3 +82,19 @@ def test_enum_renaming() -> None:
     assert set(ArithmeticOperator.__members__) == {"NONE", "PLUS", "MINUS", "_0_PREFIXED"}
     assert set(HttpCode.__members__) == {"UNSPECIFIED", "OK", "NOT_FOUND"}
     assert set(NoStriping.__members__) == {"NO_STRIPING_NONE", "NO_STRIPING_A", "B"}
+
+
+def test_enum_to_dict() -> None:
+    from tests.outputs.enum.enum import ArithmeticOperator, EnumMessage, NoStriping
+
+    msg = EnumMessage(
+        arithmetic_operator=ArithmeticOperator.PLUS,
+        no_striping=NoStriping.NO_STRIPING_A,
+    )
+
+    print(ArithmeticOperator.PLUS.proto_name)
+
+    assert msg.to_dict() == {
+        "arithmeticOperator": "ARITHMETIC_OPERATOR_PLUS",  # The original proto name must be preserved
+        "noStriping": "NO_STRIPING_A",
+    }
