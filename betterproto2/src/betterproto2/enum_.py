@@ -1,4 +1,4 @@
-from enum import EnumDict, EnumMeta, IntEnum
+from enum import EnumMeta, IntEnum
 
 from typing_extensions import Self
 

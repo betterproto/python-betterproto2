@@ -60,7 +60,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.ruff]
-extend-exclude = ["tests/output_*", "src/betterproto2_compiler/lib"]
+extend-exclude = ["tests/outputs", "src/betterproto2_compiler/lib"]
 target-version = "py310"
 line-length = 120
 

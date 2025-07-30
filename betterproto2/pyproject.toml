@@ -59,7 +59,7 @@ build-backend = "hatchling.build"
 # ]
 
 [tool.ruff]
-extend-exclude = ["tests/output_*", "src/betterproto2/internal_lib"]
+extend-exclude = ["tests/outputs", "src/betterproto2/internal_lib"]
 target-version = "py310"
 line-length = 120
 
