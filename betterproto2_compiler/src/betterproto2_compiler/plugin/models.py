@@ -610,6 +610,7 @@ class EnumDefinitionCompiler(ProtoContentBase):
         """Representation of an Enum entry."""
 
         name: str
+        proto_name: str
         value: int
         comment: str
 
@@ -617,6 +618,7 @@ class EnumDefinitionCompiler(ProtoContentBase):
         self.entries = [
             self.EnumEntry(
                 name=entry_proto_value.name,
+                proto_name=entry_proto_value.name,
                 value=entry_proto_value.number,
                 comment=get_comment(proto_file=self.source_file, path=self.path + [2, entry_number]),
             )
@@ -671,6 +673,10 @@ class EnumDefinitionCompiler(ProtoContentBase):
             The Python name of the descriptor to reference.
         """
         return self.output_file.get_descriptor_name(self.source_file)
+
+    @property
+    def has_renamed_entries(self) -> bool:
+        return any(entry.proto_name != entry.name for entry in self.entries)
 
 
 @dataclass(kw_only=True)

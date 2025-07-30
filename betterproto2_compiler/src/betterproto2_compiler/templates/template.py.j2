@@ -31,6 +31,16 @@ class {{ enum.py_name | add_to_all }}(betterproto2.Enum):
         return core_schema.int_schema(ge=0)
     {% endif %}
 
+    {% if enum.has_renamed_entries %}
+    betterproto_proto_names = {
+        {% for entry in enum.entries %}
+        {% if entry.proto_name != entry.name %}
+        {{ entry.value }}: "{{ entry.proto_name }}",
+        {% endif %}
+        {% endfor %}
+    }
+    {% endif %}
+
 {% endfor %}
 {% for _, message in output_file.messages|dictsort(by="key") %}
 {% if output_file.settings.pydantic_dataclasses %}
