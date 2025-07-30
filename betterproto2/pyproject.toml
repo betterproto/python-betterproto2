@@ -1,6 +1,6 @@
 [project]
 name = "betterproto2"
-version = "0.7.0"
+version = "0.7.1"
 description = "A better Protobuf / gRPC generator & library"
 authors = [
     {name = "Adrien Vannson", email = "adrien.vannson@protonmail.com"},
@@ -52,11 +52,6 @@ default-groups = "all"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-# [tool.poetry]
-# packages = [
-#     { include = "betterproto2", from = "src" }
-# ]
 
 [tool.ruff]
 extend-exclude = ["tests/outputs", "src/betterproto2/internal_lib"]
