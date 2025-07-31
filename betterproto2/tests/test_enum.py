@@ -98,3 +98,13 @@ def test_enum_to_dict() -> None:
         "arithmeticOperator": "ARITHMETIC_OPERATOR_PLUS",  # The original proto name must be preserved
         "noStriping": "NO_STRIPING_A",
     }
+
+
+def test_unknown_variant_to_dict() -> None:
+    from tests.outputs.enum.enum import NewVersion, NewVersionMessage, OldVersionMessage
+
+    serialized = bytes(NewVersionMessage(new_version=NewVersion.V3))
+
+    deserialized = OldVersionMessage.parse(serialized)
+
+    assert deserialized.to_dict() == {"oldVersion": 3}

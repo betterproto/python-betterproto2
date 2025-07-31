@@ -588,6 +588,11 @@ def _value_to_dict(
         return b64encode(value).decode("utf8"), not bool(value)
     if proto_type == TYPE_ENUM:
         enum_value = field_type(value)
+
+        # If we don't know the definition of this variant, we fall back to the value.
+        if not enum_value.name:
+            return enum_value.value, not bool(value)
+
         return enum_value.proto_name or enum_value.name, not bool(value)
     if proto_type in (TYPE_FLOAT, TYPE_DOUBLE):
         return _dump_float(value), not bool(value)

@@ -43,3 +43,24 @@ message EnumMessage {
     ArithmeticOperator arithmetic_operator = 1;
     NoStriping no_striping = 2;
 }
+
+enum OldVersion {
+    OLD_VERSION_UNSPECIFIED = 0;
+    OLD_VERSION_V1 = 1;
+    OLD_VERSION_V2 = 2;
+}
+
+message OldVersionMessage {
+    OldVersion old_version = 1;
+}
+
+enum NewVersion {
+    NEW_VERSION_UNSPECIFIED = 0;
+    NEW_VERSION_V1 = 1;
+    NEW_VERSION_V2 = 2;
+    NEW_VERSION_V3 = 3;
+}
+
+message NewVersionMessage {
+    NewVersion new_version = 1;
+}
