@@ -171,6 +171,8 @@ def generate_code(request: CodeGeneratorRequest) -> CodeGeneratorResponse:
         )
     )
 
+    response.file.append(CodeGeneratorResponseFile(name="py.typed", content=""))
+
     if settings.google_protobuf_descriptors:
         response.file.append(
             CodeGeneratorResponseFile(
