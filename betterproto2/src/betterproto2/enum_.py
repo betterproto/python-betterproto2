@@ -6,11 +6,7 @@ from typing_extensions import Self
 class _EnumMeta(EnumMeta):
     def __new__(metacls, cls, bases, classdict):
         enum_class = super().__new__(metacls, cls, bases, classdict)
-
-        try:
-            proto_names = enum_class.betterproto_value_to_renamed_proto_names()
-        except AttributeError:
-            proto_names = {}
+        proto_names = enum_class.betterproto_value_to_renamed_proto_names()  # type: ignore[reportAttributeAccessIssue]
 
         # Attach extra info to each enum member
         for member in enum_class:
@@ -25,6 +21,14 @@ class Enum(IntEnum, metaclass=_EnumMeta):
     @property
     def proto_name(self) -> str | None:
         return self._proto_name  # type: ignore[reportAttributeAccessIssue]
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {}
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {}
 
     @classmethod
     def _missing_(cls, value):
