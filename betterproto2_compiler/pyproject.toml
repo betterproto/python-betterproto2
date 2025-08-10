@@ -46,15 +46,6 @@ test = [
 package = true
 default-groups = "all"
 
-# [tool.hatch.build.targets.sdist]
-# include = ["src/betterproto2_compiler"]
-
-# [tool.hatch.build.targets.wheel]
-# include = ["src/betterproto2_compiler"]
-
-# [tool.hatch.build.targets.wheel.sources]
-# "src/betterproto2_compiler" = "betterproto2_compiler"
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

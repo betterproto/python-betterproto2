@@ -1,6 +1,14 @@
 from __future__ import annotations
 
-__all__ = ["__version__", "check_compiler_version", "classproperty", "unwrap", "MessagePool", "validators"]
+__all__ = [
+    "__version__",
+    "check_compiler_version",
+    "classproperty",
+    "staticproperty",
+    "unwrap",
+    "MessagePool",
+    "validators",
+]
 
 import dataclasses
 import enum as builtin_enum
@@ -36,7 +44,7 @@ from ._version import __version__, check_compiler_version
 from .casing import camel_case, safe_snake_case, snake_case
 from .enum_ import Enum as Enum
 from .grpc.grpclib_client import ServiceStub as ServiceStub
-from .utils import classproperty
+from .utils import classproperty, staticproperty
 
 if TYPE_CHECKING:
     from _typeshed import SupportsRead, SupportsWrite
@@ -1015,7 +1023,7 @@ class Message(ABC):
 
     # For compatibility with other libraries.
     @classmethod
-    def FromString(cls: type[T], data: bytes) -> T:
+    def FromString(cls: type[T], s: bytes) -> T:
         """
         Parse the binary encoded Protobuf into this message instance. This
         returns the instance itself and is therefore assignable and chainable.
@@ -1035,7 +1043,7 @@ class Message(ABC):
         :class:`Message`
             The initialized message.
         """
-        return cls.parse(data)
+        return cls.parse(s)
 
     def to_dict(
         self,

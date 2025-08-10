@@ -1,7 +1,4 @@
-from typing import (
-    TYPE_CHECKING,
-    TypeVar,
-)
+from typing import TYPE_CHECKING, TypeVar
 
 if TYPE_CHECKING:
     from grpclib._typing import IProtoMessage  # type: ignore[reportPrivateImportUsage]

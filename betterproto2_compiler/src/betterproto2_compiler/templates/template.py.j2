@@ -8,8 +8,9 @@ class {{ enum.py_name | add_to_all }}(betterproto2.Enum):
 
     {% if output_file.settings.google_protobuf_descriptors %}
     {# Add descriptor class property to be more drop-in compatible with other libraries. #}
-    @betterproto2.classproperty
-    def DESCRIPTOR(self) -> EnumDescriptor:
+    @betterproto2.staticproperty
+    @staticmethod
+    def DESCRIPTOR() -> EnumDescriptor:
         return {{ enum.descriptor_name }}.enum_types_by_name['{{ enum.prefixed_proto_name }}']
     {% endif %}
 
@@ -76,8 +77,9 @@ class {{ message.py_name | add_to_all }}(betterproto2.Message):
 
     {% if output_file.settings.google_protobuf_descriptors %}
     {# Add descriptor class property to be more drop-in compatible with other libraries. #}
-    @betterproto2.classproperty
-    def DESCRIPTOR(self) -> Descriptor:
+    @betterproto2.staticproperty
+    @staticmethod
+    def DESCRIPTOR() -> Descriptor:
         return {{ message.descriptor_name }}.message_types_by_name['{{ message.prefixed_proto_name }}']
     {% endif %}
 
@@ -179,6 +181,7 @@ class {{ (service.py_name + "Base") | add_to_all }}(ServiceBase):
     async def __rpc_{{ method.py_name }}(self, stream: "grpclib.server.Stream[{{ method.py_input_message_type }}, {{ method.py_output_message_type }}]") -> None:
         {% if not method.client_streaming %}
         request = await stream.recv_message()
+        assert request is not None
         {% else %}
         request = stream.__aiter__()
         {% endif %}

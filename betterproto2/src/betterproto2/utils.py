@@ -18,6 +18,14 @@ class classproperty(Generic[TT_co, T_co]):
 T = TypeVar("T")
 
 
+class staticproperty(Generic[T]):  # Should be applied after @staticmethod
+    def __init__(self, fget: Callable[[], T]) -> None:
+        self.fget = fget
+
+    def __get__(self, instance: Any, owner: type[Any]) -> T:
+        return self.fget()
+
+
 def unwrap(x: T | None) -> T:
     """
     Unwraps an optional value, returning the value if it exists, or raises a ValueError if the value is None.
