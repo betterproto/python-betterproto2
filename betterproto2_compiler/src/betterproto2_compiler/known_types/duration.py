@@ -30,7 +30,7 @@ class Duration(VanillaDuration):
 
     # TODO typing
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, str):
             if not re.match(r"^\d+(\.\d+)?s$", value):
                 raise ValueError(f"Invalid duration string: {value}")
@@ -38,7 +38,7 @@ class Duration(VanillaDuration):
             seconds = float(value[:-1])
             return Duration(seconds=int(seconds), nanos=int((seconds - int(seconds)) * 1e9))
 
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     # TODO typing
     def to_dict(

@@ -55,13 +55,13 @@ class Timestamp(VanillaTimestamp):
 
     # TODO typing
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, str):
             dt = dateutil.parser.isoparse(value)
             dt = dt.astimezone(datetime.timezone.utc)
             return Timestamp.from_datetime(dt)
 
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     # TODO typing
     def to_dict(

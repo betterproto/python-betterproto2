@@ -1288,7 +1288,7 @@ class Duration(betterproto2.Message):
         return f"{'.'.join(parts)}s"
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, str):
             if not re.match(r"^\d+(\.\d+)?s$", value):
                 raise ValueError(f"Invalid duration string: {value}")
@@ -1296,7 +1296,7 @@ class Duration(betterproto2.Message):
             seconds = float(value[:-1])
             return Duration(seconds=int(seconds), nanos=int((seconds - int(seconds)) * 1e9))
 
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,
@@ -3559,13 +3559,13 @@ class Timestamp(betterproto2.Message):
         return f"{result}.{nanos:09d}"
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, str):
             dt = dateutil.parser.isoparse(value)
             dt = dt.astimezone(datetime.timezone.utc)
             return Timestamp.from_datetime(dt)
 
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,
