@@ -60,43 +60,43 @@ from betterproto2_compiler.settings import Settings
 
 # Organize proto types into categories
 PROTO_FLOAT_TYPES = (
-    FieldDescriptorProtoType.TYPE_DOUBLE,  # 1
-    FieldDescriptorProtoType.TYPE_FLOAT,  # 2
+    FieldDescriptorProtoType.DOUBLE,  # 1
+    FieldDescriptorProtoType.FLOAT,  # 2
 )
 PROTO_INT_TYPES = (
-    FieldDescriptorProtoType.TYPE_INT64,  # 3
-    FieldDescriptorProtoType.TYPE_UINT64,  # 4
-    FieldDescriptorProtoType.TYPE_INT32,  # 5
-    FieldDescriptorProtoType.TYPE_FIXED64,  # 6
-    FieldDescriptorProtoType.TYPE_FIXED32,  # 7
-    FieldDescriptorProtoType.TYPE_UINT32,  # 13
-    FieldDescriptorProtoType.TYPE_SFIXED32,  # 15
-    FieldDescriptorProtoType.TYPE_SFIXED64,  # 16
-    FieldDescriptorProtoType.TYPE_SINT32,  # 17
-    FieldDescriptorProtoType.TYPE_SINT64,  # 18
+    FieldDescriptorProtoType.INT64,  # 3
+    FieldDescriptorProtoType.UINT64,  # 4
+    FieldDescriptorProtoType.INT32,  # 5
+    FieldDescriptorProtoType.FIXED64,  # 6
+    FieldDescriptorProtoType.FIXED32,  # 7
+    FieldDescriptorProtoType.UINT32,  # 13
+    FieldDescriptorProtoType.SFIXED32,  # 15
+    FieldDescriptorProtoType.SFIXED64,  # 16
+    FieldDescriptorProtoType.SINT32,  # 17
+    FieldDescriptorProtoType.SINT64,  # 18
 )
-PROTO_BOOL_TYPES = (FieldDescriptorProtoType.TYPE_BOOL,)  # 8
-PROTO_STR_TYPES = (FieldDescriptorProtoType.TYPE_STRING,)  # 9
-PROTO_BYTES_TYPES = (FieldDescriptorProtoType.TYPE_BYTES,)  # 12
+PROTO_BOOL_TYPES = (FieldDescriptorProtoType.BOOL,)  # 8
+PROTO_STR_TYPES = (FieldDescriptorProtoType.STRING,)  # 9
+PROTO_BYTES_TYPES = (FieldDescriptorProtoType.BYTES,)  # 12
 PROTO_MESSAGE_TYPES = (
-    FieldDescriptorProtoType.TYPE_MESSAGE,  # 11
-    FieldDescriptorProtoType.TYPE_ENUM,  # 14
+    FieldDescriptorProtoType.MESSAGE,  # 11
+    FieldDescriptorProtoType.ENUM,  # 14
 )
-PROTO_MAP_TYPES = (FieldDescriptorProtoType.TYPE_MESSAGE,)  # 11
+PROTO_MAP_TYPES = (FieldDescriptorProtoType.MESSAGE,)  # 11
 PROTO_PACKED_TYPES = (
-    FieldDescriptorProtoType.TYPE_DOUBLE,  # 1
-    FieldDescriptorProtoType.TYPE_FLOAT,  # 2
-    FieldDescriptorProtoType.TYPE_INT64,  # 3
-    FieldDescriptorProtoType.TYPE_UINT64,  # 4
-    FieldDescriptorProtoType.TYPE_INT32,  # 5
-    FieldDescriptorProtoType.TYPE_FIXED64,  # 6
-    FieldDescriptorProtoType.TYPE_FIXED32,  # 7
-    FieldDescriptorProtoType.TYPE_BOOL,  # 8
-    FieldDescriptorProtoType.TYPE_UINT32,  # 13
-    FieldDescriptorProtoType.TYPE_SFIXED32,  # 15
-    FieldDescriptorProtoType.TYPE_SFIXED64,  # 16
-    FieldDescriptorProtoType.TYPE_SINT32,  # 17
-    FieldDescriptorProtoType.TYPE_SINT64,  # 18
+    FieldDescriptorProtoType.DOUBLE,  # 1
+    FieldDescriptorProtoType.FLOAT,  # 2
+    FieldDescriptorProtoType.INT64,  # 3
+    FieldDescriptorProtoType.UINT64,  # 4
+    FieldDescriptorProtoType.INT32,  # 5
+    FieldDescriptorProtoType.FIXED64,  # 6
+    FieldDescriptorProtoType.FIXED32,  # 7
+    FieldDescriptorProtoType.BOOL,  # 8
+    FieldDescriptorProtoType.UINT32,  # 13
+    FieldDescriptorProtoType.SFIXED32,  # 15
+    FieldDescriptorProtoType.SFIXED64,  # 16
+    FieldDescriptorProtoType.SINT32,  # 17
+    FieldDescriptorProtoType.SINT64,  # 18
 )
 
 
@@ -309,7 +309,7 @@ class MessageCompiler(ProtoContentBase):
 
 def is_map(proto_field_obj: FieldDescriptorProto, parent_message: DescriptorProto) -> bool:
     """True if proto_field_obj is a map, otherwise False."""
-    if proto_field_obj.type == FieldDescriptorProtoType.TYPE_MESSAGE:
+    if proto_field_obj.type == FieldDescriptorProtoType.MESSAGE:
         if not hasattr(parent_message, "nested_type"):
             return False
 
@@ -357,7 +357,7 @@ class FieldCompiler(ProtoContentBase):
     def betterproto_field_args(self) -> list[str]:
         args = []
 
-        if self.field_type == FieldDescriptorProtoType.TYPE_MESSAGE and self.is_wrapped:
+        if self.field_type == FieldDescriptorProtoType.MESSAGE and self.is_wrapped:
             unwrap_type = self.unwrapped_py_type
 
             # Without the lambda function, the type is evaluated right away, which fails since the corresponding
@@ -368,7 +368,7 @@ class FieldCompiler(ProtoContentBase):
             args.append("optional=True")
         elif self.repeated:
             args.append("repeated=True")
-        elif self.field_type == FieldType.TYPE_ENUM:
+        elif self.field_type == FieldType.ENUM:
             args.append(f"default_factory=lambda: {self.py_type}(0)")
         return args
 
@@ -384,12 +384,12 @@ class FieldCompiler(ProtoContentBase):
 
     @property
     def repeated(self) -> bool:
-        return self.proto_obj.label == FieldDescriptorProtoLabel.LABEL_REPEATED
+        return self.proto_obj.label == FieldDescriptorProtoLabel.REPEATED
 
     @property
     def optional(self) -> bool:
         # TODO not for maps
-        return self.proto_obj.proto3_optional or (self.field_type == FieldType.TYPE_MESSAGE and not self.repeated)
+        return self.proto_obj.proto3_optional or (self.field_type == FieldType.MESSAGE and not self.repeated)
 
     @property
     def field_type(self) -> FieldType:
@@ -412,7 +412,7 @@ class FieldCompiler(ProtoContentBase):
 
     @property
     def is_wrapped(self) -> bool:
-        assert self.field_type == FieldDescriptorProtoType.TYPE_MESSAGE
+        assert self.field_type == FieldDescriptorProtoType.MESSAGE
         type_package, type_name = parse_source_type_name(self.proto_obj.type_name, self.output_file.parent_request)
 
         return (type_package, type_name) in WRAPPED_TYPES
@@ -457,22 +457,22 @@ class FieldCompiler(ProtoContentBase):
 
         annotations = []
 
-        if self.proto_obj.type in (FieldType.TYPE_INT32, FieldType.TYPE_SFIXED32, FieldType.TYPE_SINT32):
+        if self.proto_obj.type in (FieldType.INT32, FieldType.SFIXED32, FieldType.SINT32):
             annotations.append("pydantic.Field(ge=-2**31, le=2**31 - 1)")
 
-        elif self.proto_obj.type in (FieldType.TYPE_UINT32, FieldType.TYPE_FIXED32):
+        elif self.proto_obj.type in (FieldType.UINT32, FieldType.FIXED32):
             annotations.append("pydantic.Field(ge=0, le=2**32 - 1)")
 
-        elif self.proto_obj.type in (FieldType.TYPE_INT64, FieldType.TYPE_SFIXED64, FieldType.TYPE_SINT64):
+        elif self.proto_obj.type in (FieldType.INT64, FieldType.SFIXED64, FieldType.SINT64):
             annotations.append("pydantic.Field(ge=-2**63, le=2**63 - 1)")
 
-        elif self.proto_obj.type in (FieldType.TYPE_UINT64, FieldType.TYPE_FIXED64):
+        elif self.proto_obj.type in (FieldType.UINT64, FieldType.FIXED64):
             annotations.append("pydantic.Field(ge=0, le=2**64 - 1)")
 
-        elif self.proto_obj.type == FieldType.TYPE_FLOAT:
+        elif self.proto_obj.type == FieldType.FLOAT:
             annotations.append("pydantic.AfterValidator(betterproto2.validators.validate_float32)")
 
-        elif self.proto_obj.type == FieldType.TYPE_STRING:
+        elif self.proto_obj.type == FieldType.STRING:
             annotations.append("pydantic.AfterValidator(betterproto2.validators.validate_string)")
 
         return annotations
@@ -544,7 +544,7 @@ class MapEntryCompiler(FieldCompiler):
 
                 self.py_v_type = value_field_compiler.py_type
                 if (
-                    value_field_compiler.field_type == FieldDescriptorProtoType.TYPE_MESSAGE
+                    value_field_compiler.field_type == FieldDescriptorProtoType.MESSAGE
                     and value_field_compiler.is_wrapped
                 ):
                     self.unwrap_v = value_field_compiler.unwrapped_py_type

@@ -4,16 +4,6 @@
 # This file has been @generated
 
 __all__ = (
-    "FieldCardinality",
-    "FieldKind",
-    "FieldDescriptorProtoLabel",
-    "FieldDescriptorProtoType",
-    "FieldOptionsCType",
-    "FieldOptionsJsType",
-    "FileOptionsOptimizeMode",
-    "MethodOptionsIdempotencyLevel",
-    "NullValue",
-    "Syntax",
     "Any",
     "Api",
     "BoolValue",
@@ -23,6 +13,7 @@ __all__ = (
     "DescriptorProtoReservedRange",
     "DoubleValue",
     "Duration",
+    "Edition",
     "Empty",
     "Enum",
     "EnumDescriptorProto",
@@ -32,16 +23,39 @@ __all__ = (
     "EnumValueDescriptorProto",
     "EnumValueOptions",
     "ExtensionRangeOptions",
+    "ExtensionRangeOptionsDeclaration",
+    "ExtensionRangeOptionsVerificationState",
+    "FeatureSet",
+    "FeatureSetDefaults",
+    "FeatureSetDefaultsFeatureSetEditionDefault",
+    "FeatureSetEnumType",
+    "FeatureSetFieldPresence",
+    "FeatureSetJsonFormat",
+    "FeatureSetMessageEncoding",
+    "FeatureSetRepeatedFieldEncoding",
+    "FeatureSetUtf8Validation",
     "Field",
+    "FieldCardinality",
     "FieldDescriptorProto",
+    "FieldDescriptorProtoLabel",
+    "FieldDescriptorProtoType",
+    "FieldKind",
     "FieldMask",
     "FieldOptions",
+    "FieldOptionsCType",
+    "FieldOptionsEditionDefault",
+    "FieldOptionsFeatureSupport",
+    "FieldOptionsJsType",
+    "FieldOptionsOptionRetention",
+    "FieldOptionsOptionTargetType",
     "FileDescriptorProto",
     "FileDescriptorSet",
     "FileOptions",
+    "FileOptionsOptimizeMode",
     "FloatValue",
     "GeneratedCodeInfo",
     "GeneratedCodeInfoAnnotation",
+    "GeneratedCodeInfoAnnotationSemantic",
     "Int32Value",
     "Int64Value",
     "ListValue",
@@ -49,7 +63,9 @@ __all__ = (
     "Method",
     "MethodDescriptorProto",
     "MethodOptions",
+    "MethodOptionsIdempotencyLevel",
     "Mixin",
+    "NullValue",
     "OneofDescriptorProto",
     "OneofOptions",
     "Option",
@@ -60,6 +76,7 @@ __all__ = (
     "SourceContext",
     "StringValue",
     "Struct",
+    "Syntax",
     "Timestamp",
     "Type",
     "UInt32Value",
@@ -80,7 +97,162 @@ import dateutil.parser
 
 from ...message_pool import default_message_pool
 
-betterproto2.check_compiler_version("0.7.0")
+_COMPILER_VERSION = "0.7.1"
+betterproto2.check_compiler_version(_COMPILER_VERSION)
+
+
+class Edition(betterproto2.Enum):
+    """
+    The full set of known editions.
+    """
+
+    UNKNOWN = 0
+    """
+    A placeholder for an unknown edition value.
+    """
+
+    LEGACY = 900
+    """
+    A placeholder edition for specifying default behaviors *before* a feature
+    was first introduced.  This is effectively an "infinite past".
+    """
+
+    PROTO2 = 998
+    """
+    Legacy syntax "editions".  These pre-date editions, but behave much like
+    distinct editions.  These can't be used to specify the edition of proto
+    files, but feature definitions must supply proto2/proto3 defaults for
+    backwards compatibility.
+    """
+
+    PROTO3 = 999
+
+    _2023 = 1000
+    """
+    Editions that have been released.  The specific values are arbitrary and
+    should not be depended on, but they will always be time-ordered for easy
+    comparison.
+    """
+
+    _2024 = 1001
+
+    _1_TEST_ONLY = 1
+    """
+    Placeholder editions for testing feature resolution.  These should not be
+    used or relied on outside of tests.
+    """
+
+    _2_TEST_ONLY = 2
+
+    _99997_TEST_ONLY = 99997
+
+    _99998_TEST_ONLY = 99998
+
+    _99999_TEST_ONLY = 99999
+
+    MAX = 2147483647
+    """
+    Placeholder for specifying unbounded edition support.  This should only
+    ever be used by plugins that can expect to never require any changes to
+    support a new edition.
+    """
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "EDITION_UNKNOWN",
+            900: "EDITION_LEGACY",
+            998: "EDITION_PROTO2",
+            999: "EDITION_PROTO3",
+            1000: "EDITION_2023",
+            1001: "EDITION_2024",
+            1: "EDITION_1_TEST_ONLY",
+            2: "EDITION_2_TEST_ONLY",
+            99997: "EDITION_99997_TEST_ONLY",
+            99998: "EDITION_99998_TEST_ONLY",
+            99999: "EDITION_99999_TEST_ONLY",
+            2147483647: "EDITION_MAX",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "EDITION_UNKNOWN": 0,
+            "EDITION_LEGACY": 900,
+            "EDITION_PROTO2": 998,
+            "EDITION_PROTO3": 999,
+            "EDITION_2023": 1000,
+            "EDITION_2024": 1001,
+            "EDITION_1_TEST_ONLY": 1,
+            "EDITION_2_TEST_ONLY": 2,
+            "EDITION_99997_TEST_ONLY": 99997,
+            "EDITION_99998_TEST_ONLY": 99998,
+            "EDITION_99999_TEST_ONLY": 99999,
+            "EDITION_MAX": 2147483647,
+        }
+
+
+class ExtensionRangeOptionsVerificationState(betterproto2.Enum):
+    """
+    The verification state of the extension range.
+    """
+
+    DECLARATION = 0
+    """
+    All the extensions of the range must be declared.
+    """
+
+    UNVERIFIED = 1
+
+
+class FeatureSetEnumType(betterproto2.Enum):
+    ENUM_TYPE_UNKNOWN = 0
+
+    OPEN = 1
+
+    CLOSED = 2
+
+
+class FeatureSetFieldPresence(betterproto2.Enum):
+    FIELD_PRESENCE_UNKNOWN = 0
+
+    EXPLICIT = 1
+
+    IMPLICIT = 2
+
+    LEGACY_REQUIRED = 3
+
+
+class FeatureSetJsonFormat(betterproto2.Enum):
+    JSON_FORMAT_UNKNOWN = 0
+
+    ALLOW = 1
+
+    LEGACY_BEST_EFFORT = 2
+
+
+class FeatureSetMessageEncoding(betterproto2.Enum):
+    MESSAGE_ENCODING_UNKNOWN = 0
+
+    LENGTH_PREFIXED = 1
+
+    DELIMITED = 2
+
+
+class FeatureSetRepeatedFieldEncoding(betterproto2.Enum):
+    REPEATED_FIELD_ENCODING_UNKNOWN = 0
+
+    PACKED = 1
+
+    EXPANDED = 2
+
+
+class FeatureSetUtf8Validation(betterproto2.Enum):
+    UTF8_VALIDATION_UNKNOWN = 0
+
+    VERIFY = 2
+
+    NONE = 3
 
 
 class FieldCardinality(betterproto2.Enum):
@@ -88,25 +260,43 @@ class FieldCardinality(betterproto2.Enum):
     Whether a field is optional, required, or repeated.
     """
 
-    CARDINALITY_UNKNOWN = 0
+    UNKNOWN = 0
     """
     For fields with unknown cardinality.
     """
 
-    CARDINALITY_OPTIONAL = 1
+    OPTIONAL = 1
     """
     For optional fields.
     """
 
-    CARDINALITY_REQUIRED = 2
+    REQUIRED = 2
     """
     For required fields. Proto2 syntax only.
     """
 
-    CARDINALITY_REPEATED = 3
+    REPEATED = 3
     """
     For repeated fields.
     """
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "CARDINALITY_UNKNOWN",
+            1: "CARDINALITY_OPTIONAL",
+            2: "CARDINALITY_REQUIRED",
+            3: "CARDINALITY_REPEATED",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "CARDINALITY_UNKNOWN": 0,
+            "CARDINALITY_OPTIONAL": 1,
+            "CARDINALITY_REQUIRED": 2,
+            "CARDINALITY_REPEATED": 3,
+        }
 
 
 class FieldKind(betterproto2.Enum):
@@ -211,82 +401,150 @@ class FieldKind(betterproto2.Enum):
 
 
 class FieldDescriptorProtoLabel(betterproto2.Enum):
-    LABEL_OPTIONAL = 1
+    OPTIONAL = 1
     """
     0 is reserved for errors
     """
 
-    LABEL_REQUIRED = 2
+    REPEATED = 3
 
-    LABEL_REPEATED = 3
+    REQUIRED = 2
+    """
+    The required label is only allowed in google.protobuf.  In proto3 and Editions
+    it's explicitly prohibited.  In Editions, the `field_presence` feature
+    can be used to get this behavior.
+    """
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            1: "LABEL_OPTIONAL",
+            3: "LABEL_REPEATED",
+            2: "LABEL_REQUIRED",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "LABEL_OPTIONAL": 1,
+            "LABEL_REPEATED": 3,
+            "LABEL_REQUIRED": 2,
+        }
 
 
 class FieldDescriptorProtoType(betterproto2.Enum):
-    TYPE_DOUBLE = 1
+    DOUBLE = 1
     """
     0 is reserved for errors.
     Order is weird for historical reasons.
     """
 
-    TYPE_FLOAT = 2
+    FLOAT = 2
 
-    TYPE_INT64 = 3
+    INT64 = 3
     """
     Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if
     negative values are likely.
     """
 
-    TYPE_UINT64 = 4
+    UINT64 = 4
 
-    TYPE_INT32 = 5
+    INT32 = 5
     """
     Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if
     negative values are likely.
     """
 
-    TYPE_FIXED64 = 6
+    FIXED64 = 6
 
-    TYPE_FIXED32 = 7
+    FIXED32 = 7
 
-    TYPE_BOOL = 8
+    BOOL = 8
 
-    TYPE_STRING = 9
+    STRING = 9
 
-    TYPE_GROUP = 10
+    GROUP = 10
     """
     Tag-delimited aggregate.
-    Group type is deprecated and not supported in proto3. However, Proto3
+    Group type is deprecated and not supported after google.protobuf. However, Proto3
     implementations should still be able to parse the group wire format and
-    treat group fields as unknown fields.
+    treat group fields as unknown fields.  In Editions, the group wire format
+    can be enabled via the `message_encoding` feature.
     """
 
-    TYPE_MESSAGE = 11
+    MESSAGE = 11
     """
     Length-delimited aggregate.
     """
 
-    TYPE_BYTES = 12
+    BYTES = 12
     """
     New in version 2.
     """
 
-    TYPE_UINT32 = 13
+    UINT32 = 13
 
-    TYPE_ENUM = 14
+    ENUM = 14
 
-    TYPE_SFIXED32 = 15
+    SFIXED32 = 15
 
-    TYPE_SFIXED64 = 16
+    SFIXED64 = 16
 
-    TYPE_SINT32 = 17
+    SINT32 = 17
     """
     Uses ZigZag encoding.
     """
 
-    TYPE_SINT64 = 18
+    SINT64 = 18
     """
     Uses ZigZag encoding.
     """
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            1: "TYPE_DOUBLE",
+            2: "TYPE_FLOAT",
+            3: "TYPE_INT64",
+            4: "TYPE_UINT64",
+            5: "TYPE_INT32",
+            6: "TYPE_FIXED64",
+            7: "TYPE_FIXED32",
+            8: "TYPE_BOOL",
+            9: "TYPE_STRING",
+            10: "TYPE_GROUP",
+            11: "TYPE_MESSAGE",
+            12: "TYPE_BYTES",
+            13: "TYPE_UINT32",
+            14: "TYPE_ENUM",
+            15: "TYPE_SFIXED32",
+            16: "TYPE_SFIXED64",
+            17: "TYPE_SINT32",
+            18: "TYPE_SINT64",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "TYPE_DOUBLE": 1,
+            "TYPE_FLOAT": 2,
+            "TYPE_INT64": 3,
+            "TYPE_UINT64": 4,
+            "TYPE_INT32": 5,
+            "TYPE_FIXED64": 6,
+            "TYPE_FIXED32": 7,
+            "TYPE_BOOL": 8,
+            "TYPE_STRING": 9,
+            "TYPE_GROUP": 10,
+            "TYPE_MESSAGE": 11,
+            "TYPE_BYTES": 12,
+            "TYPE_UINT32": 13,
+            "TYPE_ENUM": 14,
+            "TYPE_SFIXED32": 15,
+            "TYPE_SFIXED64": 16,
+            "TYPE_SINT32": 17,
+            "TYPE_SINT64": 18,
+        }
 
 
 class FieldOptionsCType(betterproto2.Enum):
@@ -296,6 +554,14 @@ class FieldOptionsCType(betterproto2.Enum):
     """
 
     CORD = 1
+    """
+    The option [ctype=CORD] may be applied to a non-repeated field of type
+    "bytes". It indicates that in C++, the data should be stored in a Cord
+    instead of a string.  For very large strings, this may reduce memory
+    fragmentation. It may also allow better performance when parsing from a
+    Cord, or when parsing with aliasing enabled, as the parsed Cord may then
+    alias the original buffer.
+    """
 
     STRING_PIECE = 2
 
@@ -315,6 +581,46 @@ class FieldOptionsJsType(betterproto2.Enum):
     """
     Use JavaScript numbers.
     """
+
+
+class FieldOptionsOptionRetention(betterproto2.Enum):
+    """
+    If set to RETENTION_SOURCE, the option will be omitted from the binary.
+    """
+
+    RETENTION_UNKNOWN = 0
+
+    RETENTION_RUNTIME = 1
+
+    RETENTION_SOURCE = 2
+
+
+class FieldOptionsOptionTargetType(betterproto2.Enum):
+    """
+    This indicates the types of entities that the field may apply to when used
+    as an option. If it is unset, then the field may be freely used as an
+    option on any kind of entity.
+    """
+
+    TARGET_TYPE_UNKNOWN = 0
+
+    TARGET_TYPE_FILE = 1
+
+    TARGET_TYPE_EXTENSION_RANGE = 2
+
+    TARGET_TYPE_MESSAGE = 3
+
+    TARGET_TYPE_FIELD = 4
+
+    TARGET_TYPE_ONEOF = 5
+
+    TARGET_TYPE_ENUM = 6
+
+    TARGET_TYPE_ENUM_ENTRY = 7
+
+    TARGET_TYPE_SERVICE = 8
+
+    TARGET_TYPE_METHOD = 9
 
 
 class FileOptionsOptimizeMode(betterproto2.Enum):
@@ -337,6 +643,28 @@ class FileOptionsOptimizeMode(betterproto2.Enum):
     LITE_RUNTIME = 3
     """
     Generate code using MessageLite and the lite runtime.
+    """
+
+
+class GeneratedCodeInfoAnnotationSemantic(betterproto2.Enum):
+    """
+    Represents the identified object's effect on the element in the original
+    .proto file.
+    """
+
+    NONE = 0
+    """
+    There is no effect or the effect is indescribable.
+    """
+
+    SET = 1
+    """
+    The element is set or otherwise mutated.
+    """
+
+    ALIAS = 2
+    """
+    An alias to the element is returned.
     """
 
 
@@ -365,10 +693,10 @@ class NullValue(betterproto2.Enum):
     `NullValue` is a singleton enumeration to represent the null value for the
     `Value` type union.
 
-     The JSON representation for `NullValue` is JSON `null`.
+    The JSON representation for `NullValue` is JSON `null`.
     """
 
-    _ = 0
+    NULL_VALUE = 0
     """
     Null value.
     """
@@ -388,6 +716,27 @@ class Syntax(betterproto2.Enum):
     """
     Syntax `proto3`.
     """
+
+    EDITIONS = 2
+    """
+    Syntax `editions`.
+    """
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "SYNTAX_PROTO2",
+            1: "SYNTAX_PROTO3",
+            2: "SYNTAX_EDITIONS",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "SYNTAX_PROTO2": 0,
+            "SYNTAX_PROTO3": 1,
+            "SYNTAX_EDITIONS": 2,
+        }
 
 
 @dataclass(eq=False, repr=False)
@@ -417,8 +766,12 @@ class Any(betterproto2.Message):
         if (any.is(Foo.class)) {
           foo = any.unpack(Foo.class);
         }
+        // or ...
+        if (any.isSameTypeAs(Foo.getDefaultInstance())) {
+          foo = any.unpack(Foo.getDefaultInstance());
+        }
 
-    Example 3: Pack and unpack a message in Python.
+     Example 3: Pack and unpack a message in Python.
 
         foo = Foo(...)
         any = Any()
@@ -428,7 +781,7 @@ class Any(betterproto2.Message):
           any.Unpack(foo)
           ...
 
-    Example 4: Pack and unpack a message in Go
+     Example 4: Pack and unpack a message in Go
 
          foo := &pb.Foo{...}
          any, err := anypb.New(foo)
@@ -448,7 +801,7 @@ class Any(betterproto2.Message):
     name "y.z".
 
     JSON
-
+    ====
     The JSON representation of an `Any` value uses the regular
     representation of the deserialized, embedded message, with an
     additional field `@type` which contains the type URL. Example:
@@ -501,7 +854,8 @@ class Any(betterproto2.Message):
 
     Note: this functionality is not currently available in the official
     protobuf release, and it is not used for type URLs beginning with
-    type.googleapis.com.
+    type.googleapis.com. As of May 2023, there are no widely used type server
+    implementations and no plans to implement one.
 
     Schemes other than `http`, `https` (or the empty scheme) might be
     used with implementation specific semantics.
@@ -541,7 +895,7 @@ class Any(betterproto2.Message):
         except KeyError:
             raise TypeError(f"Can't unpack unregistered type: {self.type_url}")
 
-        return message_type().parse(self.value)
+        return message_type.parse(self.value)
 
     def to_dict(self, **kwargs) -> dict[str, typing.Any]:
         # TODO allow passing a message pool to `to_dict`
@@ -650,10 +1004,10 @@ class BoolValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, bool):
             return BoolValue(value=value)
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,
@@ -689,10 +1043,10 @@ class BytesValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, bytes):
             return BytesValue(value=value)
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,
@@ -808,10 +1162,10 @@ class DoubleValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, float):
             return DoubleValue(value=value)
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,
@@ -1025,6 +1379,11 @@ class Enum(betterproto2.Message):
     The source syntax.
     """
 
+    edition: "str" = betterproto2.field(6, betterproto2.TYPE_STRING)
+    """
+    The source edition string, only valid when syntax is SYNTAX_EDITIONS.
+    """
+
 
 default_message_pool.register_message("google.protobuf", "Enum", Enum)
 
@@ -1103,12 +1462,32 @@ class EnumOptions(betterproto2.Message):
     is a formalization for deprecating enums.
     """
 
+    deprecated_legacy_json_field_conflicts: "bool" = betterproto2.field(6, betterproto2.TYPE_BOOL)
+    """
+    Enable the legacy handling of JSON field name conflicts.  This lowercases
+    and strips underscored from the fields before comparison in proto3 only.
+    The new behavior takes `json_name` into account and applies to proto2 as
+    well.
+    TODO Remove this legacy behavior once downstream teams have
+    had time to migrate.
+    """
+
+    features: "FeatureSet | None" = betterproto2.field(7, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Any features defined in the specific edition.
+    """
+
     uninterpreted_option: "list[UninterpretedOption]" = betterproto2.field(
         999, betterproto2.TYPE_MESSAGE, repeated=True
     )
     """
     The parser stores options it doesn't recognize here. See above.
     """
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        if self.is_set("deprecated_legacy_json_field_conflicts"):
+            warnings.warn("EnumOptions.deprecated_legacy_json_field_conflicts is deprecated", DeprecationWarning)
 
 
 default_message_pool.register_message("google.protobuf", "EnumOptions", EnumOptions)
@@ -1165,6 +1544,25 @@ class EnumValueOptions(betterproto2.Message):
     this is a formalization for deprecating enum values.
     """
 
+    features: "FeatureSet | None" = betterproto2.field(2, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Any features defined in the specific edition.
+    """
+
+    debug_redact: "bool" = betterproto2.field(3, betterproto2.TYPE_BOOL)
+    """
+    Indicate that fields annotated with this enum value should not be printed
+    out when using debug formats, e.g. when the field contains sensitive
+    credentials.
+    """
+
+    feature_support: "FieldOptionsFeatureSupport | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+    """
+    Information about the support window of a feature value.
+    """
+
     uninterpreted_option: "list[UninterpretedOption]" = betterproto2.field(
         999, betterproto2.TYPE_MESSAGE, repeated=True
     )
@@ -1185,8 +1583,168 @@ class ExtensionRangeOptions(betterproto2.Message):
     The parser stores options it doesn't recognize here. See above.
     """
 
+    declaration: "list[ExtensionRangeOptionsDeclaration]" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+    """
+    For external users: DO NOT USE. We are in the process of open sourcing
+    extension declaration and executing internal cleanups before it can be
+    used externally.
+    """
+
+    features: "FeatureSet | None" = betterproto2.field(50, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Any features defined in the specific edition.
+    """
+
+    verification: "ExtensionRangeOptionsVerificationState" = betterproto2.field(
+        3, betterproto2.TYPE_ENUM, default_factory=lambda: ExtensionRangeOptionsVerificationState(0)
+    )
+    """
+    The verification state of the range.
+    TODO: flip the default to DECLARATION once all empty ranges
+    are marked as UNVERIFIED.
+    """
+
 
 default_message_pool.register_message("google.protobuf", "ExtensionRangeOptions", ExtensionRangeOptions)
+
+
+@dataclass(eq=False, repr=False)
+class ExtensionRangeOptionsDeclaration(betterproto2.Message):
+    number: "int" = betterproto2.field(1, betterproto2.TYPE_INT32)
+    """
+    The extension number declared within the extension range.
+    """
+
+    full_name: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
+    """
+    The fully-qualified name of the extension field. There must be a leading
+    dot in front of the full name.
+    """
+
+    type: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
+    """
+    The fully-qualified type name of the extension field. Unlike
+    Metadata.type, Declaration.type must have a leading dot for messages
+    and enums.
+    """
+
+    reserved: "bool" = betterproto2.field(5, betterproto2.TYPE_BOOL)
+    """
+    If true, indicates that the number is reserved in the extension range,
+    and any extension field with the number will fail to compile. Set this
+    when a declared extension field is deleted.
+    """
+
+    repeated: "bool" = betterproto2.field(6, betterproto2.TYPE_BOOL)
+    """
+    If true, indicates that the extension must be defined as repeated.
+    Otherwise the extension must be defined as optional.
+    """
+
+
+default_message_pool.register_message(
+    "google.protobuf", "ExtensionRangeOptions.Declaration", ExtensionRangeOptionsDeclaration
+)
+
+
+@dataclass(eq=False, repr=False)
+class FeatureSet(betterproto2.Message):
+    """
+    ===================================================================
+    Features
+
+    TODO Enums in C++ gencode (and potentially other languages) are
+    not well scoped.  This means that each of the feature enums below can clash
+    with each other.  The short names we've chosen maximize call-site
+    readability, but leave us very open to this scenario.  A future feature will
+    be designed and implemented to handle this, hopefully before we ever hit a
+    conflict here.
+    """
+
+    field_presence: "FeatureSetFieldPresence" = betterproto2.field(
+        1, betterproto2.TYPE_ENUM, default_factory=lambda: FeatureSetFieldPresence(0)
+    )
+
+    enum_type: "FeatureSetEnumType" = betterproto2.field(
+        2, betterproto2.TYPE_ENUM, default_factory=lambda: FeatureSetEnumType(0)
+    )
+
+    repeated_field_encoding: "FeatureSetRepeatedFieldEncoding" = betterproto2.field(
+        3, betterproto2.TYPE_ENUM, default_factory=lambda: FeatureSetRepeatedFieldEncoding(0)
+    )
+
+    utf8_validation: "FeatureSetUtf8Validation" = betterproto2.field(
+        4, betterproto2.TYPE_ENUM, default_factory=lambda: FeatureSetUtf8Validation(0)
+    )
+
+    message_encoding: "FeatureSetMessageEncoding" = betterproto2.field(
+        5, betterproto2.TYPE_ENUM, default_factory=lambda: FeatureSetMessageEncoding(0)
+    )
+
+    json_format: "FeatureSetJsonFormat" = betterproto2.field(
+        6, betterproto2.TYPE_ENUM, default_factory=lambda: FeatureSetJsonFormat(0)
+    )
+
+
+default_message_pool.register_message("google.protobuf", "FeatureSet", FeatureSet)
+
+
+@dataclass(eq=False, repr=False)
+class FeatureSetDefaults(betterproto2.Message):
+    """
+    A compiled specification for the defaults of a set of features.  These
+    messages are generated from FeatureSet extensions and can be used to seed
+    feature resolution. The resolution with this object becomes a simple search
+    for the closest matching edition, followed by proto merges.
+    """
+
+    defaults: "list[FeatureSetDefaultsFeatureSetEditionDefault]" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    minimum_edition: "Edition" = betterproto2.field(4, betterproto2.TYPE_ENUM, default_factory=lambda: Edition(0))
+    """
+    The minimum supported edition (inclusive) when this was constructed.
+    Editions before this will not have defaults.
+    """
+
+    maximum_edition: "Edition" = betterproto2.field(5, betterproto2.TYPE_ENUM, default_factory=lambda: Edition(0))
+    """
+    The maximum known edition (inclusive) when this was constructed. Editions
+    after this will not have reliable defaults.
+    """
+
+
+default_message_pool.register_message("google.protobuf", "FeatureSetDefaults", FeatureSetDefaults)
+
+
+@dataclass(eq=False, repr=False)
+class FeatureSetDefaultsFeatureSetEditionDefault(betterproto2.Message):
+    """
+    A map from every known edition with a unique set of defaults to its
+    defaults. Not all editions may be contained here.  For a given edition,
+    the defaults at the closest matching edition ordered at or before it should
+    be used.  This field must be in strict ascending order by edition.
+    """
+
+    edition: "Edition" = betterproto2.field(3, betterproto2.TYPE_ENUM, default_factory=lambda: Edition(0))
+
+    overridable_features: "FeatureSet | None" = betterproto2.field(4, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Defaults of features that can be overridden in this edition.
+    """
+
+    fixed_features: "FeatureSet | None" = betterproto2.field(5, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Defaults of features that can't be overridden in this edition.
+    """
+
+
+default_message_pool.register_message(
+    "google.protobuf", "FeatureSetDefaults.FeatureSetEditionDefault", FeatureSetDefaultsFeatureSetEditionDefault
+)
 
 
 @dataclass(eq=False, repr=False)
@@ -1223,7 +1781,7 @@ class Field(betterproto2.Message):
     types. Example: `"type.googleapis.com/google.protobuf.Timestamp"`.
     """
 
-    oneof_index: "int | None" = betterproto2.field(7, betterproto2.TYPE_INT32, optional=True)
+    oneof_index: "int" = betterproto2.field(7, betterproto2.TYPE_INT32)
     """
     The index of the field type in `Type.oneofs`, for message or enumeration
     types. The first type has index 1; zero means the type is not in the list.
@@ -1319,12 +1877,12 @@ class FieldDescriptorProto(betterproto2.Message):
     If true, this is a proto3 "optional". When a proto3 field is optional, it
     tracks presence regardless of field type.
 
-    When proto3_optional is true, this field must be belong to a oneof to
-    signal to old proto3 clients that presence is tracked for this field. This
-    oneof is known as a "synthetic" oneof, and this field must be its sole
-    member (each proto3 optional field gets its own synthetic oneof). Synthetic
-    oneofs exist in the descriptor only, and do not generate any API. Synthetic
-    oneofs must be ordered after all "real" oneofs.
+    When proto3_optional is true, this field must belong to a oneof to signal
+    to old proto3 clients that presence is tracked for this field. This oneof
+    is known as a "synthetic" oneof, and this field must be its sole member
+    (each proto3 optional field gets its own synthetic oneof). Synthetic oneofs
+    exist in the descriptor only, and do not generate any API. Synthetic oneofs
+    must be ordered after all "real" oneofs.
 
     For message fields, proto3_optional doesn't create any semantic change,
     since non-repeated message fields always track presence. However it still
@@ -1561,10 +2119,13 @@ class FieldOptions(betterproto2.Message):
         1, betterproto2.TYPE_ENUM, default_factory=lambda: FieldOptionsCType(0)
     )
     """
+    NOTE: ctype is deprecated. Use `features.(pb.cpp).string_type` instead.
     The ctype option instructs the C++ code generator to use a different
     representation of the field than it normally would.  See the specific
-    options below.  This option is not yet implemented in the open source
-    release -- sorry, we'll try to include it in a future version!
+    options below.  This option is only implemented to support use of
+    [ctype=CORD] and [ctype=STRING] (the default) on non-repeated fields of
+    type "bytes" in the open source release.
+    TODO: make ctype actually deprecated.
     """
 
     packed: "bool" = betterproto2.field(2, betterproto2.TYPE_BOOL)
@@ -1573,7 +2134,9 @@ class FieldOptions(betterproto2.Message):
     a more efficient representation on the wire. Rather than repeatedly
     writing the tag and type for each element, the entire array is encoded as
     a single length-delimited blob. In proto3, only explicit setting it to
-    false will avoid using packed encoding.
+    false will avoid using packed encoding.  This option is prohibited in
+    Editions, but the `repeated_field_encoding` feature can be used to control
+    the behavior.
     """
 
     jstype: "FieldOptionsJsType" = betterproto2.field(
@@ -1612,22 +2175,11 @@ class FieldOptions(betterproto2.Message):
     call from multiple threads concurrently, while non-const methods continue
     to require exclusive access.
 
-    Note that implementations may choose not to check required fields within
-    a lazy sub-message.  That is, calling IsInitialized() on the outer message
-    may return true even if the inner message has missing required fields.
-    This is necessary because otherwise the inner message would have to be
-    parsed in order to perform the check, defeating the purpose of lazy
-    parsing.  An implementation which chooses not to check required fields
-    must be consistent about it.  That is, for any particular sub-message, the
-    implementation must either *always* check its required fields, or *never*
-    check its required fields, regardless of whether or not the message has
-    been parsed.
-
-    As of 2021, lazy does no correctness checks on the byte stream during
-    parsing.  This may lead to crashes if and when an invalid byte stream is
-    finally parsed upon access.
-
-    TODO(b/211906113):  Enable validation on lazy fields.
+    Note that lazy message fields are still eagerly verified to check
+    ill-formed wireformat or missing required fields. Calling IsInitialized()
+    on the outer message would fail if the inner message has missing required
+    fields. Failed verification would result in parsing failure (except when
+    uninitialized messages are acceptable).
     """
 
     unverified_lazy: "bool" = betterproto2.field(15, betterproto2.TYPE_BOOL)
@@ -1650,6 +2202,31 @@ class FieldOptions(betterproto2.Message):
     For Google-internal migration only. Do not use.
     """
 
+    debug_redact: "bool" = betterproto2.field(16, betterproto2.TYPE_BOOL)
+    """
+    Indicate that the field value should not be printed out when using debug
+    formats, e.g. when the field contains sensitive credentials.
+    """
+
+    retention: "FieldOptionsOptionRetention" = betterproto2.field(
+        17, betterproto2.TYPE_ENUM, default_factory=lambda: FieldOptionsOptionRetention(0)
+    )
+
+    targets: "list[FieldOptionsOptionTargetType]" = betterproto2.field(19, betterproto2.TYPE_ENUM, repeated=True)
+
+    edition_defaults: "list[FieldOptionsEditionDefault]" = betterproto2.field(
+        20, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    features: "FeatureSet | None" = betterproto2.field(21, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Any features defined in the specific edition.
+    """
+
+    feature_support: "FieldOptionsFeatureSupport | None" = betterproto2.field(
+        22, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
     uninterpreted_option: "list[UninterpretedOption]" = betterproto2.field(
         999, betterproto2.TYPE_MESSAGE, repeated=True
     )
@@ -1659,6 +2236,55 @@ class FieldOptions(betterproto2.Message):
 
 
 default_message_pool.register_message("google.protobuf", "FieldOptions", FieldOptions)
+
+
+@dataclass(eq=False, repr=False)
+class FieldOptionsEditionDefault(betterproto2.Message):
+    edition: "Edition" = betterproto2.field(3, betterproto2.TYPE_ENUM, default_factory=lambda: Edition(0))
+
+    value: "str" = betterproto2.field(2, betterproto2.TYPE_STRING)
+    """
+    Textproto value.
+    """
+
+
+default_message_pool.register_message("google.protobuf", "FieldOptions.EditionDefault", FieldOptionsEditionDefault)
+
+
+@dataclass(eq=False, repr=False)
+class FieldOptionsFeatureSupport(betterproto2.Message):
+    """
+    Information about the support window of a feature.
+    """
+
+    edition_introduced: "Edition" = betterproto2.field(1, betterproto2.TYPE_ENUM, default_factory=lambda: Edition(0))
+    """
+    The edition that this feature was first available in.  In editions
+    earlier than this one, the default assigned to EDITION_LEGACY will be
+    used, and proto files will not be able to override it.
+    """
+
+    edition_deprecated: "Edition" = betterproto2.field(2, betterproto2.TYPE_ENUM, default_factory=lambda: Edition(0))
+    """
+    The edition this feature becomes deprecated in.  Using this after this
+    edition may trigger warnings.
+    """
+
+    deprecation_warning: "str" = betterproto2.field(3, betterproto2.TYPE_STRING)
+    """
+    The deprecation warning text if this feature is used after the edition it
+    was marked deprecated in.
+    """
+
+    edition_removed: "Edition" = betterproto2.field(4, betterproto2.TYPE_ENUM, default_factory=lambda: Edition(0))
+    """
+    The edition this feature is no longer available in.  In editions after
+    this one, the last default assigned will be used, and proto files will
+    not be able to override it.
+    """
+
+
+default_message_pool.register_message("google.protobuf", "FieldOptions.FeatureSupport", FieldOptionsFeatureSupport)
 
 
 @dataclass(eq=False, repr=False)
@@ -1717,7 +2343,14 @@ class FileDescriptorProto(betterproto2.Message):
     syntax: "str" = betterproto2.field(12, betterproto2.TYPE_STRING)
     """
     The syntax of the proto file.
-    The supported values are "proto2" and "proto3".
+    The supported values are "proto2", "proto3", and "editions".
+
+    If `edition` is present, this value must be "editions".
+    """
+
+    edition: "Edition" = betterproto2.field(14, betterproto2.TYPE_ENUM, default_factory=lambda: Edition(0))
+    """
+    The edition of the proto file.
     """
 
 
@@ -1807,12 +2440,16 @@ class FileOptions(betterproto2.Message):
 
     java_string_check_utf8: "bool" = betterproto2.field(27, betterproto2.TYPE_BOOL)
     """
-    If set true, then the Java2 code generator will generate code that
-    throws an exception whenever an attempt is made to assign a non-UTF-8
-    byte sequence to a string field.
-    Message reflection will do the same.
-    However, an extension field still accepts non-UTF-8 byte sequences.
-    This option has no effect on when used with the lite runtime.
+    A proto2 file can set this to true to opt in to UTF-8 checking for Java,
+    which will throw an exception if invalid UTF-8 is parsed from the wire or
+    assigned to a string field.
+
+    TODO: clarify exactly what kinds of field types this option
+    applies to, and update these docs accordingly.
+
+    Proto3 files already perform these checks. Setting the option explicitly to
+    false has no effect: it cannot be used to opt proto3 files out of UTF-8
+    checks.
     """
 
     optimize_for: "FileOptionsOptimizeMode" = betterproto2.field(
@@ -1845,8 +2482,6 @@ class FileOptions(betterproto2.Message):
     java_generic_services: "bool" = betterproto2.field(17, betterproto2.TYPE_BOOL)
 
     py_generic_services: "bool" = betterproto2.field(18, betterproto2.TYPE_BOOL)
-
-    php_generic_services: "bool" = betterproto2.field(42, betterproto2.TYPE_BOOL)
 
     deprecated: "bool" = betterproto2.field(23, betterproto2.TYPE_BOOL)
     """
@@ -1908,6 +2543,11 @@ class FileOptions(betterproto2.Message):
     determining the ruby package.
     """
 
+    features: "FeatureSet | None" = betterproto2.field(50, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Any features defined in the specific edition.
+    """
+
     uninterpreted_option: "list[UninterpretedOption]" = betterproto2.field(
         999, betterproto2.TYPE_MESSAGE, repeated=True
     )
@@ -1939,10 +2579,10 @@ class FloatValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, float):
             return FloatValue(value=value)
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,
@@ -2004,9 +2644,13 @@ class GeneratedCodeInfoAnnotation(betterproto2.Message):
     end: "int" = betterproto2.field(4, betterproto2.TYPE_INT32)
     """
     Identifies the ending offset in bytes in the generated code that
-    relates to the identified offset. The end offset should be one past
+    relates to the identified object. The end offset should be one past
     the last relevant byte (so the length of the text = end - begin).
     """
+
+    semantic: "GeneratedCodeInfoAnnotationSemantic" = betterproto2.field(
+        5, betterproto2.TYPE_ENUM, default_factory=lambda: GeneratedCodeInfoAnnotationSemantic(0)
+    )
 
 
 default_message_pool.register_message("google.protobuf", "GeneratedCodeInfo.Annotation", GeneratedCodeInfoAnnotation)
@@ -2026,10 +2670,10 @@ class Int32Value(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, int):
             return Int32Value(value=value)
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,
@@ -2065,10 +2709,10 @@ class Int64Value(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, int):
             return Int64Value(value=value)
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,
@@ -2171,12 +2815,36 @@ class MessageOptions(betterproto2.Message):
     parser.
     """
 
+    deprecated_legacy_json_field_conflicts: "bool" = betterproto2.field(11, betterproto2.TYPE_BOOL)
+    """
+    Enable the legacy handling of JSON field name conflicts.  This lowercases
+    and strips underscored from the fields before comparison in proto3 only.
+    The new behavior takes `json_name` into account and applies to proto2 as
+    well.
+
+    This should only be used as a temporary measure against broken builds due
+    to the change in behavior for JSON field name conflicts.
+
+    TODO This is legacy behavior we plan to remove once downstream
+    teams have had time to migrate.
+    """
+
+    features: "FeatureSet | None" = betterproto2.field(12, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Any features defined in the specific edition.
+    """
+
     uninterpreted_option: "list[UninterpretedOption]" = betterproto2.field(
         999, betterproto2.TYPE_MESSAGE, repeated=True
     )
     """
     The parser stores options it doesn't recognize here. See above.
     """
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        if self.is_set("deprecated_legacy_json_field_conflicts"):
+            warnings.warn("MessageOptions.deprecated_legacy_json_field_conflicts is deprecated", DeprecationWarning)
 
 
 default_message_pool.register_message("google.protobuf", "MessageOptions", MessageOptions)
@@ -2277,6 +2945,11 @@ class MethodOptions(betterproto2.Message):
     idempotency_level: "MethodOptionsIdempotencyLevel" = betterproto2.field(
         34, betterproto2.TYPE_ENUM, default_factory=lambda: MethodOptionsIdempotencyLevel(0)
     )
+
+    features: "FeatureSet | None" = betterproto2.field(35, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Any features defined in the specific edition.
+    """
 
     uninterpreted_option: "list[UninterpretedOption]" = betterproto2.field(
         999, betterproto2.TYPE_MESSAGE, repeated=True
@@ -2403,6 +3076,11 @@ default_message_pool.register_message("google.protobuf", "OneofDescriptorProto",
 
 @dataclass(eq=False, repr=False)
 class OneofOptions(betterproto2.Message):
+    features: "FeatureSet | None" = betterproto2.field(1, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Any features defined in the specific edition.
+    """
+
     uninterpreted_option: "list[UninterpretedOption]" = betterproto2.field(
         999, betterproto2.TYPE_MESSAGE, repeated=True
     )
@@ -2459,6 +3137,11 @@ default_message_pool.register_message("google.protobuf", "ServiceDescriptorProto
 
 @dataclass(eq=False, repr=False)
 class ServiceOptions(betterproto2.Message):
+    features: "FeatureSet | None" = betterproto2.field(34, betterproto2.TYPE_MESSAGE, optional=True)
+    """
+    Any features defined in the specific edition.
+    """
+
     deprecated: "bool" = betterproto2.field(33, betterproto2.TYPE_BOOL)
     """
     Note:  Field numbers 1 through 32 are reserved for Google's internal RPC
@@ -2552,7 +3235,7 @@ class SourceCodeInfoLocation(betterproto2.Message):
     location.
 
     Each element is a field number or an index.  They form a path from
-    the root FileDescriptorProto to the place where the definition occurs.
+    the root FileDescriptorProto to the place where the definition appears.
     For example, this path:
       [ 4, 3, 2, 7, 1 ]
     refers to:
@@ -2672,10 +3355,10 @@ class StringValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, str):
             return StringValue(value=value)
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,
@@ -2811,7 +3494,7 @@ class Timestamp(betterproto2.Message):
     [`strftime`](https://docs.python.org/2/library/time.html#time.strftime) with
     the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one can use
     the Joda Time's [`ISODateTimeFormat.dateTime()`](
-    http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime%2D%2D
+    http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime()
     ) to obtain a formatter capable of generating timestamps in this format.
     """
 
@@ -2943,6 +3626,11 @@ class Type(betterproto2.Message):
     The source syntax.
     """
 
+    edition: "str" = betterproto2.field(7, betterproto2.TYPE_STRING)
+    """
+    The source edition string, only valid when syntax is SYNTAX_EDITIONS.
+    """
+
 
 default_message_pool.register_message("google.protobuf", "Type", Type)
 
@@ -2961,10 +3649,10 @@ class UInt32Value(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, int):
             return UInt32Value(value=value)
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,
@@ -3000,10 +3688,10 @@ class UInt64Value(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         if isinstance(value, int):
             return UInt64Value(value=value)
-        return super().from_dict(value)
+        return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
         self,

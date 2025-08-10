@@ -72,6 +72,7 @@ async def main_async():
         generate_test("casing_inner_class", semaphore),
         generate_test("casing", semaphore, reference=True),
         generate_test("casing", semaphore),
+        generate_test("compiler_lib", semaphore),
         generate_test("deprecated", semaphore, reference=True),
         generate_test("deprecated", semaphore),
         generate_test("documentation", semaphore),
