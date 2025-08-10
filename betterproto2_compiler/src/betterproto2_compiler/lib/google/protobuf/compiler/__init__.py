@@ -4,9 +4,9 @@
 # This file has been @generated
 
 __all__ = (
-    "CodeGeneratorResponseFeature",
     "CodeGeneratorRequest",
     "CodeGeneratorResponse",
+    "CodeGeneratorResponseFeature",
     "CodeGeneratorResponseFile",
     "Version",
 )
@@ -17,7 +17,8 @@ import betterproto2
 
 from ....message_pool import default_message_pool
 
-betterproto2.check_compiler_version("0.7.0")
+_COMPILER_VERSION = "0.7.1"
+betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
 class CodeGeneratorResponseFeature(betterproto2.Enum):
@@ -25,11 +26,27 @@ class CodeGeneratorResponseFeature(betterproto2.Enum):
     Sync with code_generator.h.
     """
 
-    FEATURE_NONE = 0
+    NONE = 0
 
-    FEATURE_PROTO3_OPTIONAL = 1
+    PROTO3_OPTIONAL = 1
 
-    FEATURE_SUPPORTS_EDITIONS = 2
+    SUPPORTS_EDITIONS = 2
+
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            0: "FEATURE_NONE",
+            1: "FEATURE_PROTO3_OPTIONAL",
+            2: "FEATURE_SUPPORTS_EDITIONS",
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            "FEATURE_NONE": 0,
+            "FEATURE_PROTO3_OPTIONAL": 1,
+            "FEATURE_SUPPORTS_EDITIONS": 2,
+        }
 
 
 @dataclass(eq=False, repr=False)

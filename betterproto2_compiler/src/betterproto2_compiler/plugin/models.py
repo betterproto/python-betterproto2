@@ -347,7 +347,7 @@ class FieldCompiler(ProtoContentBase):
         field_args = ", ".join(([""] + self.betterproto_field_args) if self.betterproto_field_args else [])
 
         betterproto_field_type = (
-            f"betterproto2.field({self.proto_obj.number}, betterproto2.{str(self.field_type)}{field_args})"
+            f"betterproto2.field({self.proto_obj.number}, betterproto2.TYPE_{str(self.field_type)}{field_args})"
         )
         if self.py_name in dir(builtins):
             self.message.builtins_types.add(self.py_name)
@@ -560,8 +560,8 @@ class MapEntryCompiler(FieldCompiler):
 
     def get_field_string(self) -> str:
         """Construct string representation of this field as a field."""
-        proto_type_1 = f"betterproto2.{self.proto_k_type}"
-        proto_type_2 = f"betterproto2.{self.proto_v_type}"
+        proto_type_1 = f"betterproto2.TYPE_{self.proto_k_type}"
+        proto_type_2 = f"betterproto2.TYPE_{self.proto_v_type}"
 
         unwrap_2 = ""
         if self.unwrap_v:

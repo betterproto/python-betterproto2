@@ -89,7 +89,7 @@ def get_settings(plugin_options: list[str]) -> Settings:
 
 
 def generate_code(request: CodeGeneratorRequest) -> CodeGeneratorResponse:
-    response = CodeGeneratorResponse(supported_features=CodeGeneratorResponseFeature.FEATURE_PROTO3_OPTIONAL)
+    response = CodeGeneratorResponse(supported_features=CodeGeneratorResponseFeature.PROTO3_OPTIONAL)
 
     plugin_options = request.parameter.split(",") if request.parameter else []
     settings = get_settings(plugin_options)
