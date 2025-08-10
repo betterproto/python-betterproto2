@@ -611,6 +611,10 @@ def _value_from_dict(value: Any, meta: FieldMetadata, field_type: type) -> Any:
 
     if meta.proto_type == TYPE_ENUM:
         if isinstance(value, str):
+            if (
+                int_value := getattr(field_type, "betterproto_renamed_proto_names_to_value", lambda: {})().get(value)
+            ) is not None:
+                return field_type(int_value)
             return field_type.from_string(value)
         if isinstance(value, int):
             return field_type(value)

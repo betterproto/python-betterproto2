@@ -32,13 +32,25 @@ class {{ enum.py_name | add_to_all }}(betterproto2.Enum):
     {% endif %}
 
     {% if enum.has_renamed_entries %}
-    betterproto_proto_names = {
-        {% for entry in enum.entries %}
-        {% if entry.proto_name != entry.name %}
-        {{ entry.value }}: "{{ entry.proto_name }}",
-        {% endif %}
-        {% endfor %}
-    }
+    @classmethod
+    def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
+        return {
+            {% for entry in enum.entries %}
+            {% if entry.proto_name != entry.name %}
+            {{ entry.value }}: "{{ entry.proto_name }}",
+            {% endif %}
+            {% endfor %}
+        }
+
+    @classmethod
+    def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
+        return {
+            {% for entry in enum.entries %}
+            {% if entry.proto_name != entry.name %}
+            "{{ entry.proto_name }}": {{ entry.value }},
+            {% endif %}
+            {% endfor %}
+        }
     {% endif %}
 
 {% endfor %}

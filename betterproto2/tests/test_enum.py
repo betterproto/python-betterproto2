@@ -92,12 +92,12 @@ def test_enum_to_dict() -> None:
         no_striping=NoStriping.NO_STRIPING_A,
     )
 
-    print(ArithmeticOperator.PLUS.proto_name)
-
     assert msg.to_dict() == {
         "arithmeticOperator": "ARITHMETIC_OPERATOR_PLUS",  # The original proto name must be preserved
         "noStriping": "NO_STRIPING_A",
     }
+
+    assert EnumMessage.from_dict(msg.to_dict()) == msg
 
 
 def test_unknown_variant_to_dict() -> None:
