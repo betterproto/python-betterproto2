@@ -5,15 +5,7 @@ This page targets the betterproto maintainers.
 ## Recompiling the lib proto files
 
 After some updates in the compiler, it might be useful to recompile the standard Google proto files used by the
-compiler. As the proto files are distributed with `protoc`, their path might depend on your installation.
-
-```bash
-mkdir lib
-protoc \
-    --python_betterproto2_out=lib \
-    -I /usr/include/ \
-    /usr/include/google/protobuf/*.proto
-```
+compiler. The output of the `compiler_lib` test should be used.
 
 !!! warning
     These proto files are written with the `proto2` syntax, which is not supported by betterproto. For the compiler to
