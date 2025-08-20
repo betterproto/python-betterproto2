@@ -1,12 +1,10 @@
 def test_any() -> None:
-    # TODO using a custom message pool will no longer be necessary when the well-known types will be compiled as well
     from tests.outputs.any.any import Person
     from tests.outputs.any.google.protobuf import Any
 
     person = Person(first_name="John", last_name="Smith")
 
-    any = Any()
-    any.pack(person)
+    any = Any.pack(person)
 
     new_any = Any.parse(bytes(any))
 
@@ -19,13 +17,11 @@ def test_any_to_dict() -> None:
 
     person = Person(first_name="John", last_name="Smith")
 
-    any = Any()
-
     # TODO test with include defautl value
-    assert any.to_dict() == {"@type": ""}
+    assert Any().to_dict() == {"@type": ""}
 
     # Pack an object inside
-    any.pack(person)
+    any = Any.pack(person)
 
     assert any.to_dict() == {
         "@type": "type.googleapis.com/any.Person",
@@ -34,8 +30,7 @@ def test_any_to_dict() -> None:
     }
 
     # Pack again in another Any
-    any2 = Any()
-    any2.pack(any)
+    any2 = Any.pack(any)
 
     assert any2.to_dict() == {
         "@type": "type.googleapis.com/google.protobuf.Any",

@@ -8,7 +8,8 @@ default_message_pool = betterproto2.MessagePool()  # Only for typing purpose
 
 
 class Any(VanillaAny):
-    def pack(self, message: betterproto2.Message, message_pool: "betterproto2.MessagePool | None" = None) -> None:
+    @classmethod
+    def pack(cls, message: betterproto2.Message, message_pool: "betterproto2.MessagePool | None" = None) -> typing.Self:
         """
         Pack the given message in the `Any` object.
 
@@ -17,8 +18,10 @@ class Any(VanillaAny):
         """
         message_pool = message_pool or default_message_pool
 
-        self.type_url = message_pool.type_to_url[type(message)]
-        self.value = bytes(message)
+        type_url = message_pool.type_to_url[type(message)]
+        value = bytes(message)
+
+        return cls(type_url=type_url, value=value)
 
     def unpack(self, message_pool: "betterproto2.MessagePool | None" = None) -> betterproto2.Message | None:
         """
