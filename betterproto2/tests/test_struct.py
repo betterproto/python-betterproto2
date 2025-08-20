@@ -1,9 +1,9 @@
 def test_struct_to_dict():
-    from tests.output_betterproto_pydantic.google.protobuf import ListValue, NullValue, Struct, Value
+    from tests.outputs.google.google.protobuf import ListValue, NullValue, Struct, Value
 
     struct = Struct(
         fields={
-            "null_field": Value(null_value=NullValue._),  # TODO fix the name
+            "null_field": Value(null_value=NullValue.NULL_VALUE),
             "number_field": Value(number_value=12),
             "string_field": Value(string_value="test"),
             "bool_field": Value(bool_value=True),
