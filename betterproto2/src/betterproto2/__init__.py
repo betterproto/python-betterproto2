@@ -138,6 +138,9 @@ INFINITY = "Infinity"
 NEG_INFINITY = "-Infinity"
 NAN = "NaN"
 
+# For Struct support
+JSON = int | float | bool | str | list["JSON"] | dict[str, "JSON"] | None
+
 
 class Casing(builtin_enum.Enum):
     """Casing constants for serialization."""

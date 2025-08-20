@@ -13,6 +13,7 @@ from .google_values import (
     UInt32Value,
     UInt64Value,
 )
+from .struct import ListValue, Struct, Value
 from .timestamp import Timestamp
 
 # For each (package, message name), lists the methods that should be added to the message definition.
@@ -92,6 +93,24 @@ KNOWN_METHODS: dict[tuple[str, str], list[Callable]] = {
         BytesValue.from_wrapped,
         BytesValue.to_wrapped,
     ],
+    ("google.protobuf", "Struct"): [
+        Struct.from_dict,
+        Struct.to_dict,
+        Struct.from_wrapped,
+        Struct.to_wrapped,
+    ],
+    ("google.protobuf", "ListValue"): [
+        ListValue.from_dict,
+        ListValue.to_dict,
+        ListValue.from_wrapped,
+        ListValue.to_wrapped,
+    ],
+    ("google.protobuf", "Value"): [
+        Value.from_dict,
+        Value.to_dict,
+        Value.from_wrapped,
+        Value.to_wrapped,
+    ],
 }
 
 # A wrapped type is the type of a message that is automatically replaced by a known Python type.
@@ -107,4 +126,7 @@ WRAPPED_TYPES: dict[tuple[str, str], str] = {
     ("google.protobuf", "BytesValue"): "bytes",
     ("google.protobuf", "Timestamp"): "datetime.datetime",
     ("google.protobuf", "Duration"): "datetime.timedelta",
+    ("google.protobuf", "Struct"): "dict[str, betterproto2.JSON]",
+    ("google.protobuf", "ListValue"): "list[betterproto2.JSON]",
+    ("google.protobuf", "Value"): "betterproto2.JSON",
 }
