@@ -57,3 +57,18 @@ class Any(VanillaAny):
             output["value"] = value.to_dict(**kwargs)
 
         return output
+
+    # TODO typing
+    @classmethod
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+        value = dict(value)  # Make a copy
+
+        type_url = value.pop("@type", None)
+        msg_cls = default_message_pool.url_to_type.get(type_url, None)
+
+        if not msg_cls:
+            raise TypeError(f"Can't unpack unregistered type: {type_url}")
+
+        return cls(
+            type_url=type_url, value=bytes(msg_cls.from_dict(value, ignore_unknown_fields=ignore_unknown_fields))
+        )

@@ -20,7 +20,7 @@ from .timestamp import Timestamp
 # The source code of the method is read from the `known_types` folder. If imports are needed, they can be directly added
 # to the template file: they will automatically be removed if not necessary.
 KNOWN_METHODS: dict[tuple[str, str], list[Callable]] = {
-    ("google.protobuf", "Any"): [Any.pack, Any.unpack, Any.to_dict],
+    ("google.protobuf", "Any"): [Any.pack, Any.unpack, Any.to_dict, Any.from_dict],
     ("google.protobuf", "Timestamp"): [
         Timestamp.from_datetime,
         Timestamp.to_datetime,

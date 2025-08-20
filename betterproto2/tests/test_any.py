@@ -29,6 +29,8 @@ def test_any_to_dict() -> None:
         "lastName": "Smith",
     }
 
+    assert Any.from_dict(any.to_dict()) == any
+
     # Pack again in another Any
     any2 = Any.pack(any)
 
@@ -36,3 +38,5 @@ def test_any_to_dict() -> None:
         "@type": "type.googleapis.com/google.protobuf.Any",
         "value": {"@type": "type.googleapis.com/any.Person", "firstName": "John", "lastName": "Smith"},
     }
+
+    assert Any.from_dict(any2.to_dict()) == any2
