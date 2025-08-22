@@ -867,7 +867,7 @@ class Any(betterproto2.Message):
     """
 
     @classmethod
-    def pack(cls, message: betterproto2.Message, message_pool: "betterproto2.MessagePool | None" = None) -> typing.Self:
+    def pack(cls, message: betterproto2.Message, message_pool: "betterproto2.MessagePool | None" = None) -> "Any":
         """
         Pack the given message in the `Any` object.
 
