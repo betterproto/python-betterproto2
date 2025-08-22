@@ -96,20 +96,14 @@ KNOWN_METHODS: dict[tuple[str, str], list[Callable]] = {
     ("google.protobuf", "Struct"): [
         Struct.from_dict,
         Struct.to_dict,
-        Struct.from_wrapped,
-        Struct.to_wrapped,
     ],
     ("google.protobuf", "ListValue"): [
         ListValue.from_dict,
         ListValue.to_dict,
-        ListValue.from_wrapped,
-        ListValue.to_wrapped,
     ],
     ("google.protobuf", "Value"): [
         Value.from_dict,
         Value.to_dict,
-        Value.from_wrapped,
-        Value.to_wrapped,
     ],
 }
 
@@ -126,7 +120,4 @@ WRAPPED_TYPES: dict[tuple[str, str], str] = {
     ("google.protobuf", "BytesValue"): "bytes",
     ("google.protobuf", "Timestamp"): "datetime.datetime",
     ("google.protobuf", "Duration"): "datetime.timedelta",
-    ("google.protobuf", "Struct"): "dict[str, betterproto2.JSON]",
-    ("google.protobuf", "ListValue"): "list[betterproto2.JSON]",
-    ("google.protobuf", "Value"): "betterproto2.JSON",
 }

@@ -17,9 +17,11 @@ def complex_msg():
         fe=Fe(abc="1"),
         nested_data=NestedData(
             struct_foo={
-                "foo": {
-                    "hello": [["world"]],
-                }
+                "foo": google.Struct.from_dict(
+                    {
+                        "hello": [["world"]],
+                    }
+                ),
             },
         ),
         mapping={
@@ -35,7 +37,7 @@ def test_pickling_complex_message():
     assert msg.fe.abc == "1"
     assert msg.is_set("fi") is not True
     assert msg.mapping["message"] == google.Any.pack(Fi(abc="hi"))
-    assert msg.nested_data.struct_foo["foo"]["hello"][0][0] == "world"
+    assert msg.nested_data.struct_foo["foo"].to_dict()["hello"][0][0] == "world"
 
 
 def test_recursive_message_defaults():
@@ -95,4 +97,4 @@ def test_message_can_be_cached():
         assert msg.fe.abc == "1"
         assert not msg.is_set("fi")
         assert msg.mapping["message"] == google.Any.pack(Fi(abc="hi"))
-        assert msg.nested_data.struct_foo["foo"]["hello"][0][0] == "world"
+        assert msg.nested_data.struct_foo["foo"].to_dict()["hello"][0][0] == "world"

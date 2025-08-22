@@ -1146,7 +1146,12 @@ class Message(ABC):
                 raise KeyError(f"Unknown field '{field_name}' in message {cls.__name__}.") from None
 
             if value is None:
-                continue
+                name, module = field_cls.__name__, field_cls.__module__
+
+                # Edge case: None shouldn't be ignored for google.protobuf.Value
+                # See https://protobuf.dev/programming-guides/json/
+                if not (module.endswith("google.protobuf") and name == "Value"):
+                    continue
 
             if meta.proto_type == TYPE_MESSAGE:
                 if meta.repeated:
