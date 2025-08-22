@@ -51,7 +51,7 @@ class Any(VanillaAny):
         if value is None:
             return output
 
-        if type(value).to_dict == betterproto2.Message.to_dict:
+        if type(value).to_dict is betterproto2.Message.to_dict:
             output.update(value.to_dict(**kwargs))
         else:
             output["value"] = value.to_dict(**kwargs)
@@ -68,6 +68,9 @@ class Any(VanillaAny):
 
         if not msg_cls:
             raise TypeError(f"Can't unpack unregistered type: {type_url}")
+
+        if msg_cls.to_dict is not betterproto2.Message.to_dict:
+            value = value["value"]
 
         return cls(
             type_url=type_url, value=bytes(msg_cls.from_dict(value, ignore_unknown_fields=ignore_unknown_fields))

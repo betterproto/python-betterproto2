@@ -1,14 +1,14 @@
 def test_struct_to_dict():
-    from tests.outputs.google.google.protobuf import ListValue, NullValue, Struct, Value
+    from tests.outputs.google.google.protobuf import Struct
 
     struct = Struct(
         fields={
-            "null_field": Value(null_value=NullValue.NULL_VALUE),
-            "number_field": Value(number_value=12),
-            "string_field": Value(string_value="test"),
-            "bool_field": Value(bool_value=True),
-            "struct_field": Value(struct_value=Struct(fields={"x": Value(string_value="abc")})),
-            "list_field": Value(list_value=ListValue(values=[Value(number_value=42), Value(bool_value=False)])),
+            "null_field": None,
+            "number_field": 12,
+            "string_field": "test",
+            "bool_field": True,
+            "struct_field": {"x": "abc"},
+            "list_field": [42, False],
         }
     )
 
@@ -20,3 +20,31 @@ def test_struct_to_dict():
         "struct_field": {"x": "abc"},
         "list_field": [42, False],
     }
+
+    assert Struct.from_dict(struct.to_dict()) == struct
+
+
+def test_listvalue_to_dict():
+    from tests.outputs.google.google.protobuf import ListValue
+
+    list_value = ListValue(values=[42, False, {}])
+
+    assert list_value.to_dict() == [42, False, {}]
+    assert ListValue.from_dict(list_value.to_dict()) == list_value
+
+
+def test_nullvalue():
+    from tests.outputs.google.google.protobuf import NullValue, Value
+
+    null_value = NullValue.NULL_VALUE
+
+    assert bytes(Value(null_value=null_value)) == b"\x08"
+
+
+def test_value_to_dict():
+    from tests.outputs.google.google.protobuf import Value
+
+    value = Value(list_value=[1, 2, False])
+
+    assert value.to_dict() == [1, 2, False]
+    assert Value.from_dict(value.to_dict()) == value

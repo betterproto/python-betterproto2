@@ -16,12 +16,7 @@ class Struct(VanillaStruct):
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         assert isinstance(value, dict)
 
-        fields: dict[str, Value] = {}
-
-        for key, val in value.items():
-            fields[key] = Value.from_dict(val, ignore_unknown_fields=ignore_unknown_fields)
-
-        return cls(fields=fields)
+        return cls(fields=value)
 
     # TODO typing
     def to_dict(
@@ -34,12 +29,7 @@ class Struct(VanillaStruct):
         # If the output format is PYTHON, we should have kept the wrapped type without building the real class
         assert output_format == betterproto2.OutputFormat.PROTO_JSON
 
-        return {
-            key: value.to_dict(
-                output_format=output_format, casing=casing, include_default_values=include_default_values
-            )
-            for key, value in self.fields.items()
-        }
+        return self.fields
 
     @staticmethod
     def from_wrapped(wrapped: betterproto2.JSON) -> "Struct":
@@ -61,9 +51,9 @@ class Value(VanillaValue):
             case str() as s:
                 return cls(string_value=s)
             case list() as l:
-                return cls(list_value=ListValue.from_dict(l))
+                return cls(list_value=list(l))
             case dict() as d:
-                return cls(struct_value=Struct.from_dict(d))
+                return cls(struct_value=dict(d))
             case None:
                 return cls(null_value=NullValue.NULL_VALUE)
             case _:
@@ -80,21 +70,7 @@ class Value(VanillaValue):
         # If the output format is PYTHON, we should have kept the wrapped type without building the real class
         assert output_format == betterproto2.OutputFormat.PROTO_JSON
 
-        match self:
-            case Value(null_value=NullValue.NULL_VALUE):
-                return None
-            case Value(bool_value=bool(b)):
-                return b
-            case Value(number_value=int(num)) | Value(number_value=float(num)):
-                return num
-            case Value(string_value=str(s)):
-                return s
-            case Value(list_value=ListValue(values=l)):
-                return [v.to_dict() for v in l]
-            case Value(struct_value=Struct(fields=f)):
-                return {k: v.to_dict() for k, v in f.items()}
-
-        raise ValueError("Invalid value")
+        return betterproto2.which_one_of(self, "kind")[1]
 
     @staticmethod
     def from_wrapped(wrapped: betterproto2.JSON) -> "Value":
@@ -108,7 +84,7 @@ class ListValue(VanillaListValue):
     # TODO typing
     @classmethod
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
-        return cls(values=[Value.from_dict(v) for v in value])
+        return cls(values=list(value))
 
     # TODO typing
     def to_dict(
@@ -121,7 +97,7 @@ class ListValue(VanillaListValue):
         # If the output format is PYTHON, we should have kept the wrapped type without building the real class
         assert output_format == betterproto2.OutputFormat.PROTO_JSON
 
-        return [value.to_dict() for value in self.values]
+        return self.values
 
     @staticmethod
     def from_wrapped(wrapped: list[betterproto2.JSON]) -> "ListValue":

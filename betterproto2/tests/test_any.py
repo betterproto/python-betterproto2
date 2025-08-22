@@ -30,6 +30,7 @@ def test_any_to_dict() -> None:
     }
 
     assert Any.from_dict(any.to_dict()) == any
+    assert Any.parse(bytes(any)) == any
 
     # Pack again in another Any
     any2 = Any.pack(any)
@@ -40,3 +41,4 @@ def test_any_to_dict() -> None:
     }
 
     assert Any.from_dict(any2.to_dict()) == any2
+    assert Any.parse(bytes(any2)) == any2
