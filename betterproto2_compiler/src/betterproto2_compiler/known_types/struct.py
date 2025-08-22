@@ -104,4 +104,4 @@ class ListValue(VanillaListValue):
         return ListValue.from_dict(wrapped)
 
     def to_wrapped(self) -> list[betterproto2.JSON]:
-        return self.to_dict()
+        return self.values
