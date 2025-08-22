@@ -107,13 +107,11 @@ TEST_CASES = [
         ["googletypes_struct/googletypes_struct.json"],
         "googletypes_struct.googletypes_struct",
         "googletypes_struct_reference.googletypes_struct_pb2",
-        xfail=True,
     ),
     TestCase(
         ["googletypes_value/googletypes_value.json"],
         "googletypes_value.googletypes_value",
         "googletypes_value_reference.googletypes_value_pb2",
-        xfail=True,
     ),
     TestCase(["int32/int32.json"], "int32.int32", "int32_reference.int32_pb2"),
     TestCase(["map/map.json"], "map.map", "map_reference.map_pb2"),
