@@ -866,7 +866,8 @@ class Any(betterproto2.Message):
     Must be a valid serialized protocol buffer of the above specified type.
     """
 
-    def pack(self, message: betterproto2.Message, message_pool: "betterproto2.MessagePool | None" = None) -> None:
+    @classmethod
+    def pack(cls, message: betterproto2.Message, message_pool: "betterproto2.MessagePool | None" = None) -> typing.Self:
         """
         Pack the given message in the `Any` object.
 
@@ -875,8 +876,10 @@ class Any(betterproto2.Message):
         """
         message_pool = message_pool or default_message_pool
 
-        self.type_url = message_pool.type_to_url[type(message)]
-        self.value = bytes(message)
+        type_url = message_pool.type_to_url[type(message)]
+        value = bytes(message)
+
+        return cls(type_url=type_url, value=value)
 
     def unpack(self, message_pool: "betterproto2.MessagePool | None" = None) -> betterproto2.Message | None:
         """
@@ -906,12 +909,29 @@ class Any(betterproto2.Message):
         if value is None:
             return output
 
-        if type(value).to_dict == betterproto2.Message.to_dict:
+        if type(value).to_dict is betterproto2.Message.to_dict:
             output.update(value.to_dict(**kwargs))
         else:
             output["value"] = value.to_dict(**kwargs)
 
         return output
+
+    @classmethod
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+        value = dict(value)  # Make a copy
+
+        type_url = value.pop("@type", None)
+        msg_cls = default_message_pool.url_to_type.get(type_url, None)
+
+        if not msg_cls:
+            raise TypeError(f"Can't unpack unregistered type: {type_url}")
+
+        if msg_cls.to_dict is not betterproto2.Message.to_dict:
+            value = value["value"]
+
+        return cls(
+            type_url=type_url, value=bytes(msg_cls.from_dict(value, ignore_unknown_fields=ignore_unknown_fields))
+        )
 
 
 default_message_pool.register_message("google.protobuf", "Any", Any)
@@ -2742,10 +2762,35 @@ class ListValue(betterproto2.Message):
     The JSON representation for `ListValue` is JSON array.
     """
 
-    values: "list[Value]" = betterproto2.field(1, betterproto2.TYPE_MESSAGE, repeated=True)
+    values: "list[betterproto2.JSON]" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, unwrap=lambda: Value, repeated=True
+    )
     """
     Repeated field of dynamically typed values.
     """
+
+    @classmethod
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+        return cls(values=list(value))
+
+    def to_dict(
+        self,
+        *,
+        output_format: betterproto2.OutputFormat = betterproto2.OutputFormat.PROTO_JSON,
+        casing: betterproto2.Casing = betterproto2.Casing.CAMEL,
+        include_default_values: bool = False,
+    ) -> dict[str, typing.Any] | typing.Any:
+        # If the output format is PYTHON, we should have kept the wrapped type without building the real class
+        assert output_format == betterproto2.OutputFormat.PROTO_JSON
+
+        return self.values
+
+    @staticmethod
+    def from_wrapped(wrapped: list[betterproto2.JSON]) -> "ListValue":
+        return ListValue.from_dict(wrapped)
+
+    def to_wrapped(self) -> list[betterproto2.JSON]:
+        return self.to_dict()
 
 
 default_message_pool.register_message("google.protobuf", "ListValue", ListValue)
@@ -3393,12 +3438,39 @@ class Struct(betterproto2.Message):
     The JSON representation for `Struct` is JSON object.
     """
 
-    fields: "dict[str, Value]" = betterproto2.field(
-        1, betterproto2.TYPE_MAP, map_meta=betterproto2.map_meta(betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE)
+    fields: "dict[str, betterproto2.JSON]" = betterproto2.field(
+        1,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE, unwrap_2=lambda: Value),
     )
     """
     Unordered map of dynamically typed values.
     """
+
+    @classmethod
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+        assert isinstance(value, dict)
+
+        return cls(fields=value)
+
+    def to_dict(
+        self,
+        *,
+        output_format: betterproto2.OutputFormat = betterproto2.OutputFormat.PROTO_JSON,
+        casing: betterproto2.Casing = betterproto2.Casing.CAMEL,
+        include_default_values: bool = False,
+    ) -> dict[str, typing.Any] | typing.Any:
+        # If the output format is PYTHON, we should have kept the wrapped type without building the real class
+        assert output_format == betterproto2.OutputFormat.PROTO_JSON
+
+        return self.fields
+
+    @staticmethod
+    def from_wrapped(wrapped: betterproto2.JSON) -> "Struct":
+        return Struct.from_dict(wrapped)
+
+    def to_wrapped(self) -> betterproto2.JSON:
+        return self.to_dict()
 
 
 default_message_pool.register_message("google.protobuf", "Struct", Struct)
@@ -3798,15 +3870,56 @@ class Value(betterproto2.Message):
     Represents a boolean value.
     """
 
-    struct_value: "Struct | None" = betterproto2.field(5, betterproto2.TYPE_MESSAGE, optional=True, group="kind")
+    struct_value: "dict[str, betterproto2.JSON] | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, unwrap=lambda: Struct, optional=True, group="kind"
+    )
     """
     Represents a structured value.
     """
 
-    list_value: "ListValue | None" = betterproto2.field(6, betterproto2.TYPE_MESSAGE, optional=True, group="kind")
+    list_value: "list[betterproto2.JSON] | None" = betterproto2.field(
+        6, betterproto2.TYPE_MESSAGE, unwrap=lambda: ListValue, optional=True, group="kind"
+    )
     """
     Represents a repeated `Value`.
     """
+
+    @classmethod
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+        match value:
+            case bool() as b:
+                return cls(bool_value=b)
+            case int() | float() as num:
+                return cls(number_value=num)
+            case str() as s:
+                return cls(string_value=s)
+            case list() as l:
+                return cls(list_value=list(l))
+            case dict() as d:
+                return cls(struct_value=dict(d))
+            case None:
+                return cls(null_value=NullValue.NULL_VALUE)
+            case _:
+                raise ValueError(f"Unknown value type: {type(value)}")
+
+    def to_dict(
+        self,
+        *,
+        output_format: betterproto2.OutputFormat = betterproto2.OutputFormat.PROTO_JSON,
+        casing: betterproto2.Casing = betterproto2.Casing.CAMEL,
+        include_default_values: bool = False,
+    ) -> dict[str, typing.Any] | typing.Any:
+        # If the output format is PYTHON, we should have kept the wrapped type without building the real class
+        assert output_format == betterproto2.OutputFormat.PROTO_JSON
+
+        return betterproto2.which_one_of(self, "kind")[1]
+
+    @staticmethod
+    def from_wrapped(wrapped: betterproto2.JSON) -> "Value":
+        return Value.from_dict(wrapped)
+
+    def to_wrapped(self) -> betterproto2.JSON:
+        return self.to_dict()
 
 
 default_message_pool.register_message("google.protobuf", "Value", Value)
