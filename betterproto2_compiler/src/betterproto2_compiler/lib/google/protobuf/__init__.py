@@ -3440,7 +3440,7 @@ class Struct(betterproto2.Message):
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
         assert isinstance(value, dict)
 
-        fields: dict[str, betterproto2.JSON] = {}
+        fields: dict[str, Value] = {}
 
         for key, val in value.items():
             fields[key] = Value.from_dict(val)
