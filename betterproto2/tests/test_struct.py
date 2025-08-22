@@ -38,7 +38,7 @@ def test_nullvalue():
 
     null_value = NullValue.NULL_VALUE
 
-    assert bytes(Value(null_value=null_value)) == b"\x08"
+    assert bytes(Value(null_value=null_value)) == b"\x08\x00"
 
 
 def test_value_to_dict():
