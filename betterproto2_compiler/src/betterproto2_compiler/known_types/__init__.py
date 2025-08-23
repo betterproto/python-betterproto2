@@ -13,13 +13,14 @@ from .google_values import (
     UInt32Value,
     UInt64Value,
 )
+from .struct import ListValue, Struct, Value
 from .timestamp import Timestamp
 
 # For each (package, message name), lists the methods that should be added to the message definition.
 # The source code of the method is read from the `known_types` folder. If imports are needed, they can be directly added
 # to the template file: they will automatically be removed if not necessary.
 KNOWN_METHODS: dict[tuple[str, str], list[Callable]] = {
-    ("google.protobuf", "Any"): [Any.pack, Any.unpack, Any.to_dict],
+    ("google.protobuf", "Any"): [Any.pack, Any.unpack, Any.to_dict, Any.from_dict],
     ("google.protobuf", "Timestamp"): [
         Timestamp.from_datetime,
         Timestamp.to_datetime,
@@ -91,6 +92,18 @@ KNOWN_METHODS: dict[tuple[str, str], list[Callable]] = {
         BytesValue.to_dict,
         BytesValue.from_wrapped,
         BytesValue.to_wrapped,
+    ],
+    ("google.protobuf", "Struct"): [
+        Struct.from_dict,
+        Struct.to_dict,
+    ],
+    ("google.protobuf", "ListValue"): [
+        ListValue.from_dict,
+        ListValue.to_dict,
+    ],
+    ("google.protobuf", "Value"): [
+        Value.from_dict,
+        Value.to_dict,
     ],
 }
 

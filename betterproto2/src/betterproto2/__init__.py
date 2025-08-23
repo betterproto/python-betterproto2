@@ -779,7 +779,7 @@ class Message(ABC):
                     # Default (zero) values are not serialized.
                     continue
 
-                if isinstance(value, list):
+                if meta.repeated:
                     if meta.proto_type in PACKED_TYPES:
                         # Packed lists look like a length-delimited field. First,
                         # preprocess/encode each value into a buffer and then
@@ -802,9 +802,8 @@ class Message(ABC):
                                 or b"\n\x00"
                             )
 
-                elif isinstance(value, dict):
+                elif meta.map_meta:
                     for k, v in value.items():
-                        assert meta.map_meta
                         sk = _serialize_single(1, meta.map_meta[0].proto_type, k)
                         sv = _serialize_single(2, meta.map_meta[1].proto_type, v, unwrap=meta.map_meta[1].unwrap)
                         stream.write(_serialize_single(meta.number, meta.proto_type, sk + sv))
@@ -944,8 +943,10 @@ class Message(ABC):
 
             meta = proto_meta.meta_by_field_name[field_name]
 
+            is_packed_repeated = parsed.wire_type == WIRE_LEN_DELIM and meta.proto_type in PACKED_TYPES
+
             value: Any
-            if parsed.wire_type == WIRE_LEN_DELIM and meta.proto_type in PACKED_TYPES:
+            if is_packed_repeated:
                 # This is a packed repeated field.
                 pos = 0
                 value = []
@@ -969,8 +970,8 @@ class Message(ABC):
             if meta.proto_type == TYPE_MAP:
                 # Value represents a single key/value pair entry in the map.
                 current[value.key] = value.value
-            elif isinstance(current, list):
-                if isinstance(value, list):
+            elif meta.repeated:
+                if is_packed_repeated:
                     current.extend(value)
                 else:
                     current.append(value)
@@ -1142,7 +1143,12 @@ class Message(ABC):
                 raise KeyError(f"Unknown field '{field_name}' in message {cls.__name__}.") from None
 
             if value is None:
-                continue
+                name, module = field_cls.__name__, field_cls.__module__
+
+                # Edge case: None shouldn't be ignored for google.protobuf.Value
+                # See https://protobuf.dev/programming-guides/json/
+                if not (module.endswith("google.protobuf") and name == "Value"):
+                    continue
 
             if meta.proto_type == TYPE_MESSAGE:
                 if meta.repeated:

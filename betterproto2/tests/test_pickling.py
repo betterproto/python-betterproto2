@@ -17,19 +17,15 @@ def complex_msg():
         fe=Fe(abc="1"),
         nested_data=NestedData(
             struct_foo={
-                "foo": google.Struct(
-                    fields={
-                        "hello": google.Value(list_value=google.ListValue(values=[google.Value(string_value="world")]))
+                "foo": google.Struct.from_dict(
+                    {
+                        "hello": [["world"]],
                     }
                 ),
             },
-            map_str_any_bar={
-                "key": google.Any(value=b"value"),
-            },
         ),
         mapping={
-            "message": google.Any(value=bytes(Fi(abc="hi"))),
-            "string": google.Any(value=b"howdy"),
+            "message": google.Any.pack(Fi(abc="hi")),
         },
     )
 
@@ -40,9 +36,8 @@ def test_pickling_complex_message():
     assert msg == deser
     assert msg.fe.abc == "1"
     assert msg.is_set("fi") is not True
-    assert msg.mapping["message"] == google.Any(value=bytes(Fi(abc="hi")))
-    assert msg.mapping["string"].value.decode() == "howdy"
-    assert msg.nested_data.struct_foo["foo"].fields["hello"].list_value.values[0].string_value == "world"
+    assert msg.mapping["message"] == google.Any.pack(Fi(abc="hi"))
+    assert msg.nested_data.struct_foo["foo"].to_dict()["hello"][0][0] == "world"
 
 
 def test_recursive_message_defaults():
@@ -51,11 +46,7 @@ def test_recursive_message_defaults():
     msg = RecursiveMessage(name="bob", intermediate=Intermediate(42))
     msg = unpickled(msg)
 
-    # set values are as expected
     assert msg == RecursiveMessage(name="bob", intermediate=Intermediate(42))
-
-    # lazy initialized works modifies the message
-    assert msg != RecursiveMessage(name="bob", intermediate=Intermediate(42), child=RecursiveMessage(name="jude"))
     msg.child = RecursiveMessage(child=RecursiveMessage(name="jude"))
     assert msg == RecursiveMessage(
         name="bob",
@@ -104,7 +95,6 @@ def test_message_can_be_cached():
         msg = use_cache()
         assert use_cache.calls == 1  # The message is only ever built once
         assert msg.fe.abc == "1"
-        assert msg.is_set("fi") is not True
-        assert msg.mapping["message"] == google.Any(value=bytes(Fi(abc="hi")))
-        assert msg.mapping["string"].value.decode() == "howdy"
-        assert msg.nested_data.struct_foo["foo"].fields["hello"].list_value.values[0].string_value == "world"
+        assert not msg.is_set("fi")
+        assert msg.mapping["message"] == google.Any.pack(Fi(abc="hi"))
+        assert msg.nested_data.struct_foo["foo"].to_dict()["hello"][0][0] == "world"

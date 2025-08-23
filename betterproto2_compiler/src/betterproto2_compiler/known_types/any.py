@@ -8,7 +8,8 @@ default_message_pool = betterproto2.MessagePool()  # Only for typing purpose
 
 
 class Any(VanillaAny):
-    def pack(self, message: betterproto2.Message, message_pool: "betterproto2.MessagePool | None" = None) -> None:
+    @classmethod
+    def pack(cls, message: betterproto2.Message, message_pool: "betterproto2.MessagePool | None" = None) -> "Any":
         """
         Pack the given message in the `Any` object.
 
@@ -17,8 +18,10 @@ class Any(VanillaAny):
         """
         message_pool = message_pool or default_message_pool
 
-        self.type_url = message_pool.type_to_url[type(message)]
-        self.value = bytes(message)
+        type_url = message_pool.type_to_url[type(message)]
+        value = bytes(message)
+
+        return cls(type_url=type_url, value=value)
 
     def unpack(self, message_pool: "betterproto2.MessagePool | None" = None) -> betterproto2.Message | None:
         """
@@ -48,9 +51,27 @@ class Any(VanillaAny):
         if value is None:
             return output
 
-        if type(value).to_dict == betterproto2.Message.to_dict:
+        if type(value).to_dict is betterproto2.Message.to_dict:
             output.update(value.to_dict(**kwargs))
         else:
             output["value"] = value.to_dict(**kwargs)
 
         return output
+
+    # TODO typing
+    @classmethod
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+        value = dict(value)  # Make a copy
+
+        type_url = value.pop("@type", None)
+        msg_cls = default_message_pool.url_to_type.get(type_url, None)
+
+        if not msg_cls:
+            raise TypeError(f"Can't unpack unregistered type: {type_url}")
+
+        if msg_cls.to_dict is not betterproto2.Message.to_dict:
+            value = value["value"]
+
+        return cls(
+            type_url=type_url, value=bytes(msg_cls.from_dict(value, ignore_unknown_fields=ignore_unknown_fields))
+        )
