@@ -24,7 +24,7 @@ from copy import deepcopy
 from enum import IntEnum
 from io import BytesIO
 from itertools import count
-from typing import TYPE_CHECKING, Any, ClassVar, TypeAlias, get_type_hints
+from typing import TYPE_CHECKING, Any, ClassVar, get_type_hints
 
 from typing_extensions import Self
 
@@ -137,9 +137,6 @@ SIZE_DELIMITED = -1
 INFINITY = "Infinity"
 NEG_INFINITY = "-Infinity"
 NAN = "NaN"
-
-# For Struct support
-JSON: TypeAlias = int | float | bool | str | list[Any] | dict[str, Any] | None
 
 
 class Casing(builtin_enum.Enum):
