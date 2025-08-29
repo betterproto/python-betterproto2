@@ -866,11 +866,15 @@ class Message(ABC):
     def _postprocess_single(self, wire_type: int, meta: FieldMetadata, field_name: str, value: Any) -> Any:
         """Adjusts values after parsing."""
         if wire_type == WIRE_VARINT:
-            if meta.proto_type in (TYPE_INT32, TYPE_INT64):
+            if meta.proto_type in (TYPE_INT32, TYPE_INT64, TYPE_ENUM):
                 bits = 32 if meta.proto_type == TYPE_INT32 else 64
                 value = value & ((1 << bits) - 1)
                 signbit = 1 << (bits - 1)
                 value = int((value ^ signbit) - signbit)
+
+                if meta.proto_type == TYPE_ENUM:
+                    # Convert enum ints to python enum instances
+                    value = self._betterproto.cls_by_field[field_name](value)
             elif meta.proto_type in (TYPE_UINT32, TYPE_UINT64):
                 bits = 32 if meta.proto_type == TYPE_UINT32 else 64
                 value = value & ((1 << bits) - 1)
@@ -881,9 +885,6 @@ class Message(ABC):
             elif meta.proto_type == TYPE_BOOL:
                 # Booleans use a varint encoding, so convert it to true/false.
                 value = value > 0
-            elif meta.proto_type == TYPE_ENUM:
-                # Convert enum ints to python enum instances
-                value = self._betterproto.cls_by_field[field_name](value)
         elif wire_type in (WIRE_FIXED_32, WIRE_FIXED_64):
             fmt = _pack_fmt(meta.proto_type)
             value = struct.unpack(fmt, value)[0]

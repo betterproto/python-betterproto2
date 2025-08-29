@@ -24,14 +24,6 @@ class {{ enum.py_name | add_to_all }}(betterproto2.Enum):
 
     {% endfor %}
 
-    {% if output_file.settings.pydantic_dataclasses %}
-    @classmethod
-    def __get_pydantic_core_schema__(cls, _source_type, _handler):
-        from pydantic_core import core_schema
-
-        return core_schema.int_schema(ge=0)
-    {% endif %}
-
     {% if enum.has_renamed_entries %}
     @classmethod
     def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
