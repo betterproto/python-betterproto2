@@ -926,7 +926,7 @@ class Any(betterproto2.Message):
         if not msg_cls:
             raise TypeError(f"Can't unpack unregistered type: {type_url}")
 
-        if msg_cls.to_dict == not betterproto2.Message.to_dict:
+        if not msg_cls.to_dict == betterproto2.Message.to_dict:
             value = value["value"]
 
         return cls(
