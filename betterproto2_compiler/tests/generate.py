@@ -78,6 +78,7 @@ async def main_async():
         generate_test("documentation", semaphore),
         generate_test("double", semaphore, reference=True),
         generate_test("double", semaphore),
+        generate_test("duration", semaphore),
         generate_test("encoding_decoding", semaphore),
         generate_test("enum", semaphore, reference=True),
         generate_test("enum", semaphore),
