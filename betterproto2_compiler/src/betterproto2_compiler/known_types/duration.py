@@ -9,10 +9,8 @@ from betterproto2_compiler.lib.google.protobuf import Duration as VanillaDuratio
 
 class Duration(VanillaDuration):
     @classmethod
-    def from_timedelta(
-        cls, delta: datetime.timedelta, *, _1_microsecond: datetime.timedelta = datetime.timedelta(microseconds=1)
-    ) -> "Duration":
-        total_ms = delta // _1_microsecond
+    def from_timedelta(cls, delta: datetime.timedelta) -> "Duration":
+        total_ms = delta // datetime.timedelta(microseconds=1)
         seconds = int(total_ms / 1e6)
         nanos = int((total_ms % 1e6) * 1e3)
         return cls(seconds, nanos)
@@ -35,8 +33,14 @@ class Duration(VanillaDuration):
             if not re.match(r"^-?\d+(\.\d+)?s$", value):
                 raise ValueError(f"Invalid duration string: {value}")
 
-            seconds = float(value[:-1])
-            return Duration(seconds=int(seconds), nanos=int((seconds - int(seconds)) * 1e9))
+            parts = value[:-1].split(".")
+
+            seconds = int(parts[0])
+            nanos = 0 if len(parts) == 1 else int(parts[1].ljust(9, "0")[:9])
+            if seconds < 0:
+                nanos = -nanos
+
+            return Duration(seconds=seconds, nanos=nanos)
 
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
