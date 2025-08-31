@@ -27,49 +27,19 @@ wheels = [
 [[package]]
 name = "betterproto2"
 version = "0.8.0"
-source = { directory = "../betterproto2" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-dateutil" },
     { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/04/8d/99f8ca87dbac19fba70574a420b091fbc8324b114cda283ed3aaa37ad820/betterproto2-0.8.0.tar.gz", hash = "sha256:75f8a46d056e22bef18e61ec62c1b071091f9df64a081a2c305f6a8011c8e8f5", size = 143140, upload-time = "2025-08-31T20:03:23.962Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/62/2f/d98f986d59c35e2c14f3b37157badf9b7df57c1c680ccf7ae7800d21ec5b/betterproto2-0.8.0-py3-none-any.whl", hash = "sha256:b79dc910453ee5153c32d74c896e423234aaa2bb5c0bd73f020a7db63e72ee24", size = 19469, upload-time = "2025-08-31T20:03:22.348Z" },
 ]
 
 [package.optional-dependencies]
 grpclib = [
     { name = "grpclib" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "grpcio", marker = "extra == 'all'", specifier = ">=1.72.1" },
-    { name = "grpcio", marker = "extra == 'grpcio'", specifier = ">=1.72.1" },
-    { name = "grpclib", marker = "extra == 'all'", specifier = ">=0.4.8" },
-    { name = "grpclib", marker = "extra == 'grpclib'", specifier = ">=0.4.8" },
-    { name = "protobuf", marker = "extra == 'all'", specifier = ">=5.29.3" },
-    { name = "protobuf", marker = "extra == 'protobuf'", specifier = ">=5.29.3" },
-    { name = "pydantic", marker = "extra == 'all'", specifier = ">=2.11.5" },
-    { name = "pydantic", marker = "extra == 'pydantic'", specifier = ">=2.11.5" },
-    { name = "python-dateutil", specifier = ">=2.9.0.post0" },
-    { name = "typing-extensions", specifier = ">=4.14.0" },
-]
-provides-extras = ["grpcio", "grpclib", "pydantic", "protobuf", "all"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "ipykernel", specifier = ">=6.29.5" },
-    { name = "mkdocs-material", specifier = ">=9.6.14" },
-    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.29.1" },
-    { name = "mypy", specifier = ">=1.16.0" },
-    { name = "pre-commit", specifier = ">=4.2.0" },
-    { name = "pyright", specifier = ">=1.1.401" },
-    { name = "ruff", specifier = "==0.9.3" },
-]
-test = [
-    { name = "cachelib", specifier = ">=0.13.0" },
-    { name = "poethepoet", specifier = ">=0.34.0" },
-    { name = "pytest", specifier = ">=8.4.0" },
-    { name = "pytest-asyncio", specifier = ">=1.0.0" },
-    { name = "pytest-cov", specifier = ">=6.1.1" },
-    { name = "pytest-mock", specifier = ">=3.14.1" },
 ]
 
 [[package]]
@@ -99,7 +69,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "betterproto2", extras = ["grpclib"], directory = "../betterproto2" },
+    { name = "betterproto2", extras = ["grpclib"], specifier = ">=0.8.0,<0.9" },
     { name = "jinja2", specifier = ">=3.0.3" },
     { name = "ruff", specifier = "~=0.9.3" },
     { name = "strenum", marker = "python_full_version == '3.10.*'", specifier = ">=0.4.15,<0.5" },
