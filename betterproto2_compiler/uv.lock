@@ -74,7 +74,7 @@ test = [
 
 [[package]]
 name = "betterproto2-compiler"
-version = "0.7.1"
+version = "0.8.0"
 source = { editable = "." }
 dependencies = [
     { name = "betterproto2", extra = ["grpclib"] },
