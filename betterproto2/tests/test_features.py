@@ -430,8 +430,10 @@ def test_is_set():
 
     assert not MsgE().is_set("bool_field")
     assert not MsgE().is_set("int_field")
+    assert not MsgE().is_set("str_field")
     assert MsgE(bool_field=True).is_set("bool_field")
     assert MsgE(bool_field=True, int_field=0).is_set("int_field")
+    assert MsgE(str_field=["a", "b", "c"]).is_set("str_field")
 
 
 def test_equality_comparison():

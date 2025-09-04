@@ -104,4 +104,5 @@ message MsgD {
 message MsgE {
     bool bool_field = 1;
     optional int32 int_field = 2;
+    repeated string str_field = 3;
 }

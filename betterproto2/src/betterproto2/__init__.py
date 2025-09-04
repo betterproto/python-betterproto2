@@ -1270,7 +1270,7 @@ class Message(ABC):
         :class:`bool`
             `True` if field has been set, otherwise `False`.
         """
-        return self.__getattribute__(name) is not self._get_field_default(name)
+        return self.__getattribute__(name) != self._get_field_default(name)
 
     @classmethod
     def _validate_field_groups(cls, values):
