@@ -12,6 +12,22 @@ permissions:
   contents: read
 
 jobs:
+  test-dependencies:
+    name: Check running without dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv with Python 3.12
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.7.5"
+          python-version: "3.12"
+
+      - name: Install betterproto2_compiler
+        working-directory: ./betterproto2_compiler
+        run: uv sync --locked --all-extras --all-groups
+
   tests:
     name: ${{ matrix.os }} / ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}-latest
