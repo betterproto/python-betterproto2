@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from tests.util import requires_grpclib  # noqa: F401clear
+from tests.util import requires_grpclib  # noqa: F401
 
 if TYPE_CHECKING:
     from tests.outputs.service.service import TestStub as ThingServiceClient
