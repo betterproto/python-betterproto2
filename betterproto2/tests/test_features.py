@@ -1,19 +1,13 @@
 import json
-from datetime import (
-    datetime,
-    timedelta,
-    timezone,
-)
-from inspect import (
-    Parameter,
-    signature,
-)
+from datetime import datetime, timedelta, timezone
+from inspect import Parameter, signature
 from unittest.mock import ANY
 
 import pytest
 
 import betterproto2
 from betterproto2 import OutputFormat
+from tests.util import requires_grpcio, requires_grpclib  # noqa: F401
 
 
 def test_class_init():
@@ -416,7 +410,7 @@ def test_iso_datetime_list():
     assert all([isinstance(item, datetime) for item in msg.timestamps])
 
 
-def test_service_argument__expected_parameter():
+def test_service_argument__expected_parameter(requires_grpclib, requires_grpcio):
     from tests.outputs.service.service import TestStub
 
     sig = signature(TestStub.do_thing)

@@ -1,11 +1,6 @@
-from datetime import (
-    datetime,
-    timezone,
-)
+from datetime import datetime, timezone
 
 import pytest
-from google.protobuf import json_format
-from google.protobuf.timestamp_pb2 import Timestamp
 
 from tests.outputs.google_impl_behavior_equivalence.google_impl_behavior_equivalence import (
     Empty,
@@ -14,16 +9,17 @@ from tests.outputs.google_impl_behavior_equivalence.google_impl_behavior_equival
     Spam,
     Test,
 )
-from tests.outputs.google_impl_behavior_equivalence_reference.google_impl_behavior_equivalence_pb2 import (
-    Empty as ReferenceEmpty,
-    Foo as ReferenceFoo,
-    Request as ReferenceRequest,
-    Spam as ReferenceSpam,
-    Test as ReferenceTest,
-)
+from tests.util import requires_protobuf  # noqa: F401
 
 
-def test_oneof_serializes_similar_to_google_oneof():
+def test_oneof_serializes_similar_to_google_oneof(requires_protobuf):
+    from google.protobuf import json_format
+
+    from tests.outputs.google_impl_behavior_equivalence_reference.google_impl_behavior_equivalence_pb2 import (
+        Foo as ReferenceFoo,
+        Test as ReferenceTest,
+    )
+
     tests = [
         (Test(string="abc"), ReferenceTest(string="abc")),
         (Test(integer=2), ReferenceTest(integer=2)),
@@ -39,7 +35,12 @@ def test_oneof_serializes_similar_to_google_oneof():
         assert message.to_dict() == json_format.MessageToDict(message_reference)
 
 
-def test_bytes_are_the_same_for_oneof():
+def test_bytes_are_the_same_for_oneof(requires_protobuf):
+    from tests.outputs.google_impl_behavior_equivalence_reference.google_impl_behavior_equivalence_pb2 import (
+        Foo as ReferenceFoo,
+        Test as ReferenceTest,
+    )
+
     message = Test(string="")
     message_reference = ReferenceTest(string="")
 
@@ -65,7 +66,13 @@ def test_bytes_are_the_same_for_oneof():
 
 
 @pytest.mark.parametrize("dt", (datetime.min.replace(tzinfo=timezone.utc),))
-def test_datetime_clamping(dt):  # see #407
+def test_datetime_clamping(dt, requires_protobuf):  # see #407
+    from google.protobuf.timestamp_pb2 import Timestamp
+
+    from tests.outputs.google_impl_behavior_equivalence_reference.google_impl_behavior_equivalence_pb2 import (
+        Spam as ReferenceSpam,
+    )
+
     ts = Timestamp()
     ts.FromDatetime(dt)
     assert bytes(Spam(dt)) == ReferenceSpam(ts=ts).SerializeToString()
@@ -74,7 +81,12 @@ def test_datetime_clamping(dt):  # see #407
     assert Spam.parse(message_bytes).ts.timestamp() == ReferenceSpam.FromString(message_bytes).ts.seconds
 
 
-def test_empty_message_field():
+def test_empty_message_field(requires_protobuf):
+    from tests.outputs.google_impl_behavior_equivalence_reference.google_impl_behavior_equivalence_pb2 import (
+        Empty as ReferenceEmpty,
+        Request as ReferenceRequest,
+    )
+
     message = Request()
     reference_message = ReferenceRequest()
 

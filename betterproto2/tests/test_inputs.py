@@ -11,12 +11,11 @@ from typing import Any
 import pytest
 
 import betterproto2
+from tests.util import requires_grpcio, requires_grpclib, requires_protobuf, requires_pydantic  # noqa: F401
 
 # Force pure-python implementation instead of C++, otherwise imports
 # break things because we can't properly reset the symbol database.
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
-
-from google.protobuf.json_format import Parse
 
 
 @dataclass
@@ -190,7 +189,7 @@ TEST_CASES = [
 
 
 @pytest.mark.parametrize("test_case", TEST_CASES, ids=lambda x: x.plugin_package)
-def test_message_json(test_case: TestCase) -> None:
+def test_message_json(test_case: TestCase, requires_pydantic, requires_grpcio, requires_grpclib) -> None:
     if test_case.xfail:
         pytest.xfail(f"Test case {test_case.plugin_package} is expected to fail.")
 
@@ -209,7 +208,11 @@ def test_message_json(test_case: TestCase) -> None:
 
 
 @pytest.mark.parametrize("test_case", TEST_CASES, ids=lambda x: x.plugin_package)
-def test_binary_compatibility(test_case: TestCase, reset_sys_path) -> None:
+def test_binary_compatibility(
+    test_case: TestCase, reset_sys_path, requires_grpcio, requires_protobuf, requires_grpclib
+) -> None:
+    from google.protobuf.json_format import Parse
+
     if test_case.xfail:
         pytest.xfail(f"Test case {test_case.plugin_package} is expected to fail.")
 

@@ -2,57 +2,57 @@ import asyncio
 from typing import Generic, TypeVar
 
 import pytest
-from google.protobuf import descriptor_pb2
-from grpclib.reflection.service import ServerReflection
-from grpclib.reflection.v1.reflection_grpc import ServerReflectionBase as ServerReflectionBaseV1
-from grpclib.reflection.v1alpha.reflection_grpc import ServerReflectionBase as ServerReflectionBaseV1Alpha
-from grpclib.testing import ChannelFor
 
-from tests.outputs.grpclib_reflection.example_service import TestBase
-from tests.outputs.grpclib_reflection.grpc.reflection.v1 import (
-    ErrorResponse,
-    ListServiceResponse,
-    ServerReflectionRequest,
-    ServerReflectionStub,
-    ServiceResponse,
-)
-from tests.outputs.grpclib_reflection_descriptors.google_proto_descriptor_pool import (
-    default_google_proto_descriptor_pool,
-)
-
-
-class TestService(TestBase):
-    pass
-
-
-T = TypeVar("T")
-
-
-class AsyncIterableQueue(Generic[T]):
-    CLOSED_SENTINEL = object()
-
-    def __init__(self):
-        self._queue = asyncio.Queue()
-        self._done = asyncio.Event()
-
-    def put(self, item: T):
-        self._queue.put_nowait(item)
-
-    def close(self):
-        self._queue.put_nowait(self.CLOSED_SENTINEL)
-
-    def __aiter__(self):
-        return self
-
-    async def __anext__(self) -> T:
-        val = await self._queue.get()
-        if val is self.CLOSED_SENTINEL:
-            raise StopAsyncIteration
-        return val
+from tests.util import requires_grpclib, requires_protobuf  # noqa: F401
 
 
 @pytest.mark.asyncio
-async def test_grpclib_reflection():
+async def test_grpclib_reflection(requires_grpclib, requires_protobuf):
+    from google.protobuf import descriptor_pb2
+    from grpclib.reflection.service import ServerReflection
+    from grpclib.reflection.v1.reflection_grpc import ServerReflectionBase as ServerReflectionBaseV1
+    from grpclib.reflection.v1alpha.reflection_grpc import ServerReflectionBase as ServerReflectionBaseV1Alpha
+    from grpclib.testing import ChannelFor
+
+    from tests.outputs.grpclib_reflection.example_service import TestBase
+    from tests.outputs.grpclib_reflection.grpc.reflection.v1 import (
+        ErrorResponse,
+        ListServiceResponse,
+        ServerReflectionRequest,
+        ServerReflectionStub,
+        ServiceResponse,
+    )
+    from tests.outputs.grpclib_reflection_descriptors.google_proto_descriptor_pool import (
+        default_google_proto_descriptor_pool,
+    )
+
+    class TestService(TestBase):
+        pass
+
+    T = TypeVar("T")
+
+    class AsyncIterableQueue(Generic[T]):
+        CLOSED_SENTINEL = object()
+
+        def __init__(self):
+            self._queue = asyncio.Queue()
+            self._done = asyncio.Event()
+
+        def put(self, item: T):
+            self._queue.put_nowait(item)
+
+        def close(self):
+            self._queue.put_nowait(self.CLOSED_SENTINEL)
+
+        def __aiter__(self):
+            return self
+
+        async def __anext__(self) -> T:
+            val = await self._queue.get()
+            if val is self.CLOSED_SENTINEL:
+                raise StopAsyncIteration
+            return val
+
     service = TestService()
     services = ServerReflection.extend([service])
     for service in services:

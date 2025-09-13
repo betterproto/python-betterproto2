@@ -43,7 +43,6 @@ from ._types import T
 from ._version import __version__, check_compiler_version
 from .casing import camel_case, safe_snake_case, snake_case
 from .enum_ import Enum as Enum
-from .grpc.grpclib_client import ServiceStub as ServiceStub
 from .utils import classproperty, staticproperty
 
 if TYPE_CHECKING:

@@ -1,25 +1,18 @@
 import asyncio
 import uuid
+from typing import TYPE_CHECKING
 
-import grpclib
-import grpclib.client
-import grpclib.metadata
-import grpclib.server
 import pytest
-from grpclib.testing import ChannelFor
 
-from tests.grpc.async_channel import AsyncChannel
-from tests.outputs.service.service import (
-    DoThingRequest,
-    DoThingResponse,
-    GetThingRequest,
-    TestStub as ThingServiceClient,
-)
+from tests.util import requires_grpcio, requires_grpclib  # noqa: F401
 
-from .thing_service import ThingService
+if TYPE_CHECKING:
+    from tests.outputs.service.service import TestStub as ThingServiceClient
 
 
-async def _test_client(client: ThingServiceClient, name="clean room", **kwargs):
+async def _test_client(client: "ThingServiceClient", name="clean room", **kwargs):
+    from tests.outputs.service.service import DoThingRequest
+
     response = await client.do_thing(DoThingRequest(name=name), **kwargs)
     assert response.names == [name]
 
@@ -38,6 +31,9 @@ def _assert_request_meta_received(deadline, metadata):
 
 @pytest.fixture
 def handler_trailer_only_unauthenticated():
+    import grpclib
+    import grpclib.server
+
     async def handler(stream: grpclib.server.Stream):
         await stream.recv_message()
         await stream.send_initial_metadata()
@@ -47,13 +43,28 @@ def handler_trailer_only_unauthenticated():
 
 
 @pytest.mark.asyncio
-async def test_simple_service_call():
+async def test_simple_service_call(requires_grpclib, requires_grpcio):
+    from grpclib.testing import ChannelFor
+
+    from tests.outputs.service.service import TestStub as ThingServiceClient
+
+    from .thing_service import ThingService
+
     async with ChannelFor([ThingService()]) as channel:
         await _test_client(ThingServiceClient(channel))
 
 
 @pytest.mark.asyncio
-async def test_trailer_only_error_unary_unary(mocker, handler_trailer_only_unauthenticated):
+async def test_trailer_only_error_unary_unary(
+    mocker, requires_grpclib, requires_grpcio, handler_trailer_only_unauthenticated
+):
+    import grpclib
+    from grpclib.testing import ChannelFor
+
+    from tests.outputs.service.service import DoThingRequest, TestStub as ThingServiceClient
+
+    from .thing_service import ThingService
+
     service = ThingService()
     mocker.patch.object(
         service,
@@ -68,7 +79,19 @@ async def test_trailer_only_error_unary_unary(mocker, handler_trailer_only_unaut
 
 
 @pytest.mark.asyncio
-async def test_trailer_only_error_stream_unary(mocker, handler_trailer_only_unauthenticated):
+async def test_trailer_only_error_stream_unary(
+    mocker, requires_grpclib, requires_grpcio, handler_trailer_only_unauthenticated
+):
+    import grpclib
+    from grpclib.testing import ChannelFor
+
+    from tests.outputs.service.service import (
+        DoThingRequest,
+        TestStub as ThingServiceClient,
+    )
+
+    from .thing_service import ThingService
+
     service = ThingService()
     mocker.patch.object(
         service,
@@ -84,7 +107,13 @@ async def test_trailer_only_error_stream_unary(mocker, handler_trailer_only_unau
 
 
 @pytest.mark.asyncio
-async def test_service_call_mutable_defaults(mocker):
+async def test_service_call_mutable_defaults(mocker, requires_grpclib, requires_grpcio):
+    from grpclib.testing import ChannelFor
+
+    from tests.outputs.service.service import TestStub as ThingServiceClient
+
+    from .thing_service import ThingService
+
     async with ChannelFor([ThingService()]) as channel:
         client = ThingServiceClient(channel)
         spy = mocker.spy(client, "_unary_unary")
@@ -95,7 +124,15 @@ async def test_service_call_mutable_defaults(mocker):
 
 
 @pytest.mark.asyncio
-async def test_service_call_with_upfront_request_params():
+async def test_service_call_with_upfront_request_params(requires_grpclib, requires_grpcio):
+    import grpclib
+    import grpclib.metadata
+    from grpclib.testing import ChannelFor
+
+    from tests.outputs.service.service import TestStub as ThingServiceClient
+
+    from .thing_service import ThingService
+
     # Setting deadline
     deadline = grpclib.metadata.Deadline.from_timeout(22)
     metadata = {"authorization": "12345"}
@@ -111,7 +148,19 @@ async def test_service_call_with_upfront_request_params():
 
 
 @pytest.mark.asyncio
-async def test_service_call_lower_level_with_overrides():
+async def test_service_call_lower_level_with_overrides(requires_grpclib, requires_grpcio):
+    import grpclib
+    import grpclib.metadata
+    from grpclib.testing import ChannelFor
+
+    from tests.outputs.service.service import (
+        DoThingRequest,
+        DoThingResponse,
+        TestStub as ThingServiceClient,
+    )
+
+    from .thing_service import ThingService
+
     THING_TO_DO = "get milk"
 
     # Setting deadline
@@ -156,54 +205,69 @@ async def test_service_call_lower_level_with_overrides():
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    ("overrides_gen",),
-    [
-        (lambda: dict(timeout=10),),
-        (lambda: dict(deadline=grpclib.metadata.Deadline.from_timeout(10)),),
-        (lambda: dict(metadata={"authorization": str(uuid.uuid4())}),),
-        (lambda: dict(timeout=20, metadata={"authorization": str(uuid.uuid4())}),),
-    ],
-)
-async def test_service_call_high_level_with_overrides(mocker, overrides_gen):
-    overrides = overrides_gen()
-    request_spy = mocker.spy(grpclib.client.Channel, "request")
-    name = str(uuid.uuid4())
-    defaults = dict(
-        timeout=99,
-        deadline=grpclib.metadata.Deadline.from_timeout(99),
-        metadata={"authorization": name},
-    )
+async def test_service_call_high_level_with_overrides(mocker, requires_grpclib, requires_grpcio):
+    import grpclib
+    import grpclib.client
+    import grpclib.metadata
+    from grpclib.testing import ChannelFor
 
-    async with ChannelFor(
-        [
-            ThingService(
-                test_hook=_assert_request_meta_received(
-                    deadline=grpclib.metadata.Deadline.from_timeout(overrides.get("timeout", 99)),
-                    metadata=overrides.get("metadata", defaults.get("metadata")),
+    from tests.outputs.service.service import TestStub as ThingServiceClient
+
+    from .thing_service import ThingService
+
+    overrides = [
+        dict(timeout=10),
+        dict(deadline=grpclib.metadata.Deadline.from_timeout(10)),
+        dict(metadata={"authorization": str(uuid.uuid4())}),
+        dict(timeout=20, metadata={"authorization": str(uuid.uuid4())}),
+    ]
+
+    for override in overrides:
+        request_spy = mocker.spy(grpclib.client.Channel, "request")
+        name = str(uuid.uuid4())
+        defaults = dict(
+            timeout=99,
+            deadline=grpclib.metadata.Deadline.from_timeout(99),
+            metadata={"authorization": name},
+        )
+
+        async with ChannelFor(
+            [
+                ThingService(
+                    test_hook=_assert_request_meta_received(
+                        deadline=grpclib.metadata.Deadline.from_timeout(override.get("timeout", 99)),
+                        metadata=override.get("metadata", defaults.get("metadata")),
+                    )
                 )
-            )
-        ]
-    ) as channel:
-        client = ThingServiceClient(channel, **defaults)
-        await _test_client(client, name=name, **overrides)
-        assert request_spy.call_count == 1
+            ]
+        ) as channel:
+            client = ThingServiceClient(channel, **defaults)
+            await _test_client(client, name=name, **override)
+            assert request_spy.call_count == 1
 
-        request_spy_call_kwargs = request_spy.call_args.kwargs
+            request_spy_call_kwargs = request_spy.call_args.kwargs
 
-        # ensure all overrides were successful
-        for key, value in overrides.items():
-            assert key in request_spy_call_kwargs
-            assert request_spy_call_kwargs[key] == value
+            # ensure all overrides were successful
+            for key, value in override.items():
+                assert key in request_spy_call_kwargs
+                assert request_spy_call_kwargs[key] == value
 
-        # ensure default values were retained
-        for key in set(defaults.keys()) - set(overrides.keys()):
-            assert key in request_spy_call_kwargs
-            assert request_spy_call_kwargs[key] == defaults[key]
+            # ensure default values were retained
+            for key in set(defaults.keys()) - set(override.keys()):
+                assert key in request_spy_call_kwargs
+                assert request_spy_call_kwargs[key] == defaults[key]
+
+        mocker.stop(request_spy)
 
 
 @pytest.mark.asyncio
-async def test_async_gen_for_unary_stream_request():
+async def test_async_gen_for_unary_stream_request(requires_grpclib, requires_grpcio):
+    from grpclib.testing import ChannelFor
+
+    from tests.outputs.service.service import GetThingRequest, TestStub as ThingServiceClient
+
+    from .thing_service import ThingService
+
     thing_name = "my milkshakes"
 
     async with ChannelFor([ThingService()]) as channel:
@@ -215,7 +279,14 @@ async def test_async_gen_for_unary_stream_request():
 
 
 @pytest.mark.asyncio
-async def test_async_gen_for_stream_stream_request():
+async def test_async_gen_for_stream_stream_request(requires_grpclib, requires_grpcio):
+    from grpclib.testing import ChannelFor
+
+    from tests.grpc.async_channel import AsyncChannel
+    from tests.outputs.service.service import GetThingRequest, TestStub as ThingServiceClient
+
+    from .thing_service import ThingService
+
     some_things = ["cake", "cricket", "coral reef"]
     more_things = ["ball", "that", "56kmodem", "liberal humanism", "cheesesticks"]
     expected_things = (*some_things, *more_things)
@@ -248,7 +319,13 @@ async def test_async_gen_for_stream_stream_request():
 
 
 @pytest.mark.asyncio
-async def test_stream_unary_with_empty_iterable():
+async def test_stream_unary_with_empty_iterable(requires_grpclib, requires_grpcio):
+    from grpclib.testing import ChannelFor
+
+    from tests.outputs.service.service import DoThingRequest, TestStub as ThingServiceClient
+
+    from .thing_service import ThingService
+
     things = []  # empty
 
     async with ChannelFor([ThingService()]) as channel:
@@ -259,7 +336,13 @@ async def test_stream_unary_with_empty_iterable():
 
 
 @pytest.mark.asyncio
-async def test_stream_stream_with_empty_iterable():
+async def test_stream_stream_with_empty_iterable(requires_grpclib, requires_grpcio):
+    from grpclib.testing import ChannelFor
+
+    from tests.outputs.service.service import GetThingRequest, TestStub as ThingServiceClient
+
+    from .thing_service import ThingService
+
     things = []  # empty
 
     async with ChannelFor([ThingService()]) as channel:

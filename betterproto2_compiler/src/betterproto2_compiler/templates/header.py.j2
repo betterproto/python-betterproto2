@@ -29,7 +29,7 @@ from dataclasses import dataclass
 {% endif %}
 
 import betterproto2
-from betterproto2.grpc.grpclib_server import ServiceBase
+from betterproto2 import grpclib as betterproto2_grpclib
 import grpc
 import grpclib
 from google.protobuf.descriptor import Descriptor, EnumDescriptor

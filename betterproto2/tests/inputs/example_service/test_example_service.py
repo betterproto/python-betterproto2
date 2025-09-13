@@ -1,53 +1,55 @@
 from collections.abc import AsyncIterator
 
 import pytest
-from grpclib.testing import ChannelFor
 
-from tests.outputs.example_service.example_service import (
-    ExampleRequest,
-    ExampleResponse,
-    TestBase,
-    TestStub,
-)
+from tests.util import requires_grpclib  # noqa: F401
 
 
-class ExampleService(TestBase):
-    async def example_unary_unary(self, example_request: ExampleRequest) -> "ExampleResponse":
-        return ExampleResponse(
-            example_string=example_request.example_string,
-            example_integer=example_request.example_integer,
-        )
+@pytest.mark.asyncio
+async def test_calls_with_different_cardinalities(requires_grpclib):
+    from grpclib.testing import ChannelFor
 
-    async def example_unary_stream(self, example_request: ExampleRequest) -> AsyncIterator["ExampleResponse"]:
-        response = ExampleResponse(
-            example_string=example_request.example_string,
-            example_integer=example_request.example_integer,
-        )
-        yield response
-        yield response
-        yield response
+    from tests.outputs.example_service.example_service import (
+        ExampleRequest,
+        ExampleResponse,
+        TestBase,
+        TestStub,
+    )
 
-    async def example_stream_unary(
-        self, example_request_iterator: AsyncIterator["ExampleRequest"]
-    ) -> "ExampleResponse":
-        async for example_request in example_request_iterator:
+    class ExampleService(TestBase):
+        async def example_unary_unary(self, example_request: ExampleRequest) -> "ExampleResponse":
             return ExampleResponse(
                 example_string=example_request.example_string,
                 example_integer=example_request.example_integer,
             )
 
-    async def example_stream_stream(
-        self, example_request_iterator: AsyncIterator["ExampleRequest"]
-    ) -> AsyncIterator["ExampleResponse"]:
-        async for example_request in example_request_iterator:
-            yield ExampleResponse(
+        async def example_unary_stream(self, example_request: ExampleRequest) -> AsyncIterator["ExampleResponse"]:
+            response = ExampleResponse(
                 example_string=example_request.example_string,
                 example_integer=example_request.example_integer,
             )
+            yield response
+            yield response
+            yield response
 
+        async def example_stream_unary(
+            self, example_request_iterator: AsyncIterator["ExampleRequest"]
+        ) -> "ExampleResponse":
+            async for example_request in example_request_iterator:
+                return ExampleResponse(
+                    example_string=example_request.example_string,
+                    example_integer=example_request.example_integer,
+                )
 
-@pytest.mark.asyncio
-async def test_calls_with_different_cardinalities():
+        async def example_stream_stream(
+            self, example_request_iterator: AsyncIterator["ExampleRequest"]
+        ) -> AsyncIterator["ExampleResponse"]:
+            async for example_request in example_request_iterator:
+                yield ExampleResponse(
+                    example_string=example_request.example_string,
+                    example_integer=example_request.example_integer,
+                )
+
     example_request = ExampleRequest("test string", 42)
 
     async with ChannelFor([ExampleService()]) as channel:
