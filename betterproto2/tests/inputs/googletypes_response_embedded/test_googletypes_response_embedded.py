@@ -1,19 +1,17 @@
 import pytest
 
-from tests.mocks import MockChannel
-from tests.outputs.googletypes_response_embedded.googletypes_response_embedded import (
-    Input,
-    Output,
-    TestStub,
-)
+from tests.util import requires_grpclib  # noqa: F401
 
 
 @pytest.mark.asyncio
-async def test_service_passes_through_unwrapped_values_embedded_in_response():
+async def test_service_passes_through_unwrapped_values_embedded_in_response(requires_grpclib):
     """
     We do not not need to implement value unwrapping for embedded well-known types,
     as this is already handled by grpclib. This test merely shows that this is the case.
     """
+    from tests.mocks import MockChannel
+    from tests.outputs.googletypes_response_embedded.googletypes_response_embedded import Input, Output, TestStub
+
     output = Output(
         double_value=10.0,
         float_value=12.0,

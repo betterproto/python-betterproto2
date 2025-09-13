@@ -12,6 +12,7 @@ async def protoc(
     reference: bool = False,
     pydantic_dataclasses: bool = False,
     google_protobuf_descriptors: bool = False,
+    client_generation: str = "async_sync",
 ):
     resolved_path: Path = Path(path).resolve()
     resolved_output_dir: Path = Path(output_dir).resolve()
@@ -28,7 +29,7 @@ async def protoc(
 
     if not reference:
         command.insert(3, "--python_betterproto2_opt=server_generation=async")
-        command.insert(3, "--python_betterproto2_opt=client_generation=async_sync")
+        command.insert(3, f"--python_betterproto2_opt=client_generation={client_generation}")
 
         if pydantic_dataclasses:
             command.insert(3, "--python_betterproto2_opt=pydantic_dataclasses")

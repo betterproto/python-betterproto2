@@ -139,7 +139,7 @@ default_message_pool.register_message("{{ output_file.package }}", "{{ message.p
 
 {% if output_file.settings.server_generation == "async" %}
 {% for _, service in output_file.services|dictsort(by="key") %}
-class {{ (service.py_name + "Base") | add_to_all }}(ServiceBase):
+class {{ (service.py_name + "Base") | add_to_all }}(betterproto2_grpclib.ServiceBase):
     {% if service.comment %}
     """
     {{ service.comment | indent(4) }}

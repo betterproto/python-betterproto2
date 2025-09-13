@@ -2,7 +2,7 @@
 
 {# Class definition #}
 {% block class_name %}{{ service.py_name }}{% if output_file.settings.client_generation.is_async_prefixed %}Async{% endif %}Stub{% endblock %}
-{% block inherit_from %}betterproto2.ServiceStub{% endblock %}
+{% block inherit_from %}betterproto2_grpclib.ServiceStub{% endblock %}
 
 {# Methods definition #}
 {% block method_definition %}

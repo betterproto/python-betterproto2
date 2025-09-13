@@ -1,6 +1,8 @@
 import ast
 import inspect
 
+from tests.util import requires_grpclib  # noqa: F401
+
 
 def check(generated_doc: str, type: str) -> None:
     assert f"Documentation of {type} 1" in generated_doc
@@ -10,7 +12,7 @@ def check(generated_doc: str, type: str) -> None:
     assert f"Documentation of {type} 3" in generated_doc
 
 
-def test_documentation() -> None:
+def test_documentation(requires_grpclib) -> None:
     from .outputs.documentation.documentation import (
         Enum,
         ServiceBase,
@@ -38,7 +40,7 @@ def test_documentation() -> None:
     check(ServiceStub.get.__doc__, "method")
 
 
-def test_escaping() -> None:
+def test_escaping(requires_grpclib) -> None:
     from .outputs.documentation.documentation import ComplexDocumentation
 
     ComplexDocumentation.__doc__ == """

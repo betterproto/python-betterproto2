@@ -1,5 +1,5 @@
 import betterproto2
-from tests.util import get_test_case_json_data
+from tests.util import get_test_case_json_data, requires_pydantic  # noqa: F401
 
 
 def test_which_count():
@@ -16,7 +16,7 @@ def test_which_name():
     assert betterproto2.which_one_of(message, "foo") == ("pitier", "Mr. T")
 
 
-def test_which_count_pyd():
+def test_which_count_pyd(requires_pydantic):
     from tests.outputs.oneof_pydantic.oneof import Test
 
     message = Test(pitier="Mr. T", just_a_regular_field=2, bar_name="a_bar")

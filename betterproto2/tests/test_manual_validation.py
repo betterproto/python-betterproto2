@@ -1,8 +1,11 @@
-import pydantic
 import pytest
 
+from tests.util import requires_pydantic  # noqa: F401
 
-def test_manual_validation():
+
+def test_manual_validation(requires_pydantic):
+    import pydantic
+
     from tests.outputs.manual_validation_pydantic.manual_validation import Msg
 
     msg = Msg()
