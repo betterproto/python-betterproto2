@@ -2,34 +2,36 @@ import asyncio
 import threading
 from collections.abc import AsyncIterator
 
-import grpc
 import pytest
-from grpclib.server import Server
 
-from tests.outputs.simple_service.simple_service import Request, Response, SimpleServiceBase, SimpleServiceSyncStub
-
-
-class SimpleService(SimpleServiceBase):
-    async def get_unary_unary(self, message: "Request") -> "Response":
-        return Response(message=f"Hello {message.value}")
-
-    async def get_unary_stream(self, message: "Request") -> "AsyncIterator[Response]":
-        for i in range(5):
-            yield Response(message=f"Hello {message.value} {i}")
-
-    async def get_stream_unary(self, messages: "AsyncIterator[Request]") -> "Response":
-        s = 0
-        async for m in messages:
-            s += m.value
-        return Response(message=f"Hello {s}")
-
-    async def get_stream_stream(self, messages: "AsyncIterator[Request]") -> "AsyncIterator[Response]":
-        async for message in messages:
-            yield Response(message=f"Hello {message.value}")
+from tests.util import requires_grpcio  # noqa: F401
 
 
 @pytest.mark.asyncio
-async def test_sync_client():
+async def test_sync_client(requires_grpcio):
+    import grpc
+    from grpclib.server import Server
+
+    from tests.outputs.simple_service.simple_service import Request, Response, SimpleServiceBase, SimpleServiceSyncStub
+
+    class SimpleService(SimpleServiceBase):
+        async def get_unary_unary(self, message: "Request") -> "Response":
+            return Response(message=f"Hello {message.value}")
+
+        async def get_unary_stream(self, message: "Request") -> "AsyncIterator[Response]":
+            for i in range(5):
+                yield Response(message=f"Hello {message.value} {i}")
+
+        async def get_stream_unary(self, messages: "AsyncIterator[Request]") -> "Response":
+            s = 0
+            async for m in messages:
+                s += m.value
+            return Response(message=f"Hello {s}")
+
+        async def get_stream_stream(self, messages: "AsyncIterator[Request]") -> "AsyncIterator[Response]":
+            async for message in messages:
+                yield Response(message=f"Hello {message.value}")
+
     start_server_event = threading.Event()
     close_server_event = asyncio.Event()
 

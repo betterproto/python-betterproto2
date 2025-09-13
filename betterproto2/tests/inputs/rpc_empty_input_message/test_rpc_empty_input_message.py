@@ -1,9 +1,12 @@
 import pytest
-from grpclib.testing import ChannelFor
+
+from tests.util import requires_grpclib  # noqa: F401
 
 
 @pytest.mark.asyncio
-async def test_rpc_input_message():
+async def test_rpc_input_message(requires_grpclib):
+    from grpclib.testing import ChannelFor
+
     from tests.outputs.rpc_empty_input_message.rpc_empty_input_message import (
         Response,
         ServiceBase,

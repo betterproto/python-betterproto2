@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from types import ModuleType
 
+import pytest
+
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
 root_path = Path(__file__).resolve().parent
@@ -75,3 +77,27 @@ def find_module(module: ModuleType, predicate: Callable[[ModuleType], bool]) -> 
             return sub_module
 
     return None
+
+
+@pytest.fixture
+def requires_pydantic():
+    try:
+        import pydantic  # noqa: F401
+    except ImportError:
+        pytest.skip("pydantic is not installed")
+
+
+@pytest.fixture
+def requires_grpclib():
+    try:
+        import grpclib  # noqa: F401
+    except ImportError:
+        pytest.skip("grpclib is not installed")
+
+
+@pytest.fixture
+def requires_grpcio():
+    try:
+        import grpc  # noqa: F401
+    except ImportError:
+        pytest.skip("grpcio is not installed")

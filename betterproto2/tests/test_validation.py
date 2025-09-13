@@ -1,8 +1,11 @@
-import pydantic
 import pytest
 
+from tests.util import requires_pydantic  # noqa: F401
 
-def test_int32_validation():
+
+def test_int32_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -17,7 +20,9 @@ def test_int32_validation():
         Message(int32_value=-(2**31) - 1)
 
 
-def test_int64_validation():
+def test_int64_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -32,7 +37,9 @@ def test_int64_validation():
         Message(int64_value=-(2**63) - 1)
 
 
-def test_uint32_validation():
+def test_uint32_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -46,7 +53,9 @@ def test_uint32_validation():
         Message(uint32_value=2**32)
 
 
-def test_uint64_validation():
+def test_uint64_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -60,7 +69,9 @@ def test_uint64_validation():
         Message(uint64_value=2**64)
 
 
-def test_sint32_validation():
+def test_sint32_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -75,7 +86,9 @@ def test_sint32_validation():
         Message(sint32_value=-(2**31) - 1)
 
 
-def test_sint64_validation():
+def test_sint64_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -90,7 +103,9 @@ def test_sint64_validation():
         Message(sint64_value=-(2**63) - 1)
 
 
-def test_fixed32_validation():
+def test_fixed32_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -104,7 +119,9 @@ def test_fixed32_validation():
         Message(fixed32_value=2**32)
 
 
-def test_fixed64_validation():
+def test_fixed64_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -118,7 +135,9 @@ def test_fixed64_validation():
         Message(fixed64_value=2**64)
 
 
-def test_sfixed32_validation():
+def test_sfixed32_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -133,7 +152,9 @@ def test_sfixed32_validation():
         Message(sfixed32_value=-(2**31) - 1)
 
 
-def test_sfixed64_validation():
+def test_sfixed64_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -148,7 +169,9 @@ def test_sfixed64_validation():
         Message(sfixed64_value=-(2**63) - 1)
 
 
-def test_float_validation():
+def test_float_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
@@ -160,7 +183,9 @@ def test_float_validation():
         Message(float_value=3.5e38)
 
 
-def test_string_validation():
+def test_string_validation(requires_pydantic):
+    import pydantic
+
     from .outputs.validation_pydantic.validation import Message
 
     # Test valid values
