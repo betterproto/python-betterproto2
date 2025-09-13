@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from tests.util import requires_grpclib  # noqa: F401
+from tests.util import requires_grpcio, requires_grpclib  # noqa: F401
 
 if TYPE_CHECKING:
     from tests.outputs.service.service import TestStub as ThingServiceClient
@@ -43,7 +43,7 @@ def handler_trailer_only_unauthenticated():
 
 
 @pytest.mark.asyncio
-async def test_simple_service_call(requires_grpclib):
+async def test_simple_service_call(requires_grpclib, requires_grpcio):
     from grpclib.testing import ChannelFor
 
     from tests.outputs.service.service import TestStub as ThingServiceClient
@@ -55,7 +55,9 @@ async def test_simple_service_call(requires_grpclib):
 
 
 @pytest.mark.asyncio
-async def test_trailer_only_error_unary_unary(mocker, requires_grpclib, handler_trailer_only_unauthenticated):
+async def test_trailer_only_error_unary_unary(
+    mocker, requires_grpclib, requires_grpcio, handler_trailer_only_unauthenticated
+):
     import grpclib
     from grpclib.testing import ChannelFor
 
@@ -77,7 +79,9 @@ async def test_trailer_only_error_unary_unary(mocker, requires_grpclib, handler_
 
 
 @pytest.mark.asyncio
-async def test_trailer_only_error_stream_unary(mocker, requires_grpclib, handler_trailer_only_unauthenticated):
+async def test_trailer_only_error_stream_unary(
+    mocker, requires_grpclib, requires_grpcio, handler_trailer_only_unauthenticated
+):
     import grpclib
     from grpclib.testing import ChannelFor
 
@@ -103,7 +107,7 @@ async def test_trailer_only_error_stream_unary(mocker, requires_grpclib, handler
 
 
 @pytest.mark.asyncio
-async def test_service_call_mutable_defaults(mocker, requires_grpclib):
+async def test_service_call_mutable_defaults(mocker, requires_grpclib, requires_grpcio):
     from grpclib.testing import ChannelFor
 
     from tests.outputs.service.service import TestStub as ThingServiceClient
@@ -120,7 +124,7 @@ async def test_service_call_mutable_defaults(mocker, requires_grpclib):
 
 
 @pytest.mark.asyncio
-async def test_service_call_with_upfront_request_params(requires_grpclib):
+async def test_service_call_with_upfront_request_params(requires_grpclib, requires_grpcio):
     import grpclib
     import grpclib.metadata
     from grpclib.testing import ChannelFor
@@ -144,7 +148,7 @@ async def test_service_call_with_upfront_request_params(requires_grpclib):
 
 
 @pytest.mark.asyncio
-async def test_service_call_lower_level_with_overrides(requires_grpclib):
+async def test_service_call_lower_level_with_overrides(requires_grpclib, requires_grpcio):
     import grpclib
     import grpclib.metadata
     from grpclib.testing import ChannelFor
@@ -201,7 +205,7 @@ async def test_service_call_lower_level_with_overrides(requires_grpclib):
 
 
 @pytest.mark.asyncio
-async def test_service_call_high_level_with_overrides(mocker, requires_grpclib):
+async def test_service_call_high_level_with_overrides(mocker, requires_grpclib, requires_grpcio):
     import grpclib
     import grpclib.client
     import grpclib.metadata
@@ -257,7 +261,7 @@ async def test_service_call_high_level_with_overrides(mocker, requires_grpclib):
 
 
 @pytest.mark.asyncio
-async def test_async_gen_for_unary_stream_request(requires_grpclib):
+async def test_async_gen_for_unary_stream_request(requires_grpclib, requires_grpcio):
     from grpclib.testing import ChannelFor
 
     from tests.outputs.service.service import GetThingRequest, TestStub as ThingServiceClient
@@ -275,7 +279,7 @@ async def test_async_gen_for_unary_stream_request(requires_grpclib):
 
 
 @pytest.mark.asyncio
-async def test_async_gen_for_stream_stream_request(requires_grpclib):
+async def test_async_gen_for_stream_stream_request(requires_grpclib, requires_grpcio):
     from grpclib.testing import ChannelFor
 
     from tests.grpc.async_channel import AsyncChannel
@@ -315,7 +319,7 @@ async def test_async_gen_for_stream_stream_request(requires_grpclib):
 
 
 @pytest.mark.asyncio
-async def test_stream_unary_with_empty_iterable(requires_grpclib):
+async def test_stream_unary_with_empty_iterable(requires_grpclib, requires_grpcio):
     from grpclib.testing import ChannelFor
 
     from tests.outputs.service.service import DoThingRequest, TestStub as ThingServiceClient
@@ -332,7 +336,7 @@ async def test_stream_unary_with_empty_iterable(requires_grpclib):
 
 
 @pytest.mark.asyncio
-async def test_stream_stream_with_empty_iterable(requires_grpclib):
+async def test_stream_stream_with_empty_iterable(requires_grpclib, requires_grpcio):
     from grpclib.testing import ChannelFor
 
     from tests.outputs.service.service import GetThingRequest, TestStub as ThingServiceClient

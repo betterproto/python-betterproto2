@@ -154,7 +154,7 @@ async def main_async():
         generate_test("repeatedmessage", semaphore),
         generate_test("repeatedpacked", semaphore, reference=True),
         generate_test("repeatedpacked", semaphore),
-        generate_test("rpc_empty_input_message", semaphore),
+        generate_test("rpc_empty_input_message", semaphore, client_generation="async"),
         generate_test("service_uppercase", semaphore, client_generation="async"),
         generate_test("service", semaphore),
         generate_test("signed", semaphore, reference=True),
