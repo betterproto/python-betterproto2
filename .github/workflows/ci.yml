@@ -43,7 +43,78 @@ jobs:
 
       - name: Execute test suite
         working-directory: ./betterproto2
-        shell: bash
+        run: uv run poe test
+
+
+      - name: Add Pydantic
+        working-directory: ./betterproto2
+        run: uv sync --locked --extra=pydantic
+
+      - name: Execute test suite
+        working-directory: ./betterproto2
+        run: uv run poe test
+
+
+      - name: Add all but Pydantic
+        working-directory: ./betterproto2
+        run: uv sync --locked --extra=grpclib --extra=grpcio --extra=protobuf
+
+      - name: Execute test suite
+        working-directory: ./betterproto2
+        run: uv run poe test
+
+
+      - name: Add grpclib
+        working-directory: ./betterproto2
+        run: uv sync --locked --extra=grpclib
+
+      - name: Execute test suite
+        working-directory: ./betterproto2
+        run: uv run poe test
+
+
+      - name: Add all but grpclib
+        working-directory: ./betterproto2
+        run: uv sync --locked --extra=pydantic --extra=grpcio --extra=protobuf
+
+      - name: Execute test suite
+        working-directory: ./betterproto2
+        run: uv run poe test
+
+
+      - name: Add grpcio
+        working-directory: ./betterproto2
+        run: uv sync --locked --extra=grpcio
+
+      - name: Execute test suite
+        working-directory: ./betterproto2
+        run: uv run poe test
+
+
+      - name: Add all but grpcio
+        working-directory: ./betterproto2
+        run: uv sync --locked --extra=pydantic --extra=grpclib --extra=protobuf
+
+      - name: Execute test suite
+        working-directory: ./betterproto2
+        run: uv run poe test
+
+
+      - name: Add protobuf
+        working-directory: ./betterproto2
+        run: uv sync --locked --extra=protobuf
+
+      - name: Execute test suite
+        working-directory: ./betterproto2
+        run: uv run poe test
+
+
+      - name: Add all but protobuf
+        working-directory: ./betterproto2
+        run: uv sync --locked --extra=pydantic --extra=grpclib --extra=grpcio
+
+      - name: Execute test suite
+        working-directory: ./betterproto2
         run: uv run poe test
 
   tests:
