@@ -96,7 +96,7 @@ async def main_async():
         generate_test("google", semaphore),
         generate_test("googletypes_request", semaphore, client_generation="async"),
         generate_test("googletypes_response_embedded", semaphore, client_generation="async"),
-        generate_test("googletypes_response", semaphore),
+        generate_test("googletypes_response", semaphore, client_generation="async"),
         generate_test("googletypes_struct", semaphore, reference=True),
         generate_test("googletypes_struct", semaphore),
         generate_test("googletypes_value", semaphore, reference=True),

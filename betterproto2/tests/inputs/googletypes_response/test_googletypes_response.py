@@ -3,11 +3,13 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 
+from tests.util import requires_grpclib  # noqa: F401
+
 if TYPE_CHECKING:
     from tests.outputs.googletypes_response.googletypes_response import Input, TestStub
 
 
-def test_cases() -> list[tuple[Callable[["TestStub", "Input"], Any], Callable, Any]]:
+def get_test_cases() -> list[tuple[Callable[["TestStub", "Input"], Any], Callable, Any]]:
     import tests.outputs.googletypes_response.google.protobuf as protobuf
     from tests.outputs.googletypes_response.googletypes_response import TestStub
 
@@ -25,11 +27,11 @@ def test_cases() -> list[tuple[Callable[["TestStub", "Input"], Any], Callable, A
 
 
 @pytest.mark.asyncio
-async def test_channel_receives_wrapped_type(reqires_grpclib):
+async def test_channel_receives_wrapped_type(requires_grpclib):
     from tests.mocks import MockChannel
     from tests.outputs.googletypes_response.googletypes_response import Input, TestStub
 
-    for service_method, wrapper_class, value in test_cases():
+    for service_method, wrapper_class, value in get_test_cases():
         wrapped_value = wrapper_class()
         wrapped_value.value = value
         channel = MockChannel(responses=[wrapped_value])
@@ -44,14 +46,14 @@ async def test_channel_receives_wrapped_type(reqires_grpclib):
 
 @pytest.mark.asyncio
 @pytest.mark.xfail
-async def test_service_unwraps_response(reqires_grpclib):
+async def test_service_unwraps_response(requires_grpclib):
     """
     grpclib does not unwrap wrapper values returned by services
     """
     from tests.mocks import MockChannel
     from tests.outputs.googletypes_response.googletypes_response import Input, TestStub
 
-    for service_method, wrapper_class, value in test_cases():
+    for service_method, wrapper_class, value in get_test_cases():
         wrapped_value = wrapper_class()
         wrapped_value.value = value
         service = TestStub(MockChannel(responses=[wrapped_value]))
