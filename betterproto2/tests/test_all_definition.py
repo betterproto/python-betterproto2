@@ -1,4 +1,7 @@
-def test_all_definition():
+from tests.util import requires_grpcio, requires_grpclib  # noqa: F401
+
+
+def test_all_definition(requires_grpclib, requires_grpcio):
     """
     Check that a compiled module defines __all__ with the right value.
 

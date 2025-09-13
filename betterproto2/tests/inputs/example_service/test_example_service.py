@@ -2,9 +2,11 @@ from collections.abc import AsyncIterator
 
 import pytest
 
+from tests.util import requires_grpclib  # noqa: F401
+
 
 @pytest.mark.asyncio
-async def test_calls_with_different_cardinalities():
+async def test_calls_with_different_cardinalities(requires_grpclib):
     from grpclib.testing import ChannelFor
 
     from tests.outputs.example_service.example_service import (
