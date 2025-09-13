@@ -1,9 +1,9 @@
 import pytest
 
-from tests.util import requires_grpcio  # noqa: F401
+from tests.util import requires_protobuf  # noqa: F401
 
 
-def test_message_enum_descriptors(requires_grpcio):
+def test_message_enum_descriptors(requires_protobuf):
     from tests.outputs.import_cousin_package_same_name.import_cousin_package_same_name.test.subpackage import Test
 
     # importing the cousin should cause no descriptor pool errors since the subpackage imports it once already

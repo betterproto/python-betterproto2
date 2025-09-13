@@ -101,3 +101,11 @@ def requires_grpcio():
         import grpc  # noqa: F401
     except ImportError:
         pytest.skip("grpcio is not installed")
+
+
+@pytest.fixture
+def requires_protobuf():
+    try:
+        import google.protobuf  # noqa: F401
+    except ImportError:
+        pytest.skip("protobuf is not installed")

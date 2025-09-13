@@ -9,10 +9,10 @@ from tests.outputs.google_impl_behavior_equivalence.google_impl_behavior_equival
     Spam,
     Test,
 )
-from tests.util import requires_grpcio  # noqa: F401
+from tests.util import requires_protobuf  # noqa: F401
 
 
-def test_oneof_serializes_similar_to_google_oneof(requires_grpcio):
+def test_oneof_serializes_similar_to_google_oneof(requires_protobuf):
     from google.protobuf import json_format
 
     from tests.outputs.google_impl_behavior_equivalence_reference.google_impl_behavior_equivalence_pb2 import (
@@ -35,7 +35,7 @@ def test_oneof_serializes_similar_to_google_oneof(requires_grpcio):
         assert message.to_dict() == json_format.MessageToDict(message_reference)
 
 
-def test_bytes_are_the_same_for_oneof(requires_grpcio):
+def test_bytes_are_the_same_for_oneof(requires_protobuf):
     from tests.outputs.google_impl_behavior_equivalence_reference.google_impl_behavior_equivalence_pb2 import (
         Foo as ReferenceFoo,
         Test as ReferenceTest,
@@ -66,7 +66,7 @@ def test_bytes_are_the_same_for_oneof(requires_grpcio):
 
 
 @pytest.mark.parametrize("dt", (datetime.min.replace(tzinfo=timezone.utc),))
-def test_datetime_clamping(dt, requires_grpcio):  # see #407
+def test_datetime_clamping(dt, requires_protobuf):  # see #407
     from google.protobuf.timestamp_pb2 import Timestamp
 
     from tests.outputs.google_impl_behavior_equivalence_reference.google_impl_behavior_equivalence_pb2 import (
@@ -81,7 +81,7 @@ def test_datetime_clamping(dt, requires_grpcio):  # see #407
     assert Spam.parse(message_bytes).ts.timestamp() == ReferenceSpam.FromString(message_bytes).ts.seconds
 
 
-def test_empty_message_field(requires_grpcio):
+def test_empty_message_field(requires_protobuf):
     from tests.outputs.google_impl_behavior_equivalence_reference.google_impl_behavior_equivalence_pb2 import (
         Empty as ReferenceEmpty,
         Request as ReferenceRequest,

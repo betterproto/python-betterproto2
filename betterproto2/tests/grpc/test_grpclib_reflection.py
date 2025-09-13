@@ -3,11 +3,11 @@ from typing import Generic, TypeVar
 
 import pytest
 
-from tests.util import requires_grpcio, requires_grpclib  # noqa: F401
+from tests.util import requires_grpclib, requires_protobuf  # noqa: F401
 
 
 @pytest.mark.asyncio
-async def test_grpclib_reflection(requires_grpcio, requires_grpclib):
+async def test_grpclib_reflection(requires_grpclib, requires_protobuf):
     from google.protobuf import descriptor_pb2
     from grpclib.reflection.service import ServerReflection
     from grpclib.reflection.v1.reflection_grpc import ServerReflectionBase as ServerReflectionBaseV1
