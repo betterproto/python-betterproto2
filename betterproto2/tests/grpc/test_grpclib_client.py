@@ -106,9 +106,7 @@ async def test_trailer_only_error_stream_unary(mocker, requires_grpclib, handler
 async def test_service_call_mutable_defaults(mocker, requires_grpclib):
     from grpclib.testing import ChannelFor
 
-    from tests.outputs.service.service import (
-        TestStub as ThingServiceClient,
-    )
+    from tests.outputs.service.service import TestStub as ThingServiceClient
 
     from .thing_service import ThingService
 
@@ -254,6 +252,8 @@ async def test_service_call_high_level_with_overrides(mocker, requires_grpclib):
             for key in set(defaults.keys()) - set(override.keys()):
                 assert key in request_spy_call_kwargs
                 assert request_spy_call_kwargs[key] == defaults[key]
+
+        mocker.stop(request_spy)
 
 
 @pytest.mark.asyncio
