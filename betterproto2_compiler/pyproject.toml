@@ -24,7 +24,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-"betterproto2" = { path = "../betterproto2" }
+betterproto2 = { path = "../betterproto2" }
 
 [project.urls]
 Documentation = "https://betterproto.github.io/python-betterproto2/"

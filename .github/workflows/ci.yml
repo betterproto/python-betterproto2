@@ -30,7 +30,7 @@ jobs:
 
       - name: Install betterproto2_compiler
         working-directory: ./betterproto2_compiler
-        run: uv sync --locked --all-extras --all-groups
+        run: uv sync --locked
 
       - name: Compile test files
         working-directory: ./betterproto2_compiler
