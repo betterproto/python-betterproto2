@@ -4,11 +4,11 @@ from collections.abc import AsyncIterator
 
 import pytest
 
-from tests.util import requires_grpcio  # noqa: F401
+from tests.util import requires_grpcio, requires_grpclib  # noqa: F401
 
 
 @pytest.mark.asyncio
-async def test_sync_client(requires_grpcio):
+async def test_sync_client(requires_grpcio, requires_grpclib):
     import grpc
     from grpclib.server import Server
 

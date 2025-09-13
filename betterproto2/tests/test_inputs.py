@@ -208,7 +208,9 @@ def test_message_json(test_case: TestCase, requires_pydantic, requires_grpcio, r
 
 
 @pytest.mark.parametrize("test_case", TEST_CASES, ids=lambda x: x.plugin_package)
-def test_binary_compatibility(test_case: TestCase, reset_sys_path, requires_grpcio, requires_protobuf) -> None:
+def test_binary_compatibility(
+    test_case: TestCase, reset_sys_path, requires_grpcio, requires_protobuf, requires_grpclib
+) -> None:
     from google.protobuf.json_format import Parse
 
     if test_case.xfail:
