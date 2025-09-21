@@ -9,3 +9,9 @@ repos:
         args: ["--diff", "betterproto2/src", "betterproto2/tests", "betterproto2_compiler/src", "betterproto2_compiler/tests"]
       - id: ruff
         args: ["betterproto2/src", "betterproto2/tests", "betterproto2_compiler/src", "betterproto2_compiler/tests"]
+
+  - repo: https://github.com/bufbuild/buf
+    rev: v1.57.2
+    hooks:
+      - id: buf-format
+        files: ^betterproto2_compiler/tests/inputs/.*\.proto$

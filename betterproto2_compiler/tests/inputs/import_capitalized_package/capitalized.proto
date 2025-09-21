@@ -1,8 +1,5 @@
 syntax = "proto3";
 
-
 package import_capitalized_package.Capitalized;
 
-message Message {
-
-}
+message Message {}

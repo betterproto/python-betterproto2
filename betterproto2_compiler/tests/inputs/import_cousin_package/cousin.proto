@@ -2,5 +2,4 @@ syntax = "proto3";
 
 package import_cousin_package.cousin.cousin_subpackage;
 
-message CousinMessage {
-}
+message CousinMessage {}

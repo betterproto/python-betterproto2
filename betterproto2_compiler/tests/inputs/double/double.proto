@@ -3,5 +3,5 @@ syntax = "proto3";
 package double;
 
 message Test {
-    double count = 1;
+  double count = 1;
 }

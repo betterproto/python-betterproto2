@@ -3,5 +3,5 @@ syntax = "proto3";
 package import_service_input_message.child;
 
 message ChildRequestMessage {
-    int32 child_argument = 1;
+  int32 child_argument = 1;
 }

@@ -7,5 +7,5 @@ import "cousin.proto";
 // Verify that we can import message unrelated to us
 
 message Test {
-    cousin.cousin_subpackage.CousinMessage message = 1;
+  cousin.cousin_subpackage.CousinMessage message = 1;
 }

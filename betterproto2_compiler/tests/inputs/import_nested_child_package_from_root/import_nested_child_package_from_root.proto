@@ -5,5 +5,5 @@ package import_nested_child_package_from_root;
 import "child.proto";
 
 message Test {
-    package.child.otherchild.ChildMessage child = 1;
+  package.child.otherchild.ChildMessage child = 1;
 }

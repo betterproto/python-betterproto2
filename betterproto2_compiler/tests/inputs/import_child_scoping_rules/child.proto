@@ -2,6 +2,4 @@ syntax = "proto3";
 
 package import_child_scoping_rules.aaa.bbb.ccc.ddd;
 
-message ChildMessage {
-
-}
+message ChildMessage {}

@@ -20,4 +20,3 @@ message Test {
     MixedDrink mixed_drink = 13;
   }
 }
-

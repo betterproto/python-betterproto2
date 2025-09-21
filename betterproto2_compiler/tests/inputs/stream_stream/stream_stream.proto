@@ -3,5 +3,5 @@ syntax = "proto3";
 package stream_stream;
 
 message Message {
-    string body = 1;
+  string body = 1;
 }

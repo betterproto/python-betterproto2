@@ -1,9 +1,9 @@
 syntax = "proto3";
 
+package service_separate_packages.things.messages;
+
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
-
-package service_separate_packages.things.messages;
 
 message DoThingRequest {
   string name = 1;

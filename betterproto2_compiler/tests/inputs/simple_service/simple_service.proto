@@ -3,19 +3,19 @@ syntax = "proto3";
 package simple_service;
 
 message Request {
-    int32 value = 1;
+  int32 value = 1;
 }
 
 message Response {
-    string message = 1;
+  string message = 1;
 }
 
 service SimpleService {
-    rpc GetUnaryUnary (Request) returns (Response);
+  rpc GetUnaryUnary(Request) returns (Response);
 
-    rpc GetUnaryStream (Request) returns (stream Response);
+  rpc GetUnaryStream(Request) returns (stream Response);
 
-    rpc GetStreamUnary (stream Request) returns (Response);
+  rpc GetStreamUnary(stream Request) returns (Response);
 
-    rpc GetStreamStream (stream Request) returns (stream Response);
+  rpc GetStreamStream(stream Request) returns (stream Response);
 }

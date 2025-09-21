@@ -15,6 +15,4 @@ message Test {
   int32 UPPERCASE = 4;
 }
 
-message snake_case_message {
-
-}
+message snake_case_message {}

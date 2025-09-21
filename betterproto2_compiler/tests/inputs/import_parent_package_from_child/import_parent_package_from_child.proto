@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-import "parent_package_message.proto";
-
 package import_parent_package_from_child.parent.child;
+
+import "parent_package_message.proto";
 
 // Tests generated imports when a message refers to a message defined in its parent package
 

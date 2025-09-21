@@ -3,18 +3,18 @@ syntax = "proto3";
 package validation;
 
 message Message {
-    int32 int32_value = 1;
-    int64 int64_value = 2;
-    uint32 uint32_value = 3;
-    uint64 uint64_value = 4;
-    sint32 sint32_value = 5;
-    sint64 sint64_value = 6;
-    fixed32 fixed32_value = 7;
-    fixed64 fixed64_value = 8;
-    sfixed32 sfixed32_value = 9;
-    sfixed64 sfixed64_value = 10;
+  int32 int32_value = 1;
+  int64 int64_value = 2;
+  uint32 uint32_value = 3;
+  uint64 uint64_value = 4;
+  sint32 sint32_value = 5;
+  sint64 sint64_value = 6;
+  fixed32 fixed32_value = 7;
+  fixed64 fixed64_value = 8;
+  sfixed32 sfixed32_value = 9;
+  sfixed64 sfixed64_value = 10;
 
-    float float_value = 11;
+  float float_value = 11;
 
-    string string_value = 12;
+  string string_value = 12;
 }
