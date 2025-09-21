@@ -42,7 +42,6 @@ package example;
 
 option cc_enable_arenas = true;
 option csharp_namespace = "Google.Protobuf.Reflection";
-// package google.protobuf;
 option go_package = "google.golang.org/protobuf/types/descriptorpb";
 option java_outer_classname = "DescriptorProtos";
 option java_package = "com.google.protobuf";
