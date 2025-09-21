@@ -35,7 +35,7 @@ protoc-gen-python_betterproto2 = "betterproto2_compiler.plugin:main"
 
 [dependency-groups]
 dev = [
-    "pre-commit>=3.0.0,<4",
+    "pre-commit>=4.2.0,<5",
     "grpcio-tools>=1.54.2,<2",
     "poethepoet>=0.32.2,<0.33",
     "pyright>=1.1.391,<2",
