@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package import_circular_dependency;
 
-import "root.proto";
 import "other.proto";
+import "root.proto";
 
 // This test-case verifies support for circular dependencies in the generated python files.
 //

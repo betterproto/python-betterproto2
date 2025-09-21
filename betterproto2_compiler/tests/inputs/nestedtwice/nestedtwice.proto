@@ -14,7 +14,7 @@ message Test {
         string a = 1;
       }
       /* EnumBottom doc. */
-      enum EnumBottom{
+      enum EnumBottom {
         /* EnumBottom.A doc. */
         A = 0;
         B = 1;
@@ -27,8 +27,8 @@ message Test {
       reserved 1;
       /* Middle.bottom doc. */
       repeated Bottom bottom = 2;
-      repeated EnumBottom enumBottom=3;
-      repeated TopMiddleBottom topMiddleBottom=4;
+      repeated EnumBottom enumBottom = 3;
+      repeated TopMiddleBottom topMiddleBottom = 4;
       bool bar = 5;
     }
     /* Top.name doc. */

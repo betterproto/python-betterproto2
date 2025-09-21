@@ -12,9 +12,9 @@ package entry;
 // error because the parent type does not have a "nested_type" attribute.
 
 message Test {
-    repeated ExportEntry export = 1;
+  repeated ExportEntry export = 1;
 }
 
 message ExportEntry {
-    string name = 1;
+  string name = 1;
 }

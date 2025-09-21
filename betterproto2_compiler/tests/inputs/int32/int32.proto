@@ -4,7 +4,7 @@ package int32;
 
 // Some documentation about the Test message.
 message Test {
-    // Some documentation about the count.
-    int32 positive = 1;
-    int32 negative = 2;
+  // Some documentation about the count.
+  int32 positive = 1;
+  int32 negative = 2;
 }

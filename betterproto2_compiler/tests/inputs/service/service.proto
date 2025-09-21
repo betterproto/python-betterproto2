@@ -28,8 +28,8 @@ message GetThingResponse {
 }
 
 service Test {
-  rpc DoThing (DoThingRequest) returns (DoThingResponse);
-  rpc DoManyThings (stream DoThingRequest) returns (DoThingResponse);
-  rpc GetThingVersions (GetThingRequest) returns (stream GetThingResponse);
-  rpc GetDifferentThings (stream GetThingRequest) returns (stream GetThingResponse);
+  rpc DoThing(DoThingRequest) returns (DoThingResponse);
+  rpc DoManyThings(stream DoThingRequest) returns (DoThingResponse);
+  rpc GetThingVersions(GetThingRequest) returns (stream GetThingResponse);
+  rpc GetDifferentThings(stream GetThingRequest) returns (stream GetThingResponse);
 }

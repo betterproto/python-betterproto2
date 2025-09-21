@@ -3,5 +3,4 @@ syntax = "proto3";
 
 package empty_service;
 
-service Test {
-}
+service Test {}

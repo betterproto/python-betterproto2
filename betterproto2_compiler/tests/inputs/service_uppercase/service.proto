@@ -12,5 +12,5 @@ message DoTHINGResponse {
 }
 
 service Test {
-  rpc DoThing (DoTHINGRequest) returns (DoTHINGResponse);
+  rpc DoThing(DoTHINGRequest) returns (DoTHINGResponse);
 }

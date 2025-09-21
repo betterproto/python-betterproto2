@@ -3,5 +3,5 @@ syntax = "proto3";
 package map;
 
 message Test {
-    map<string, int32> counts = 1;
+  map<string, int32> counts = 1;
 }

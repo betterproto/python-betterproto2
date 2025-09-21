@@ -3,9 +3,9 @@ syntax = "proto3";
 package unwrap;
 
 message NestedMessage {
-    int32 x = 1;
+  int32 x = 1;
 }
 
 message Message {
-    NestedMessage x = 1;
+  NestedMessage x = 1;
 }

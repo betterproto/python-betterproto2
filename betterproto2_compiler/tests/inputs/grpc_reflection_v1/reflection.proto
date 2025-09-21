@@ -25,14 +25,13 @@ package grpc.reflection.v1;
 
 option go_package = "google.golang.org/grpc/reflection/grpc_reflection_v1";
 option java_multiple_files = true;
-option java_package = "io.grpc.reflection.v1";
 option java_outer_classname = "ServerReflectionProto";
+option java_package = "io.grpc.reflection.v1";
 
 service ServerReflection {
   // The reflection service is structured as a bidirectional stream, ensuring
   // all related requests go to a single server.
-  rpc ServerReflectionInfo(stream ServerReflectionRequest)
-      returns (stream ServerReflectionResponse);
+  rpc ServerReflectionInfo(stream ServerReflectionRequest) returns (stream ServerReflectionResponse);
 }
 
 // The message sent by the client when calling ServerReflectionInfo method.

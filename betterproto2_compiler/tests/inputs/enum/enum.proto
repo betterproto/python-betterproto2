@@ -4,64 +4,64 @@ package enum;
 
 // Tests that enums are correctly serialized and that it correctly handles skipped and out-of-order enum values
 message Test {
-    Choice choice = 1;
-    repeated Choice choices = 2;
+  Choice choice = 1;
+  repeated Choice choices = 2;
 }
 
 enum Choice {
-    ZERO = 0;
-    ONE = 1;
-    // TWO = 2;
-    FOUR = 4;
-    THREE = 3;
-    MINUS_ONE = -1;
+  ZERO = 0;
+  ONE = 1;
+  // TWO = 2;
+  FOUR = 4;
+  THREE = 3;
+  MINUS_ONE = -1;
 }
 
 // A "C" like enum with the enum name prefixed onto members, these should be stripped
 enum ArithmeticOperator {
-    ARITHMETIC_OPERATOR_NONE = 0;
-    ARITHMETIC_OPERATOR_PLUS = 1;
-    ARITHMETIC_OPERATOR_MINUS = 2;
-    ARITHMETIC_OPERATOR_0_PREFIXED = 3;
+  ARITHMETIC_OPERATOR_NONE = 0;
+  ARITHMETIC_OPERATOR_PLUS = 1;
+  ARITHMETIC_OPERATOR_MINUS = 2;
+  ARITHMETIC_OPERATOR_0_PREFIXED = 3;
 }
 
 // If not all the fields are prefixed, the prefix should not be stripped at all
 enum NoStriping {
-    NO_STRIPING_NONE = 0;
-    NO_STRIPING_A = 1;
-    B = 2;
+  NO_STRIPING_NONE = 0;
+  NO_STRIPING_A = 1;
+  B = 2;
 }
 
 // Make sure that the prefix are removed even if it's difficult to infer the position
 // of underscores.
 enum HTTPCode {
-    HTTP_CODE_UNSPECIFIED = 0;
-    HTTP_CODE_OK = 200;
-    HTTP_CODE_NOT_FOUND = 404;
+  HTTP_CODE_UNSPECIFIED = 0;
+  HTTP_CODE_OK = 200;
+  HTTP_CODE_NOT_FOUND = 404;
 }
 
 message EnumMessage {
-    ArithmeticOperator arithmetic_operator = 1;
-    NoStriping no_striping = 2;
+  ArithmeticOperator arithmetic_operator = 1;
+  NoStriping no_striping = 2;
 }
 
 enum OldVersion {
-    OLD_VERSION_UNSPECIFIED = 0;
-    OLD_VERSION_V1 = 1;
-    OLD_VERSION_V2 = 2;
+  OLD_VERSION_UNSPECIFIED = 0;
+  OLD_VERSION_V1 = 1;
+  OLD_VERSION_V2 = 2;
 }
 
 message OldVersionMessage {
-    OldVersion old_version = 1;
+  OldVersion old_version = 1;
 }
 
 enum NewVersion {
-    NEW_VERSION_UNSPECIFIED = 0;
-    NEW_VERSION_V1 = 1;
-    NEW_VERSION_V2 = 2;
-    NEW_VERSION_V3 = 3;
+  NEW_VERSION_UNSPECIFIED = 0;
+  NEW_VERSION_V1 = 1;
+  NEW_VERSION_V2 = 2;
+  NEW_VERSION_V3 = 3;
 }
 
 message NewVersionMessage {
-    NewVersion new_version = 1;
+  NewVersion new_version = 1;
 }

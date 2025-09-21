@@ -3,5 +3,5 @@ syntax = "proto3";
 package manual_validation;
 
 message Msg {
-    uint32 x = 1;
+  uint32 x = 1;
 }

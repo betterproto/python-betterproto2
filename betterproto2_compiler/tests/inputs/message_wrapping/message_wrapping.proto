@@ -1,11 +1,11 @@
 syntax = "proto3";
 
+package message_wrapping;
+
 import "google/protobuf/duration.proto";
 import "google/protobuf/wrappers.proto";
 
-package message_wrapping;
-
 message MapMessage {
-    map<string, google.protobuf.FloatValue> map1 = 1;
-    map<string, google.protobuf.Duration> map2 = 2;
+  map<string, google.protobuf.FloatValue> map1 = 1;
+  map<string, google.protobuf.Duration> map2 = 2;
 }

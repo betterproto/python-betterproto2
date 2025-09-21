@@ -2,6 +2,4 @@ syntax = "proto3";
 
 package import_child_package_from_root.childpackage;
 
-message Message {
-
-}
+message Message {}

@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package import_packages_same_name;
 
-import "users_v1.proto";
 import "posts_v1.proto";
+import "users_v1.proto";
 
 // Tests generated message can correctly reference two packages with the same leaf-name
 

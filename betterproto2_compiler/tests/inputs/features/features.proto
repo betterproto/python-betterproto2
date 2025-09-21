@@ -1,108 +1,108 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/duration.proto";
-import "google/protobuf/wrappers.proto";
-
 package features;
 
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
 message Bar {
-    string name = 1;
+  string name = 1;
 }
 
 message Foo {
-    string name = 1;
-    Bar child = 2;
+  string name = 1;
+  Bar child = 2;
 }
 
 enum Enum {
-    ZERO = 0;
-    ONE = 1;
+  ZERO = 0;
+  ONE = 1;
 }
 
 message EnumMsg {
-    Enum enum = 1;
+  Enum enum = 1;
 }
 
 message Newer {
-    bool x = 1;
-    int32 y = 2;
-    string z = 3;
+  bool x = 1;
+  int32 y = 2;
+  string z = 3;
 }
 
 message Older {
-    bool x = 1;
+  bool x = 1;
 }
 
 message IntMsg {
-    int32 val = 1;
+  int32 val = 1;
 }
 
 message OneofMsg {
-    oneof group1 {
-        int32 x = 1;
-        string y = 2;
-    }
-    oneof group2 {
-        IntMsg a = 3;
-        string b = 4;
-    }
+  oneof group1 {
+    int32 x = 1;
+    string y = 2;
+  }
+  oneof group2 {
+    IntMsg a = 3;
+    string b = 4;
+  }
 }
 
 message JsonCasingMsg {
-    int32 pascal_case = 1;
-    int32 camel_case = 2;
-    int32 snake_case = 3;
-    int32 kabob_case = 4;
+  int32 pascal_case = 1;
+  int32 camel_case = 2;
+  int32 snake_case = 3;
+  int32 kabob_case = 4;
 }
 
 message OptionalBoolMsg {
-    google.protobuf.BoolValue field = 1;
+  google.protobuf.BoolValue field = 1;
 }
 
 message OptionalDatetimeMsg {
-    google.protobuf.Timestamp field = 1;
+  google.protobuf.Timestamp field = 1;
 }
 
 message Empty {}
 
 message TimeMsg {
-    google.protobuf.Timestamp timestamp = 1;
-    google.protobuf.Duration duration = 2;
+  google.protobuf.Timestamp timestamp = 1;
+  google.protobuf.Duration duration = 2;
 }
 
 message MsgA {
-    int32 some_int = 1;
-    double some_double = 2;
-    string some_str = 3;
-    bool some_bool = 4;
+  int32 some_int = 1;
+  double some_double = 2;
+  string some_str = 3;
+  bool some_bool = 4;
 }
 
 message MsgB {
-    int32 some_int = 1;
-    double some_double = 2;
-    string some_str = 3;
-    bool some_bool = 4;
-    int32 some_default_int = 5;
-    double some_default_double = 6;
-    string some_default_str = 7;
-    bool some_default_bool = 8;
+  int32 some_int = 1;
+  double some_double = 2;
+  string some_str = 3;
+  bool some_bool = 4;
+  int32 some_default_int = 5;
+  double some_default_double = 6;
+  string some_default_str = 7;
+  bool some_default_bool = 8;
 }
 
 message MsgC {
-    oneof group1 {
-        int32 int_field = 1;
-        string string_field = 2;
-        Empty empty_field = 3;
-    }
+  oneof group1 {
+    int32 int_field = 1;
+    string string_field = 2;
+    Empty empty_field = 3;
+  }
 }
 
 message MsgD {
-    repeated google.protobuf.Timestamp timestamps = 1;
+  repeated google.protobuf.Timestamp timestamps = 1;
 }
 
 message MsgE {
-    bool bool_field = 1;
-    optional int32 int_field = 2;
-    repeated string str_field = 3;
+  bool bool_field = 1;
+  optional int32 int_field = 2;
+  repeated string str_field = 3;
 }
