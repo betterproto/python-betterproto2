@@ -97,7 +97,7 @@ import dateutil.parser
 
 from ...message_pool import default_message_pool
 
-_COMPILER_VERSION = "0.8.0"
+_COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
@@ -2965,13 +2965,15 @@ default_message_pool.register_message("google.protobuf", "MethodDescriptorProto"
 
 @dataclass(eq=False, repr=False)
 class MethodOptions(betterproto2.Message):
-    deprecated: "bool" = betterproto2.field(33, betterproto2.TYPE_BOOL)
     """
     Note:  Field numbers 1 through 32 are reserved for Google's internal RPC
       framework.  We apologize for hoarding these numbers to ourselves, but
       we were already using them long before we decided to release Protocol
       Buffers.
+    """
 
+    deprecated: "bool" = betterproto2.field(33, betterproto2.TYPE_BOOL)
+    """
     Is this method deprecated?
     Depending on the target platform, this can emit Deprecated annotations
     for the method, or it will be completely ignored; in the very least,
@@ -3445,7 +3447,7 @@ class Struct(betterproto2.Message):
         for key, val in value.items():
             fields[key] = Value.from_dict(val)
 
-        return cls(fields=fields)
+        return cls(fields=fields)  # type: ignore[reportArgumentType]
 
     def to_dict(
         self,

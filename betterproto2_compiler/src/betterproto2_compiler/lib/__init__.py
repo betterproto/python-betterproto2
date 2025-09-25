@@ -8,5 +8,5 @@ __all__ = ()
 
 import betterproto2
 
-_COMPILER_VERSION = "0.8.0"
+_COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
