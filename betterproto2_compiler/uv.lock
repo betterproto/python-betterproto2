@@ -26,7 +26,7 @@ wheels = [
 
 [[package]]
 name = "betterproto2"
-version = "0.8.0"
+version = "0.9.0"
 source = { directory = "../betterproto2" }
 dependencies = [
     { name = "python-dateutil" },
@@ -69,7 +69,7 @@ test = [
 
 [[package]]
 name = "betterproto2-compiler"
-version = "0.8.0"
+version = "0.9.0"
 source = { editable = "." }
 dependencies = [
     { name = "betterproto2" },
