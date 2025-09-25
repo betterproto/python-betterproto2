@@ -153,11 +153,7 @@ async def test_service_call_lower_level_with_overrides(requires_grpclib, require
     import grpclib.metadata
     from grpclib.testing import ChannelFor
 
-    from tests.outputs.service.service import (
-        DoThingRequest,
-        DoThingResponse,
-        TestStub as ThingServiceClient,
-    )
+    from tests.outputs.service.service import DoThingRequest, TestStub as ThingServiceClient
 
     from .thing_service import ThingService
 
@@ -170,13 +166,7 @@ async def test_service_call_lower_level_with_overrides(requires_grpclib, require
     kwarg_metadata = {"authorization": "12345"}
     async with ChannelFor([ThingService(test_hook=_assert_request_meta_received(deadline, metadata))]) as channel:
         client = ThingServiceClient(channel, deadline=deadline, metadata=metadata)
-        response = await client._unary_unary(
-            "/service.Test/DoThing",
-            DoThingRequest(THING_TO_DO),
-            DoThingResponse,
-            deadline=kwarg_deadline,
-            metadata=kwarg_metadata,
-        )
+        response = await client.do_thing(DoThingRequest(THING_TO_DO), deadline=kwarg_deadline, metadata=kwarg_metadata)
         assert response.names == [THING_TO_DO]
 
     # Setting timeout
@@ -194,13 +184,7 @@ async def test_service_call_lower_level_with_overrides(requires_grpclib, require
         ]
     ) as channel:
         client = ThingServiceClient(channel, deadline=deadline, metadata=metadata)
-        response = await client._unary_unary(
-            "/service.Test/DoThing",
-            DoThingRequest(THING_TO_DO),
-            DoThingResponse,
-            timeout=kwarg_timeout,
-            metadata=kwarg_metadata,
-        )
+        response = await client.do_thing(DoThingRequest(THING_TO_DO), timeout=kwarg_timeout, metadata=kwarg_metadata)
         assert response.names == [THING_TO_DO]
 
 
