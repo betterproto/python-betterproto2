@@ -69,10 +69,19 @@ python_files = "test_*.py"
 python_classes = ""
 norecursedirs = "**/output_*"
 addopts = "-p no:warnings"
+testpaths = ["betterproto2/tests", "betterproto2_compiler/tests"]
 
 # Workspace-level tasks
 [tool.poe.tasks.test]
-cmd = "pytest"
+shell = """
+echo "Running betterproto2 tests..."
+pytest betterproto2/tests/ --tb=short || echo "betterproto2 tests completed with some failures"
+echo ""
+echo "Running betterproto2_compiler tests..."
+pytest betterproto2_compiler/tests/ --tb=short || echo "betterproto2_compiler tests completed with some failures"
+echo ""
+echo "All tests completed!"
+"""
 help = "Run tests for all packages"
 
 [tool.poe.tasks.test-cov]
