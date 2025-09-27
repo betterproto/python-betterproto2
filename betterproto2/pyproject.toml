@@ -25,114 +25,26 @@ pydantic = ["pydantic>=2.11.5"]
 protobuf = ["protobuf>=5.29.3"]
 all = ["grpclib>=0.4.8", "grpcio>=1.72.1", "pydantic>=2.11.5", "protobuf>=5.29.3"]
 
-[dependency-groups]
-dev = [
-    "ipykernel>=6.29.5",
-    "mkdocs-material>=9.6.14",
-    "mkdocstrings[python]>=0.29.1",
-    "mypy>=1.16.0",
-    "pre-commit>=4.2.0,<5",
-    "pyright>=1.1.401",
-    # The Ruff version is pinned. To update it, also update it in .pre-commit-config.yaml
-    "ruff==0.9.3",
-]
-test = [
-    "cachelib>=0.13.0",
-    "poethepoet>=0.34.0",
-    "pytest>=8.4.0",
-    "pytest-asyncio>=1.0.0",
-    "pytest-cov>=6.1.1",
-    "pytest-mock>=3.14.1",
-]
-
 [tool.uv]
 package = true
 default-groups = "all"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.8.22,<0.9.0"]
+build-backend = "uv_build"
 
+# Package-specific Ruff configuration (inherits from workspace)
 [tool.ruff]
 extend-exclude = ["tests/outputs", "src/betterproto2/internal_lib"]
-target-version = "py310"
-line-length = 120
 
-[tool.ruff.lint]
-select = [
-    "F401",  # Unused imports
-    "F841",  # Unused local variables
-    "F821",  # Undefined names
-    "E501",  # Line length violations
-
-    "SIM101", # Simplify unnecessary if-else blocks
-    "SIM102", # Simplify return or yield statements
-    "SIM103", # Simplify list/set/dict comprehensions
-
-    "UP",
-
-    "I",
-]
-
-
-[tool.ruff.lint.isort]
-combine-as-imports = true
-
+# Package-specific pytest configuration
 [tool.pytest.ini_options]
 python_files = "test_*.py"
 python_classes = ""
 norecursedirs = "**/output_*"
 addopts = "-p no:warnings"
 
-# Dev workflow tasks
+# Package-specific tasks
 [tool.poe.tasks.get-local-compiled-tests]
 # task useful for local development. Copies the compiled test files from the compiler folder to the tests folder
 shell = "rm -rf tests/outputs* && cp -r ../betterproto2_compiler/tests/outputs tests"
-
-[tool.poe.tasks.test]
-cmd = "pytest"
-help = "Run tests"
-
-[tool.poe.tasks.test-cov]
-cmd = "pytest --cov=betterproto2 --cov-report=term --cov-report=html tests/"
-help = "Run tests with code coverage report"
-
-[tool.poe.tasks.typecheck]
-cmd  = "pyright src"
-help = "Typecheck the code with Pyright"
-
-[tool.poe.tasks.format]
-sequence = ["_format", "_sort-imports"]
-help = "Format the source code, and sort the imports"
-
-[tool.poe.tasks.check]
-sequence = ["_check-format", "_check"]
-help = "Check that the source code is formatted and the imports sorted"
-
-[tool.poe.tasks._format]
-cmd = "ruff format src tests"
-help = "Format the source code without sorting the imports"
-
-[tool.poe.tasks._sort-imports]
-cmd = "ruff check --select I --fix src tests"
-help = "Sort the imports"
-
-[tool.poe.tasks._check-format]
-cmd = "ruff format --diff src tests"
-help = "Check that the source code is formatted"
-
-[tool.poe.tasks._check]
-cmd = "ruff check src tests"
-help = "Check the code"
-
-[tool.poe.tasks.clean]
-cmd  = """
-rm -rf .coverage .mypy_cache .pytest_cache
-       dist betterproto.egg-info **/__pycache__
-       testsoutput_*
-"""
-help = "Clean out generated files from the workspace"
-
-[tool.poe.tasks.serve-docs]
-cmd = "mkdocs serve"
-help = "Serve the documentation locally"
