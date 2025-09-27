@@ -21,6 +21,3 @@ venv
 .devcontainer
 .ruff_cache
 .venv
-uv.lock
-betterproto2_compiler/uv.lock
-betterproto2/uv.lock
