@@ -90,9 +90,10 @@ uv run ruff check betterproto2/src betterproto2/tests betterproto2_compiler/src 
 
 ### Notes
 
-- The `generate` task requires `grpcio-tools` to be available. If you encounter import errors when running tests, you may need to install additional dependencies or use pre-generated test outputs.
 - The workspace-level poe tasks (format, check) reference directories that don't exist at the workspace root, so use the direct ruff commands shown above.
+- The workspace-level `uv run poe test` command has naming conflicts between packages, so run tests for each package individually as shown above.
 - Individual packages have their own specific tasks - check `uv run poe --help` from within each package directory for more options.
+- Some tests may fail due to missing test data files (like in `test_streams.py`), but the core functionality tests should pass.
 
 ## License
 

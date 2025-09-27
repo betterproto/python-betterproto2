@@ -12,6 +12,7 @@ betterproto2_compiler = { workspace = true }
 # Common dependency groups for the workspace
 [dependency-groups]
 dev = [
+    "grpcio-tools>=1.75.1",
     "ipykernel>=6.29.5",
     "mkdocs-material>=9.6.14",
     "mkdocstrings[python]>=0.29.1",
