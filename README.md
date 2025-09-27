@@ -52,12 +52,47 @@ The documentation of betterproto is available online: https://betterproto.github
 
 - Python (3.10 or higher)
 
-- [poetry](https://python-poetry.org/docs/#installation)
-  *Needed to install dependencies in a virtual environment*
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+  *Modern Python package and project manager*
 
 - [poethepoet](https://github.com/nat-n/poethepoet) for running development tasks as defined in pyproject.toml
   - Can be installed to your host environment via `pip install poethepoet` then executed as simple `poe`
-  - or run from the poetry venv as `poetry run poe`
+  - or run from the uv environment as `uv run poe`
+
+### Getting Started
+
+This project uses a uv workspace with two packages:
+- `betterproto2` - The main library
+- `betterproto2_compiler` - The protoc plugin
+
+```bash
+# Install dependencies and sync the workspace
+uv sync
+
+# Build all packages
+uv build --all-packages
+
+# Set up test outputs (required before running tests)
+# Note: This requires grpcio-tools to be installed
+cd betterproto2_compiler && uv run poe generate
+cd ../betterproto2 && uv run poe get-local-compiled-tests
+cd ..
+
+# Run tests (after setting up test outputs)
+uv run poe test
+
+# Format code using ruff directly
+uv run ruff format betterproto2/src betterproto2/tests betterproto2_compiler/src betterproto2_compiler/tests
+
+# Check code using ruff directly  
+uv run ruff check betterproto2/src betterproto2/tests betterproto2_compiler/src betterproto2_compiler/tests
+```
+
+### Notes
+
+- The `generate` task requires `grpcio-tools` to be available. If you encounter import errors when running tests, you may need to install additional dependencies or use pre-generated test outputs.
+- The workspace-level poe tasks (format, check) reference directories that don't exist at the workspace root, so use the direct ruff commands shown above.
+- Individual packages have their own specific tasks - check `uv run poe --help` from within each package directory for more options.
 
 ## License
 
