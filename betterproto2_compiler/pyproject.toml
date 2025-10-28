@@ -40,6 +40,7 @@ dev = [
     "poethepoet>=0.32.2,<0.33",
     "pyright>=1.1.391,<2",
     "ipykernel>=6.29.5,<7",
+    "ruff==0.14.2",
 ]
 test = [
     "pytest>=8.3.4,<9",
