@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   code-quality:
-    name: Check code/doc formatting
+    name: Check code formatting and typechecking
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
