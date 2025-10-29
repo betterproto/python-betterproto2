@@ -67,7 +67,7 @@ test = [
 requires-dist = [
     { name = "betterproto2", specifier = ">=0.9.0,<0.10" },
     { name = "jinja2", specifier = ">=3.0.3" },
-    { name = "ruff", specifier = ">=0.9.3" },
+    { name = "ruff", specifier = ">=0.9.3,<0.15.0" },
     { name = "strenum", marker = "python_full_version == '3.10.*'", specifier = ">=0.4.15,<0.5" },
     { name = "typing-extensions", specifier = ">=4.7.1,<5" },
 ]
