@@ -77,6 +77,8 @@ select = [
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
+known-first-party = ["tests"]
+known-third-party = ["grpclib"]
 
 [tool.pytest.ini_options]
 python_files = "test_*.py"
