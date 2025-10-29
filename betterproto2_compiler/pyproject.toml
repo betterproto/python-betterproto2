@@ -36,7 +36,7 @@ protoc-gen-python_betterproto2 = "betterproto2_compiler.plugin:main"
 [dependency-groups]
 dev = [
     "pre-commit>=4.2.0,<5",
-    "grpcio-tools>=1.54.2,<2",
+    "grpcio-tools>=1.75.1,<2",
     "poethepoet>=0.32.2,<0.33",
     "pyright>=1.1.391,<2",
     "ipykernel>=6.29.5,<7",
@@ -44,7 +44,7 @@ dev = [
 ]
 test = [
     "pytest>=8.3.4,<9",
-    "protobuf>=5.29.3,<6",
+    "protobuf>=6.33.0,<7",
 ]
 
 [tool.uv]
