@@ -7,6 +7,7 @@ authors = [
     { name = "Daniel G. Taylor", email = "danielgtaylor@gmail.com" },
 ]
 license = "MIT"
+readme = "../README.md"
 keywords = [
     "protobuf",
     "gRPC",
