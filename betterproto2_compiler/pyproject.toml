@@ -53,8 +53,8 @@ package = true
 default-groups = "all"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.9.7,<0.10"]
+build-backend = "uv_build"
 
 [tool.ruff]
 extend-exclude = ["tests/outputs", "src/betterproto2_compiler/lib"]
