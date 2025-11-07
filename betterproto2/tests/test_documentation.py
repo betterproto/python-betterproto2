@@ -56,7 +56,7 @@ Simple quotes are not escaped "
         assert (
             ComplexDocumentation.__doc__
             == """
-        A comment with backslashes \\ and triple quotes \"\"\"
-        Simple quotes are not escaped "
-        """
+    A comment with backslashes \\ and triple quotes \"\"\"
+    Simple quotes are not escaped "
+    """
         )
