@@ -1,5 +1,6 @@
 import ast
 import inspect
+import sys
 
 from tests.util import requires_grpclib  # noqa: F401
 
@@ -43,7 +44,19 @@ def test_documentation(requires_grpclib) -> None:
 def test_escaping(requires_grpclib) -> None:
     from .outputs.documentation.documentation import ComplexDocumentation
 
-    assert ComplexDocumentation.__doc__ == """
-    A comment with backslashes \\ and triple quotes \"\"\"
-    Simple quotes are not escaped "
-    """
+    if sys.version_info >= (3, 13):
+        assert (
+            ComplexDocumentation.__doc__
+            == """
+A comment with backslashes \\ and triple quotes \"\"\"
+Simple quotes are not escaped "
+"""
+        )
+    else:
+        assert (
+            ComplexDocumentation.__doc__
+            == """
+        A comment with backslashes \\ and triple quotes \"\"\"
+        Simple quotes are not escaped "
+        """
+        )
