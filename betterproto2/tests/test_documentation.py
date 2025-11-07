@@ -43,7 +43,7 @@ def test_documentation(requires_grpclib) -> None:
 def test_escaping(requires_grpclib) -> None:
     from .outputs.documentation.documentation import ComplexDocumentation
 
-    ComplexDocumentation.__doc__ == """
+    assert ComplexDocumentation.__doc__ == """
     A comment with backslashes \\ and triple quotes \"\"\"
     Simple quotes are not escaped "
     """
