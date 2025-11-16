@@ -3,6 +3,7 @@ import re
 import typing
 
 import betterproto2
+from typing_extensions import Self
 
 from betterproto2_compiler.lib.google.protobuf import Duration as VanillaDuration
 
@@ -30,7 +31,7 @@ class Duration(VanillaDuration):
 
     # TODO typing
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, str):
             if not re.match(r"^\d+(\.\d+)?s$", value):
                 raise ValueError(f"Invalid duration string: {value}")

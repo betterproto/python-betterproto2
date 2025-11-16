@@ -3,6 +3,7 @@ import typing
 
 import betterproto2
 import dateutil.parser
+from typing_extensions import Self
 
 from betterproto2_compiler.lib.google.protobuf import Timestamp as VanillaTimestamp
 
@@ -55,7 +56,7 @@ class Timestamp(VanillaTimestamp):
 
     # TODO typing
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, str):
             dt = dateutil.parser.isoparse(value)
             dt = dt.astimezone(datetime.timezone.utc)

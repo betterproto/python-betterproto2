@@ -89,6 +89,7 @@ __all__ = (
 import datetime
 import re
 import typing
+from typing_extensions import Self
 import warnings
 from dataclasses import dataclass
 
@@ -917,7 +918,7 @@ class Any(betterproto2.Message):
         return output
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         value = dict(value)  # Make a copy
 
         type_url = value.pop("@type", None)
@@ -1024,7 +1025,7 @@ class BoolValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, bool):
             return BoolValue(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
@@ -1063,7 +1064,7 @@ class BytesValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, bytes):
             return BytesValue(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
@@ -1182,7 +1183,7 @@ class DoubleValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, float):
             return DoubleValue(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
@@ -1308,7 +1309,7 @@ class Duration(betterproto2.Message):
         return f"{'.'.join(parts)}s"
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, str):
             if not re.match(r"^\d+(\.\d+)?s$", value):
                 raise ValueError(f"Invalid duration string: {value}")
@@ -2599,7 +2600,7 @@ class FloatValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, float):
             return FloatValue(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
@@ -2690,7 +2691,7 @@ class Int32Value(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
             return Int32Value(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
@@ -2729,7 +2730,7 @@ class Int64Value(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
             return Int64Value(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
@@ -2768,7 +2769,7 @@ class ListValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         return cls(values=[Value.from_dict(v) for v in value])
 
     def to_dict(
@@ -3393,7 +3394,7 @@ class StringValue(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, str):
             return StringValue(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
@@ -3439,7 +3440,7 @@ class Struct(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         assert isinstance(value, dict)
 
         fields: dict[str, Value] = {}
@@ -3625,7 +3626,7 @@ class Timestamp(betterproto2.Message):
         return f"{result}.{nanos:09d}"
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, str):
             dt = dateutil.parser.isoparse(value)
             dt = dt.astimezone(datetime.timezone.utc)
@@ -3715,7 +3716,7 @@ class UInt32Value(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
             return UInt32Value(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
@@ -3754,7 +3755,7 @@ class UInt64Value(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
             return UInt64Value(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
@@ -3875,7 +3876,7 @@ class Value(betterproto2.Message):
     """
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         match value:
             case bool() as b:
                 return cls(bool_value=b)

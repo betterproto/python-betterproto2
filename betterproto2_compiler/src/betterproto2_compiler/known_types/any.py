@@ -1,6 +1,7 @@
 import typing
 
 import betterproto2
+from typing_extensions import Self
 
 from betterproto2_compiler.lib.google.protobuf import Any as VanillaAny
 
@@ -60,7 +61,7 @@ class Any(VanillaAny):
 
     # TODO typing
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         value = dict(value)  # Make a copy
 
         type_url = value.pop("@type", None)
