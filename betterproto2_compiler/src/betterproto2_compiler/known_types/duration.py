@@ -37,7 +37,7 @@ class Duration(VanillaDuration):
                 raise ValueError(f"Invalid duration string: {value}")
 
             seconds = float(value[:-1])
-            return Duration(seconds=int(seconds), nanos=int((seconds - int(seconds)) * 1e9))
+            return cls(seconds=int(seconds), nanos=int((seconds - int(seconds)) * 1e9))
 
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 

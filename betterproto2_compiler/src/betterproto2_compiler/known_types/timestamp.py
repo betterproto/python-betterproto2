@@ -10,7 +10,7 @@ from betterproto2_compiler.lib.google.protobuf import Timestamp as VanillaTimest
 
 class Timestamp(VanillaTimestamp):
     @classmethod
-    def from_datetime(cls, dt: datetime.datetime) -> "Timestamp":
+    def from_datetime(cls, dt: datetime.datetime) -> Self:
         if not dt.tzinfo:
             raise ValueError("datetime must be timezone aware")
 
@@ -60,7 +60,7 @@ class Timestamp(VanillaTimestamp):
         if isinstance(value, str):
             dt = dateutil.parser.isoparse(value)
             dt = dt.astimezone(datetime.timezone.utc)
-            return Timestamp.from_datetime(dt)
+            return cls.from_datetime(dt)
 
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 

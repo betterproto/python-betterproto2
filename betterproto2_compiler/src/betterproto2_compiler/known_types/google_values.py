@@ -27,7 +27,7 @@ class BoolValue(VanillaBoolValue):
     @classmethod
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, bool):
-            return BoolValue(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -51,7 +51,7 @@ class Int32Value(VanillaInt32Value):
     @classmethod
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
-            return Int32Value(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -75,7 +75,7 @@ class Int64Value(VanillaInt64Value):
     @classmethod
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
-            return Int64Value(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -99,7 +99,7 @@ class UInt32Value(VanillaUInt32Value):
     @classmethod
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
-            return UInt32Value(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -123,7 +123,7 @@ class UInt64Value(VanillaUInt64Value):
     @classmethod
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
-            return UInt64Value(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -147,7 +147,7 @@ class FloatValue(VanillaFloatValue):
     @classmethod
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, float):
-            return FloatValue(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -171,7 +171,7 @@ class DoubleValue(VanillaDoubleValue):
     @classmethod
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, float):
-            return DoubleValue(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -195,7 +195,7 @@ class StringValue(VanillaStringValue):
     @classmethod
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, str):
-            return StringValue(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -219,7 +219,7 @@ class BytesValue(VanillaBytesValue):
     @classmethod
     def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, bytes):
-            return BytesValue(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
