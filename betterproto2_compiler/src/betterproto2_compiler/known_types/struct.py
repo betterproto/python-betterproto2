@@ -1,6 +1,7 @@
 import typing
 
 import betterproto2
+from typing_extensions import Self
 
 from betterproto2_compiler.lib.google.protobuf import (
     ListValue as VanillaListValue,
@@ -13,7 +14,7 @@ from betterproto2_compiler.lib.google.protobuf import (
 class Struct(VanillaStruct):
     # TODO typing
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         assert isinstance(value, dict)
 
         fields: dict[str, Value] = {}
@@ -47,7 +48,7 @@ class Struct(VanillaStruct):
 class Value(VanillaValue):
     # TODO typing
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         match value:
             case bool() as b:
                 return cls(bool_value=b)
@@ -94,7 +95,7 @@ class Value(VanillaValue):
 class ListValue(VanillaListValue):
     # TODO typing
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         return cls(values=[Value.from_dict(v) for v in value])
 
     # TODO typing

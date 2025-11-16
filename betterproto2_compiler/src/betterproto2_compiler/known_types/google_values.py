@@ -1,6 +1,7 @@
 import typing
 
 import betterproto2
+from typing_extensions import Self
 
 from betterproto2_compiler.lib.google.protobuf import (
     BoolValue as VanillaBoolValue,
@@ -24,9 +25,9 @@ class BoolValue(VanillaBoolValue):
         return self.value
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, bool):
-            return BoolValue(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -48,9 +49,9 @@ class Int32Value(VanillaInt32Value):
         return self.value
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
-            return Int32Value(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -72,9 +73,9 @@ class Int64Value(VanillaInt64Value):
         return self.value
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
-            return Int64Value(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -96,9 +97,9 @@ class UInt32Value(VanillaUInt32Value):
         return self.value
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
-            return UInt32Value(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -120,9 +121,9 @@ class UInt64Value(VanillaUInt64Value):
         return self.value
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, int):
-            return UInt64Value(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -144,9 +145,9 @@ class FloatValue(VanillaFloatValue):
         return self.value
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, float):
-            return FloatValue(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -168,9 +169,9 @@ class DoubleValue(VanillaDoubleValue):
         return self.value
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, float):
-            return DoubleValue(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -192,9 +193,9 @@ class StringValue(VanillaStringValue):
         return self.value
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, str):
-            return StringValue(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(
@@ -216,9 +217,9 @@ class BytesValue(VanillaBytesValue):
         return self.value
 
     @classmethod
-    def from_dict(cls, value, *, ignore_unknown_fields: bool = False):
+    def from_dict(cls, value, *, ignore_unknown_fields: bool = False) -> Self:
         if isinstance(value, bytes):
-            return BytesValue(value=value)
+            return cls(value=value)
         return super().from_dict(value, ignore_unknown_fields=ignore_unknown_fields)
 
     def to_dict(

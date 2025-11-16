@@ -19,6 +19,7 @@ import warnings
 from collections.abc import AsyncIterable, AsyncIterator, Iterable, Iterator
 import typing
 from typing import TYPE_CHECKING
+from typing_extensions import Self
 
 {% if output_file.settings.pydantic_dataclasses %}
 import pydantic
