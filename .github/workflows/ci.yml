@@ -200,3 +200,16 @@ jobs:
       - name: Move compiled files to betterproto2
         shell: bash
         run: cp -r betterproto2_compiler/tests/outputs betterproto2/tests
+
+      - name: Create test script
+        shell: bash
+        working-directory: ./betterproto2
+        run: |
+          echo '#!/bin/bash' > script.sh
+          echo 'python -m tests.conformance.main' >> script.sh
+          chmod +x script.sh
+
+      - name: Run conformance tests
+        working-directory: ./betterproto2
+        run: |
+          uv run conformance_test_runner ./script.sh
