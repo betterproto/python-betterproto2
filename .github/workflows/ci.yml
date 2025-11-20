@@ -170,7 +170,7 @@ jobs:
 
       - name: Install conformance runner
         if: matrix.os == 'Ubuntu' || matrix.os == 'MacOS'
-        run: npm install -g protobuf-conformance
+        run: npm install -g protobuf-conformance@33.1.0
 
       - name: Create test script
         if: matrix.os == 'Ubuntu' || matrix.os == 'MacOS'
