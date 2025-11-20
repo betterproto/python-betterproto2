@@ -3,23 +3,10 @@ import subprocess
 import sys
 from importlib import metadata
 
-from .module_validation import ModuleValidator
-
-try:
-    # betterproto[compiler] specific dependencies
-    import jinja2
-except ImportError as err:
-    print(
-        "\033[31m"
-        f"Unable to import `{err.name}` from betterproto plugin! "
-        "Please ensure that you've installed betterproto as "
-        '`pip install "betterproto[compiler]"` so that compiler dependencies '
-        "are included."
-        "\033[0m",
-    )
-    raise SystemExit(1)
+import jinja2
 
 from .models import OutputTemplate
+from .module_validation import ModuleValidator
 
 
 def outputfile_compiler(output_file: OutputTemplate) -> str:
