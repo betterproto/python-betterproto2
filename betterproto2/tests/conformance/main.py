@@ -1,16 +1,14 @@
-import betterproto2
-
 import struct
 import sys
 
+import betterproto2
 from tests.outputs.conformance.conformance import (
-    ConformanceResponse,
     ConformanceRequest,
+    ConformanceResponse,
     TestCategory,
     WireFormat,
 )
 from tests.outputs.conformance.protobuf_test_messages.proto3 import TestAllTypesProto3
-
 
 test_count = 0
 verbose = False
@@ -39,18 +37,20 @@ def do_test(request: ConformanceRequest) -> ConformanceResponse:
         elif betterproto2.which_one_of(request, "payload")[0] == "json_payload":
             try:
                 ignore_unknown_fields = request.test_category == TestCategory.JSON_IGNORE_UNKNOWN_PARSING_TEST
-                test_message = TestAllTypesProto3.from_json(request.json_payload, ignore_unknown_fields=ignore_unknown_fields)
+                test_message = TestAllTypesProto3.from_json(
+                    request.json_payload, ignore_unknown_fields=ignore_unknown_fields
+                )
             except Exception as e:
                 response.parse_error = str(e)
                 return response
 
         elif betterproto2.which_one_of(request, "payload")[0] == "text_payload":
-          return ConformanceResponse(skipped="text input not supported")
-          try:
-            text_format.Parse(request.text_payload, test_message)
-          except Exception as e:
-            response.parse_error = str(e)
-            return response
+            return ConformanceResponse(skipped="text input not supported")
+            try:
+                text_format.Parse(request.text_payload, test_message)
+            except Exception as e:
+                response.parse_error = str(e)
+                return response
 
         else:
             raise ProtocolError("Request didn't have payload.")
@@ -121,7 +121,6 @@ while True:
     #     f.write("Hello!")
     if not do_test_io():
         sys.stderr.write(
-            "conformance_python: received EOF from test runner "
-            + "after %s tests, exiting\n" % (test_count,)
+            "conformance_python: received EOF from test runner " + "after %s tests, exiting\n" % (test_count,)
         )
         sys.exit(0)
