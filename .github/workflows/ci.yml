@@ -160,3 +160,29 @@ jobs:
         working-directory: ./betterproto2
         shell: bash
         run: uv run poe test
+
+      # Run conformance test on all Ubuntu and MacOS versions
+      - name: Install Node.js
+        if: matrix.os == 'Ubuntu' || matrix.os == 'MacOS'
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install conformance runner
+        if: matrix.os == 'Ubuntu' || matrix.os == 'MacOS'
+        run: npm install -g protobuf-conformance@33.1.0
+
+      - name: Create test script
+        if: matrix.os == 'Ubuntu' || matrix.os == 'MacOS'
+        shell: bash
+        working-directory: ./betterproto2
+        run: |
+          echo '#!/bin/bash' > script.sh
+          echo 'python -m tests.conformance.main' >> script.sh
+          chmod +x script.sh
+
+      - name: Run conformance tests
+        if: matrix.os == 'Ubuntu' || matrix.os == 'MacOS'
+        working-directory: ./betterproto2
+        run: |
+          uv run conformance_test_runner --failure_list tests/conformance/failing_tests.txt ./script.sh

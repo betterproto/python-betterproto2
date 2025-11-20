@@ -75,6 +75,7 @@ async def main_async():
         generate_test("casing", semaphore, reference=True),
         generate_test("casing", semaphore),
         generate_test("compiler_lib", semaphore),
+        generate_test("conformance", semaphore),
         generate_test("deprecated", semaphore, reference=True),
         generate_test("deprecated", semaphore, client_generation="async"),
         generate_test("documentation", semaphore, client_generation="async"),
