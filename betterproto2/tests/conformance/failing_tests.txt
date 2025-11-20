@@ -1,0 +1,174 @@
+Required.Proto3.DurationProtoInputTooLarge.JsonOutput # Should have failed to serialize, but didn't.
+Required.Proto3.DurationProtoInputTooSmall.JsonOutput # Should have failed to serialize, but didn't.
+Required.Proto3.DurationProtoNanosTooLarge.JsonOutput # Should have failed to serialize, but didn't.
+Required.Proto3.DurationProtoNanosTooSmall.JsonOutput # Should have failed to serialize, but didn't.
+Required.Proto3.DurationProtoNanosWrongSign.JsonOutput # Should have failed to serialize, but didn't.
+Required.Proto3.DurationProtoNanosWrongSignNegativeSecs.JsonOutput # Should have failed to serialize, but didn't.
+Required.Proto3.JsonInput.AnyWithFieldMask.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.AnyWithFieldMask.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.AnyWithNoType.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.AnyWithNoType.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.BoolMapEscapedKey.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.BoolMapField.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.DoubleFieldTooLarge # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.DoubleFieldTooSmall # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.DurationJsonInputTooLarge # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.DurationMaxValue.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.JsonInput.DurationMaxValue.ProtobufOutput # Output was not equivalent to reference message: modified: optional_duration.seconds: 315576000000 -> 315576000001deleted: option
+Required.Proto3.JsonInput.DurationMinValue.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.DurationMinValue.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.DurationNegativeNanos.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.DurationNegativeNanos.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.DurationNegativeSeconds.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.DurationNegativeSeconds.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.DurationRepeatedValue.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.DurationRepeatedValue.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.EmptyFieldMask.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.EmptyFieldMask.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.FieldMask.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.FieldMask.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.FieldNameInLowerCamelCase.Validator # Expected JSON payload but got type 1
+Required.Proto3.JsonInput.FieldNameInSnakeCase.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.FieldNameInSnakeCase.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.FieldNameWithMixedCases.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.FieldNameWithMixedCases.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.FieldNameWithMixedCases.Validator # Expected JSON payload but got type 1
+Required.Proto3.JsonInput.FieldNameWithNumbers.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.FieldNameWithNumbers.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.FieldNameWithNumbers.Validator # Expected JSON payload but got type 1
+Required.Proto3.JsonInput.FloatFieldTooLarge # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.FloatFieldTooSmall # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.Int32FieldLeadingSpace # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.Int32FieldNotInteger # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.Int32FieldQuotedExponentialValue.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.Int32FieldQuotedExponentialValue.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.Int32FieldTooLarge # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.Int32FieldTooSmall # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.Int32FieldTrailingSpace # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.Int64FieldTooLarge # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.Int64FieldTooSmall # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.OneofFieldDuplicate # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.OptionalBytesWrapper.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.OptionalWrapperTypesWithNonDefaultValue.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.OriginalProtoFieldName.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.OriginalProtoFieldName.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.RepeatedBytesWrapper.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.JsonInput.RepeatedFieldWrongElementTypeExpectingIntegersGotBool # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.RepeatedFieldWrongElementTypeExpectingStringsGotBool # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.RepeatedFieldWrongElementTypeExpectingStringsGotInt # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.RepeatedFieldWrongElementTypeExpectingStringsGotMessage # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.SkipsDefaultPrimitive.Validator # Expected JSON payload but got type 1
+Required.Proto3.JsonInput.StringFieldNotAString # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.TimestampJsonInputLowercaseT # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.TimestampJsonInputLowercaseZ # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.TimestampJsonInputMissingT # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.TimestampLittleAfterEpochlValue.JsonOutput # Output was not equivalent to reference message: deleted: optional_timestamp.nanos: 1
+Required.Proto3.JsonInput.TimestampLittleAfterEpochlValue.ProtobufOutput # Output was not equivalent to reference message: deleted: optional_timestamp.nanos: 1
+Required.Proto3.JsonInput.TimestampLittleBeforeEpochValue.JsonOutput # Output was not equivalent to reference message: modified: optional_timestamp.nanos: 999999999 -> 999999000
+Required.Proto3.JsonInput.TimestampLittleBeforeEpochValue.ProtobufOutput # Output was not equivalent to reference message: modified: optional_timestamp.nanos: 999999999 -> 999999000
+Required.Proto3.JsonInput.TimestampMaxValue.JsonOutput # Output was not equivalent to reference message: modified: optional_timestamp.nanos: 999999999 -> 999999000
+Required.Proto3.JsonInput.TimestampMaxValue.ProtobufOutput # Output was not equivalent to reference message: modified: optional_timestamp.nanos: 999999999 -> 999999000
+Required.Proto3.JsonInput.TimestampNanoAfterEpochlValue.JsonOutput # Output was not equivalent to reference message: deleted: optional_timestamp.nanos: 1
+Required.Proto3.JsonInput.TimestampNanoAfterEpochlValue.ProtobufOutput # Output was not equivalent to reference message: deleted: optional_timestamp.nanos: 1
+Required.Proto3.JsonInput.TimestampNanoBeforeEpochValue.JsonOutput # Output was not equivalent to reference message: modified: optional_timestamp.nanos: 999999999 -> 999999000
+Required.Proto3.JsonInput.TimestampNanoBeforeEpochValue.ProtobufOutput # Output was not equivalent to reference message: modified: optional_timestamp.nanos: 999999999 -> 999999000
+Required.Proto3.JsonInput.TimestampRepeatedValue.JsonOutput # Output was not equivalent to reference message: modified: repeated_timestamp[1].nanos: 999999999 -> 999999000
+Required.Proto3.JsonInput.TimestampRepeatedValue.ProtobufOutput # Output was not equivalent to reference message: modified: repeated_timestamp[1].nanos: 999999999 -> 999999000
+Required.Proto3.JsonInput.TimestampWithMissingColonInOffset # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.Uint32FieldNotInteger # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.Uint32FieldTooLarge # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.Uint64FieldTooLarge # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.IllegalZeroFieldNum_Case_0 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.IllegalZeroFieldNum_Case_1 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.IllegalZeroFieldNum_Case_2 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.IllegalZeroFieldNum_Case_3 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.MismatchedGroupTags # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.MismatchedNestedGroupTags # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofBeforeUnknownValue.DOUBLE # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofBeforeUnknownValue.FIXED32 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofBeforeUnknownValue.FIXED64 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofBeforeUnknownValue.FLOAT # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofBeforeUnknownValue.SFIXED32 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofBeforeUnknownValue.SFIXED64 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInDelimitedDataForKnownNonRepeatedValue.BYTES # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInDelimitedDataForKnownNonRepeatedValue.MESSAGE # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInDelimitedDataForKnownNonRepeatedValue.STRING # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInDelimitedDataForKnownRepeatedValue.BYTES # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInDelimitedDataForKnownRepeatedValue.MESSAGE # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInDelimitedDataForKnownRepeatedValue.STRING # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInDelimitedDataForUnknownValue.BYTES # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInDelimitedDataForUnknownValue.MESSAGE # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInDelimitedDataForUnknownValue.STRING # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.BOOL # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.DOUBLE # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.ENUM # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.FIXED32 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.FIXED64 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.FLOAT # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.INT32 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.INT64 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.SFIXED32 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.SFIXED64 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.SINT32 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.SINT64 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.UINT32 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInPackedField.UINT64 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInsideUnknownValue.DOUBLE # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInsideUnknownValue.FIXED32 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInsideUnknownValue.FIXED64 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInsideUnknownValue.FLOAT # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInsideUnknownValue.SFIXED32 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.PrematureEofInsideUnknownValue.SFIXED64 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.RepeatedScalarMessageMerge.JsonOutput # Output was not equivalent to reference message: deleted: optional_nested_message.corecursive.optional_int64: 1234modified: optio
+Required.Proto3.ProtobufInput.RepeatedScalarMessageMerge.ProtobufOutput # Output was not equivalent to reference message: deleted: optional_nested_message.corecursive.optional_int64: 1234modified: optio
+Required.Proto3.ProtobufInput.RepeatedScalarSelectsLast.ENUM.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.UnknownWireType6_Field0_Version1 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType6_Field0_Version3 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType6_Field1_Version1 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType6_Field1_Version3 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType6_Field2_Version1 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType6_Field2_Version3 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType6_Field3_Version1 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType6_Field3_Version3 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType7_Field0_Version1 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType7_Field0_Version3 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType7_Field1_Version1 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType7_Field1_Version3 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType7_Field2_Version1 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType7_Field2_Version3 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType7_Field3_Version1 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnknownWireType7_Field3_Version3 # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedEndGroup # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedEndGroupNested # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedEndGroupNestedLen # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedEndGroupUnknown # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedEndGroupWithData # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedEndGroupWrongType # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedStartGroup # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedStartGroupNested # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedStartGroupNestedLen # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedStartGroupUnknown # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedStartGroupWithData # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.UnmatchedStartGroupWrongType # Should have failed to parse, but didn't.
+Required.Proto3.ProtobufInput.ValidDataMap.STRING.MESSAGE.MissingDefault.JsonOutput # Failed to parse input or produce output.
+Required.Proto3.ProtobufInput.ValidDataMap.STRING.MESSAGE.MissingDefault.ProtobufOutput # Failed to parse input or produce output.
+Required.Proto3.ProtobufInput.ValidDataOneof.BOOL.MultipleValuesForDifferentField.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataOneof.BYTES.MultipleValuesForDifferentField.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataOneof.DOUBLE.MultipleValuesForDifferentField.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataOneof.ENUM.MultipleValuesForDifferentField.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataOneof.FLOAT.MultipleValuesForDifferentField.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataOneof.MESSAGE.Merge.JsonOutput # Output was not equivalent to reference message: deleted: oneof_nested_message.corecursive.optional_int32: 1deleted: oneof_nested
+Required.Proto3.ProtobufInput.ValidDataOneof.MESSAGE.Merge.ProtobufOutput # Output was not equivalent to reference message: deleted: oneof_nested_message.corecursive.optional_int32: 1deleted: oneof_nested
+Required.Proto3.ProtobufInput.ValidDataOneof.MESSAGE.MultipleValuesForDifferentField.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataOneof.STRING.MultipleValuesForDifferentField.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataOneof.UINT32.MultipleValuesForDifferentField.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataOneof.UINT32.MultipleValuesForDifferentField.ProtobufOutput # Output was not equivalent to reference message: deleted: oneof_uint32: 1added: oneof_nested_message: { }
+Required.Proto3.ProtobufInput.ValidDataOneof.UINT64.MultipleValuesForDifferentField.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataRepeated.ENUM.PackedInput.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataRepeated.ENUM.UnpackedInput.JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataScalar.ENUM[4].JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.ProtobufInput.ValidDataScalar.ENUM[5].JsonOutput # JSON output we received from test was unparseable.
+Required.Proto3.TimestampProtoInputTooLarge.JsonOutput # Should have failed to serialize, but didn't.
+Required.Proto3.TimestampProtoInputTooSmall.JsonOutput # Should have failed to serialize, but didn't.
+Required.Proto3.TimestampProtoNanoTooLarge.JsonOutput # Should have failed to serialize, but didn't.
+Required.Proto3.TimestampProtoNegativeNanos.JsonOutput # Should have failed to serialize, but didn't.

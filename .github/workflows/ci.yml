@@ -212,4 +212,4 @@ jobs:
       - name: Run conformance tests
         working-directory: ./betterproto2
         run: |
-          uv run conformance_test_runner ./script.sh
+          uv run conformance_test_runner --failure_list tests/conformance/failing_tests.txt ./script.sh
