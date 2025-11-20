@@ -27,10 +27,7 @@ such as a pythonized name, that will be calculated from proto_obj.
 import builtins
 import inspect
 from collections.abc import Iterator
-from dataclasses import (
-    dataclass,
-    field,
-)
+from dataclasses import dataclass, field
 
 from betterproto2 import unwrap
 
