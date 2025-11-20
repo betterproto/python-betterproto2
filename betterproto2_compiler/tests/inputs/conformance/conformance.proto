@@ -35,14 +35,14 @@ enum WireFormat {
   UNSPECIFIED = 0;
   PROTOBUF = 1;
   JSON = 2;
-  JSPB = 3;  // Only used inside Google. Opensource testees just skip it.
+  JSPB = 3; // Only used inside Google. Opensource testees just skip it.
   TEXT_FORMAT = 4;
 }
 
 enum TestCategory {
   UNSPECIFIED_TEST = 0;
-  BINARY_TEST = 1;  // Test binary wire format.
-  JSON_TEST = 2;    // Test json wire format.
+  BINARY_TEST = 1; // Test binary wire format.
+  JSON_TEST = 2; // Test json wire format.
   // Similar to JSON_TEST. However, during parsing json, testee should ignore
   // unknown fields. This feature is optional. Each implementation can decide
   // whether to support it.  See
