@@ -113,5 +113,7 @@ def do_test_io():
 
 while True:
     if not do_test_io():
-        print("conformance_python: received EOF from test runner after", test_count, "tests, exiting\n", file=sys.stderr)
+        print(
+            "conformance_python: received EOF from test runner after", test_count, "tests, exiting\n", file=sys.stderr
+        )
         sys.exit(0)
