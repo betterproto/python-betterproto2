@@ -21,7 +21,7 @@ class ProtocolError(Exception):
 def do_test(request: ConformanceRequest) -> ConformanceResponse:
     response = ConformanceResponse()
 
-    is_json = betterproto2.which_one_of(request, "payload")[0] == "json_payload"
+    # is_json = betterproto2.which_one_of(request, "payload")[0] == "json_payload"
 
     if request.message_type != "protobuf_test_messages.proto3.TestAllTypesProto3":
         return ConformanceResponse(skipped="non proto3 tests not supported")
@@ -46,11 +46,6 @@ def do_test(request: ConformanceRequest) -> ConformanceResponse:
 
         elif betterproto2.which_one_of(request, "payload")[0] == "text_payload":
             return ConformanceResponse(skipped="text input not supported")
-            try:
-                text_format.Parse(request.text_payload, test_message)
-            except Exception as e:
-                response.parse_error = str(e)
-                return response
 
         else:
             raise ProtocolError("Request didn't have payload.")
@@ -85,12 +80,12 @@ def do_test_io():
     if len(length_bytes) == 0:
         return False  # EOF
     elif len(length_bytes) != 4:
-        raise IOError("I/O error")
+        raise OSError("I/O error")
 
     length = struct.unpack("<I", length_bytes)[0]
     serialized_request = sys.stdin.buffer.read(length)
     if len(serialized_request) != length:
-        raise IOError("I/O error")
+        raise OSError("I/O error")
 
     request = ConformanceRequest.parse(serialized_request)
 
@@ -117,10 +112,6 @@ def do_test_io():
 
 
 while True:
-    # with open("/Users/adrienvannson/Documents/python-betterproto2/betterproto2/debug.txt", "a") as f:
-    #     f.write("Hello!")
     if not do_test_io():
-        sys.stderr.write(
-            "conformance_python: received EOF from test runner " + "after %s tests, exiting\n" % (test_count,)
-        )
+        print("conformance_python: received EOF from test runner after", test_count, "tests, exiting\n", file=sys.stderr)
         sys.exit(0)
