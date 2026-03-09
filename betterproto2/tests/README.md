@@ -33,7 +33,7 @@ message Test {
 }
 ```
 
-You can add multiple `.proto` files to the test case, as long as one file matches the directory name. 
+You can add multiple `.proto` files to the test case, as long as one file matches the directory name.
 
 ### json
 
@@ -64,11 +64,11 @@ The following tests are automatically executed for all cases:
 - [x] Can the generated python code be imported?
 - [x] Can the generated message class be instantiated?
 - [x] Is the generated code compatible with the Google's `grpc_tools.protoc` implementation?
-  - _when `.json` is present_ 
+  - _when `.json` is present_
 
 ## Running the tests
 
-- `pipenv run generate`  
+- `pipenv run get-local-compiled-tests`
   This generates:
   - `betterproto/tests/output_betterproto` &mdash; *the plugin generated python classes*
   - `betterproto/tests/output_reference` &mdash; *reference implementation classes*
