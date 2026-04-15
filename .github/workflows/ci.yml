@@ -16,13 +16,13 @@ jobs:
     name: Check running without dependencies
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - name: Install uv with Python 3.12
+      - name: Install uv with Python
         uses: astral-sh/setup-uv@v5
         with:
-          version: "0.7.5"
-          python-version: "3.12"
+          version: "0.11.6"
+          python-version: "3.13"
 
       - name: Install betterproto2
         working-directory: ./betterproto2
@@ -124,14 +124,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [Ubuntu, MacOS, Windows]
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install uv with Python ${{ matrix.python-version }}
         uses: astral-sh/setup-uv@v5
         with:
-          version: "0.7.5"
+          version: "0.11.6"
           python-version: ${{ matrix.python-version }}
 
       - name: Install betterproto2

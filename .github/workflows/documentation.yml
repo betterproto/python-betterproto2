@@ -10,7 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Configure Git Credentials
         run: |
           git config user.name github-actions[bot]
@@ -19,8 +19,8 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          version: "0.7.5"
-          python-version: "3.10"
+          version: "0.11.6"
+          python-version: "3.13"
 
       - name: Install betterproto2
         working-directory: ./betterproto2

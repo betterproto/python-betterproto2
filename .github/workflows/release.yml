@@ -21,13 +21,13 @@ jobs:
       url: https://pypi.org/p/betterproto2
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          version: "0.7.5"
-          python-version: "3.10"
+          version: "0.11.6"
+          python-version: "3.13"
 
       - name: Build package
         working-directory: ./betterproto2
@@ -51,19 +51,19 @@ jobs:
       url: https://pypi.org/p/betterproto2_compiler
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          version: "0.7.5"
-          python-version: "3.10"
+          version: "0.11.6"
+          python-version: "3.13"
 
       - name: Build package
         working-directory: ./betterproto2_compiler
         run: uv build
 
       - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1.12
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: betterproto2_compiler/dist
