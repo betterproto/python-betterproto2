@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "uv"
+    directory: "/betterproto2"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "uv"
+    directory: "/betterproto2_compiler"
+    schedule:
+      interval: "monthly"
