@@ -1,0 +1,6 @@
+hangelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - dependabot[bot]
