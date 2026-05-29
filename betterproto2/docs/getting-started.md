@@ -225,6 +225,12 @@ Message objects include `betterproto.Message.to_json` and
 `betterproto.Message.to_dict`, `betterproto.Message.from_dict` for
 converting back and forth from JSON serializable dicts.
 
+`google.protobuf.Timestamp` fields use timezone-aware `datetime.datetime`
+values. When binary or JSON data contains sub-microsecond precision,
+betterproto2 preserves it by returning a `betterproto2.nano_datetime.NanoDatetime`,
+which is a `datetime.datetime` subclass. Timestamp JSON accepts and emits
+RFC 3339 strings with up to 9 fractional second digits.
+
 For compatibility the default is to convert field names to
 `betterproto.Casing.CAMEL`. You can control this behavior by passing a
 different casing value, e.g:
