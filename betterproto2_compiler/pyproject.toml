@@ -39,7 +39,7 @@ dev = [
     "grpcio-tools>=1.54.2,<2",
     "poethepoet>=0.32.2,<0.46",
     "pyright>=1.1.391,<2",
-    "ipykernel>=6.29.5,<7",
+    "ipykernel>=6.29.5,<8",
     "ruff==0.15.12",
 ]
 test = [
