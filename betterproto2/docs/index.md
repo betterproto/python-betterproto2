@@ -12,5 +12,6 @@ Python code, using modern language features.
 
 - Generated messages are both binary & JSON serializable
 - Messages use relevant python types, e.g. ``Enum``, ``datetime`` and ``timedelta`` objects
+- ``Timestamp`` values preserve nanosecond precision when binary or JSON data contains it
 - ``async``/``await`` support for gRPC Clients and Servers
 - Generates modern, readable, idiomatic python code

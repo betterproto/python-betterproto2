@@ -14,7 +14,7 @@ This project aims to provide an improved experience when using Protobuf / gRPC i
   - Enums
   - Dataclasses
   - `async`/`await`
-  - Timezone-aware `datetime` and `timedelta` objects
+  - Timezone-aware `datetime` and `timedelta` objects, including nanosecond-precision `Timestamp` values
   - Relative imports
   - Mypy type checking
 - [Pydantic Models](https://docs.pydantic.dev/) generation

@@ -5,6 +5,7 @@ from datetime import (
 
 import pytest
 
+from betterproto2.nano_datetime import NanoDatetime
 from tests.outputs.google.google.protobuf import Timestamp
 
 
@@ -34,3 +35,49 @@ def test_invalid_datetime():
     """
     with pytest.raises(ValueError):
         Timestamp.from_datetime(datetime.now())
+
+
+def test_timestamp_to_datetime_preserves_nanoseconds():
+    ts = Timestamp(seconds=1, nanos=123456789)
+
+    dt = ts.to_datetime()
+
+    assert isinstance(dt, NanoDatetime)
+    assert dt.microsecond == 123456
+    assert dt.nanosecond_remainder == 789
+    assert dt.total_nanoseconds == 123456789
+    assert Timestamp.from_datetime(dt) == ts
+
+
+def test_timestamp_to_datetime_preserves_negative_nanoseconds():
+    ts = Timestamp(seconds=-1, nanos=999999999)
+
+    dt = ts.to_datetime()
+
+    assert isinstance(dt, NanoDatetime)
+    assert dt == NanoDatetime(
+        1969,
+        12,
+        31,
+        23,
+        59,
+        59,
+        999999,
+        tzinfo=timezone.utc,
+        nanosecond_remainder=999,
+    )
+    assert Timestamp.from_datetime(dt) == ts
+
+
+def test_timestamp_dict_preserves_nanoseconds():
+    ts = Timestamp.from_dict("1970-01-01T00:00:01.123456789Z")
+
+    assert ts == Timestamp(seconds=1, nanos=123456789)
+    assert ts.to_dict() == "1970-01-01T00:00:01.123456789Z"
+
+
+def test_timestamp_dict_preserves_nanoseconds_with_offset():
+    ts = Timestamp.from_dict("1970-01-01T01:00:01.123456789+01:00")
+
+    assert ts == Timestamp(seconds=1, nanos=123456789)
+    assert ts.to_dict() == "1970-01-01T00:00:01.123456789Z"
