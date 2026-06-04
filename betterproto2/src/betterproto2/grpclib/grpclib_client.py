@@ -30,10 +30,31 @@ class ServiceStub(ABC):
         deadline: Optional["Deadline"] = None,
         metadata: MetadataLike | None = None,
     ) -> None:
-        self.channel = channel
-        self.timeout = timeout
-        self.deadline = deadline
-        self.metadata = metadata
+        # These are stored under private names and exposed through read-only
+        # properties so a generated RPC method whose name collides with one of
+        # them (e.g. an RPC named ``Metadata``) is not shadowed. A subclass
+        # method overrides the base property in the MRO, whereas an instance
+        # attribute would take precedence over the method.
+        self._channel = channel
+        self._timeout = timeout
+        self._deadline = deadline
+        self._metadata = metadata
+
+    @property
+    def channel(self) -> "Channel":
+        return self._channel
+
+    @property
+    def timeout(self) -> float | None:
+        return self._timeout
+
+    @property
+    def deadline(self) -> Optional["Deadline"]:
+        return self._deadline
+
+    @property
+    def metadata(self) -> MetadataLike | None:
+        return self._metadata
 
     def __resolve_request_kwargs(
         self,
@@ -42,9 +63,9 @@ class ServiceStub(ABC):
         metadata: MetadataLike | None,
     ):
         return {
-            "timeout": self.timeout if timeout is None else timeout,
-            "deadline": self.deadline if deadline is None else deadline,
-            "metadata": self.metadata if metadata is None else metadata,
+            "timeout": self._timeout if timeout is None else timeout,
+            "deadline": self._deadline if deadline is None else deadline,
+            "metadata": self._metadata if metadata is None else metadata,
         }
 
     async def _unary_unary(
@@ -58,7 +79,7 @@ class ServiceStub(ABC):
         metadata: MetadataLike | None = None,
     ) -> "T":
         """Make a unary request and return the response."""
-        async with self.channel.request(
+        async with self._channel.request(
             route,
             grpclib.const.Cardinality.UNARY_UNARY,
             type(request),
@@ -81,7 +102,7 @@ class ServiceStub(ABC):
         metadata: MetadataLike | None = None,
     ) -> AsyncIterator["T"]:
         """Make a unary request and return the stream response iterator."""
-        async with self.channel.request(
+        async with self._channel.request(
             route,
             grpclib.const.Cardinality.UNARY_STREAM,
             type(request),
@@ -104,7 +125,7 @@ class ServiceStub(ABC):
         metadata: MetadataLike | None = None,
     ) -> "T":
         """Make a stream request and return the response."""
-        async with self.channel.request(
+        async with self._channel.request(
             route,
             grpclib.const.Cardinality.STREAM_UNARY,
             request_type,
@@ -132,7 +153,7 @@ class ServiceStub(ABC):
         Make a stream request and return an AsyncIterator to iterate over response
         messages.
         """
-        async with self.channel.request(
+        async with self._channel.request(
             route,
             grpclib.const.Cardinality.STREAM_STREAM,
             request_type,
