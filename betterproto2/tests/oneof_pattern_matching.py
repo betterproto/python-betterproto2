@@ -7,7 +7,7 @@ def test_oneof_pattern_matching():
     msg = OneofMsg(y="test1", b="test2")
 
     match msg:
-        case OneofMsg(x=int(_)):
+        case OneofMsg(x=_):
             pytest.fail("Matched 'bar' instead of 'baz'")
         case OneofMsg(y=v):
             assert v == "test1"
