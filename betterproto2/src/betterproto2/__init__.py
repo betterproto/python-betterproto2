@@ -716,6 +716,9 @@ class Message(ABC):
         try:
             return cls._betterproto_meta
         except AttributeError:
+            if cls is Message:
+                # We can't generate metadata for the base class, only subclasses.
+                return None # type: ignore
             cls._betterproto_meta = ProtoClassMetadata(cls)
             return cls._betterproto_meta
 
