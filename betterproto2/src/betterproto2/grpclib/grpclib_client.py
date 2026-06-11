@@ -144,9 +144,14 @@ class ServiceStub(ABC):
             try:
                 async for response in stream:
                     yield response
-            except:
+            finally:
                 sending_task.cancel()
-                raise
+                try:
+                    await sending_task
+                except asyncio.CancelledError:
+                    pass
+                if not stream._end_done:
+                    await stream.end()
 
     @staticmethod
     async def _send_messages(stream, messages: MessageSource):
