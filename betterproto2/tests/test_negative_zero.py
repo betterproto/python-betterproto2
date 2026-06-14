@@ -17,7 +17,7 @@ from betterproto2 import OutputFormat
 
 
 def _make_cls(proto_type: str):
-    @dataclass(eq=True)
+    @dataclass(eq=False, repr=False)
     class Msg(betterproto2.Message):
         v: float = betterproto2.field(1, proto_type)
 
