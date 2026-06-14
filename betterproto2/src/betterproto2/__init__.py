@@ -378,6 +378,17 @@ def _dump_float(value: float) -> float | str:
     return value
 
 
+def _is_negative_zero(value: object) -> bool:
+    """Return whether ``value`` is IEEE 754 negative zero.
+
+    ``-0.0`` compares equal to the ``0.0`` field default and is falsy, so the
+    naive "is this the default value?" checks treat it as unset and drop it.
+    It is a distinct value that the reference protobuf implementation
+    serializes, so the serializers must keep its sign.
+    """
+    return isinstance(value, float) and value == 0.0 and math.copysign(1.0, value) == -1.0
+
+
 def load_varint(stream: SupportsRead[bytes]) -> tuple[int, bytes]:
     """
     Load a single varint value from a stream. Returns the value and the raw bytes read.
@@ -586,7 +597,7 @@ def _value_to_dict(
         return value.to_dict(**kwargs), False
 
     if output_format == OutputFormat.PYTHON:
-        return value, not bool(value)
+        return value, not bool(value) and not _is_negative_zero(value)
 
     # PROTO_JSON
     if proto_type in INT_64_TYPES:
@@ -602,7 +613,7 @@ def _value_to_dict(
 
         return enum_value.proto_name or enum_value.name, not bool(value)
     if proto_type in (TYPE_FLOAT, TYPE_DOUBLE):
-        return _dump_float(value), not bool(value)
+        return _dump_float(value), not bool(value) and not _is_negative_zero(value)
     return value, not bool(value)
 
 
@@ -774,8 +785,10 @@ class Message(ABC):
                     # wrapper types and proto3 field presence/optional fields.
                     continue
 
-                if value == self._get_field_default(field_name):
-                    # Default (zero) values are not serialized.
+                if value == self._get_field_default(field_name) and not _is_negative_zero(value):
+                    # Default (zero) values are not serialized. Negative zero
+                    # equals the default but is a distinct value that the
+                    # reference implementation serializes, so it is kept.
                     continue
 
                 if meta.repeated:
