@@ -642,6 +642,13 @@ def _value_from_dict(value: Any, meta: FieldMetadata, field_type: type, ignore_u
         return int(value)
 
     if meta.proto_type == TYPE_BYTES:
+        # The proto3 JSON mapping accepts both standard and URL-safe base64,
+        # with or without padding. ``b64decode`` only handles the standard
+        # alphabet and silently drops the URL-safe ``-``/``_`` characters
+        # (corrupting the value), so normalize to the standard alphabet and
+        # restore the optional padding before decoding.
+        value = value.replace("-", "+").replace("_", "/")
+        value += "=" * (-len(value) % 4)
         return b64decode(value)
 
     if meta.proto_type in (TYPE_FLOAT, TYPE_DOUBLE):
