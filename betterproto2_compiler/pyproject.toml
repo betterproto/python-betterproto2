@@ -162,7 +162,7 @@ cmd = "ruff check src tests"
 help = "Check the code with the Ruff linter"
 
 [tool.poe.tasks.check-proto]
-cmd = "buf format --diff tests/inputs"
+cmd = "buf format --exit-code tests/inputs"
 help = "Check that .proto files are formatted"
 
 # python -m grpc.tools.protoc \
