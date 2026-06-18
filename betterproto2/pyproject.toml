@@ -33,7 +33,7 @@ dev = [
     "pre-commit>=4.2.0,<5",
     "pyright>=1.1.401",
     # The Ruff version is pinned. To update it, also update it in .pre-commit-config.yaml
-    "ruff==0.14.2",
+    "ruff==0.15.15",
 ]
 test = [
     "cachelib>=0.13.0",
