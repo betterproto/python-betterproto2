@@ -83,11 +83,6 @@ python_classes = ""
 norecursedirs = "**/output_*"
 addopts = "-p no:warnings"
 
-# Dev workflow tasks
-[tool.poe.tasks.get-local-compiled-tests]
-# task useful for local development. Copies the compiled test files from the compiler folder to the tests folder
-shell = "rm -rf tests/outputs* && cp -r ../betterproto2_compiler/tests/outputs tests"
-
 [tool.poe.tasks.test]
 cmd = "pytest"
 help = "Run tests"
