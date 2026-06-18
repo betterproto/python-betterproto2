@@ -25,23 +25,6 @@ pydantic = ["pydantic>=2.11.5"]
 protobuf = ["protobuf>=5.29.3"]
 all = ["grpclib>=0.4.8", "grpcio>=1.72.1", "pydantic>=2.11.5", "protobuf>=5.29.3"]
 
-[dependency-groups]
-dev = [
-    "ipykernel>=6.29.5",
-    "mkdocs-material>=9.6.14",
-    "mkdocstrings[python]>=0.29.1",
-    "pyright>=1.1.401",
-    "ruff==0.15.17",
-]
-test = [
-    "cachelib>=0.13.0",
-    "poethepoet>=0.34.0",
-    "pytest>=8.4.0",
-    "pytest-asyncio>=1.0.0",
-    "pytest-cov>=6.1.1",
-    "pytest-mock>=3.14.1",
-]
-
 [tool.uv]
 package = true
 default-groups = "all"

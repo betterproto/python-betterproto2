@@ -12,6 +12,26 @@ members = [
     "betterproto2-compiler",
 ]
 
+[manifest.dependency-groups]
+dev = [
+    { name = "buf-bin" },
+    { name = "grpcio-tools", specifier = ">=1.54.2,<2" },
+    { name = "ipykernel", specifier = ">=6.29.5" },
+    { name = "mkdocs-material", specifier = ">=9.6.14" },
+    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.29.1" },
+    { name = "poethepoet", specifier = ">=0.34.0,<0.47" },
+    { name = "pyright", specifier = ">=1.1.401,<2" },
+    { name = "ruff", specifier = "==0.15.17" },
+]
+test = [
+    { name = "cachelib", specifier = ">=0.13.0" },
+    { name = "protobuf", specifier = ">=5.29.3,<6" },
+    { name = "pytest", specifier = ">=8.4.0,<10" },
+    { name = "pytest-asyncio", specifier = ">=1.0.0" },
+    { name = "pytest-cov", specifier = ">=6.1.1" },
+    { name = "pytest-mock", specifier = ">=3.14.1" },
+]
+
 [[package]]
 name = "annotated-types"
 version = "0.7.0"
@@ -99,23 +119,6 @@ pydantic = [
     { name = "pydantic" },
 ]
 
-[package.dev-dependencies]
-dev = [
-    { name = "ipykernel" },
-    { name = "mkdocs-material" },
-    { name = "mkdocstrings", extra = ["python"] },
-    { name = "pyright" },
-    { name = "ruff" },
-]
-test = [
-    { name = "cachelib" },
-    { name = "poethepoet" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-cov" },
-    { name = "pytest-mock" },
-]
-
 [package.metadata]
 requires-dist = [
     { name = "grpcio", marker = "extra == 'all'", specifier = ">=1.72.1" },
@@ -131,23 +134,6 @@ requires-dist = [
 ]
 provides-extras = ["grpcio", "grpclib", "pydantic", "protobuf", "all"]
 
-[package.metadata.requires-dev]
-dev = [
-    { name = "ipykernel", specifier = ">=6.29.5" },
-    { name = "mkdocs-material", specifier = ">=9.6.14" },
-    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.29.1" },
-    { name = "pyright", specifier = ">=1.1.401" },
-    { name = "ruff", specifier = "==0.15.17" },
-]
-test = [
-    { name = "cachelib", specifier = ">=0.13.0" },
-    { name = "poethepoet", specifier = ">=0.34.0" },
-    { name = "pytest", specifier = ">=8.4.0" },
-    { name = "pytest-asyncio", specifier = ">=1.0.0" },
-    { name = "pytest-cov", specifier = ">=6.1.1" },
-    { name = "pytest-mock", specifier = ">=3.14.1" },
-]
-
 [[package]]
 name = "betterproto2-compiler"
 version = "0.10.1"
@@ -160,20 +146,6 @@ dependencies = [
     { name = "typing-extensions" },
 ]
 
-[package.dev-dependencies]
-dev = [
-    { name = "buf-bin" },
-    { name = "grpcio-tools" },
-    { name = "ipykernel" },
-    { name = "poethepoet" },
-    { name = "pyright" },
-    { name = "ruff" },
-]
-test = [
-    { name = "protobuf" },
-    { name = "pytest" },
-]
-
 [package.metadata]
 requires-dist = [
     { name = "betterproto2", editable = "betterproto2" },
@@ -181,20 +153,6 @@ requires-dist = [
     { name = "ruff", specifier = ">=0.9.3" },
     { name = "strenum", marker = "python_full_version == '3.10.*'", specifier = ">=0.4.15,<0.5" },
     { name = "typing-extensions", specifier = ">=4.7.1,<5" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "buf-bin" },
-    { name = "grpcio-tools", specifier = ">=1.54.2,<2" },
-    { name = "ipykernel", specifier = ">=6.29.5,<8" },
-    { name = "poethepoet", specifier = ">=0.32.2,<0.47" },
-    { name = "pyright", specifier = ">=1.1.391,<2" },
-    { name = "ruff", specifier = "==0.15.17" },
-]
-test = [
-    { name = "protobuf", specifier = ">=5.29.3,<6" },
-    { name = "pytest", specifier = ">=8.3.4,<10" },
 ]
 
 [[package]]
