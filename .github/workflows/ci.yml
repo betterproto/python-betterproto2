@@ -32,10 +32,6 @@ jobs:
         shell: bash
         run: uv run poe generate
 
-      - name: Move compiled files to betterproto2
-        shell: bash
-        run: cp -r betterproto2_compiler/tests/outputs betterproto2/tests
-
       - name: Execute test suite
         working-directory: ./betterproto2
         run: uv run poe test
@@ -141,10 +137,6 @@ jobs:
         working-directory: ./betterproto2_compiler
         shell: bash
         run: uv run poe generate
-
-      - name: Move compiled files to betterproto2
-        shell: bash
-        run: cp -r betterproto2_compiler/tests/outputs betterproto2/tests
 
       - name: Execute test suite
         working-directory: ./betterproto2

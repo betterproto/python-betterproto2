@@ -54,7 +54,7 @@ requires = ["uv_build>=0.9.7,<0.12"]
 build-backend = "uv_build"
 
 [tool.ruff]
-extend-exclude = ["tests/outputs", "src/betterproto2_compiler/lib"]
+extend-exclude = ["src/betterproto2_compiler/lib"]
 target-version = "py310"
 line-length = 120
 
