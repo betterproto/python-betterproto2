@@ -1165,7 +1165,8 @@ class Message(ABC):
 
             if meta.proto_type == TYPE_MESSAGE:
                 if meta.repeated:
-                    value = [_value_from_dict(item, meta, field_cls, ignore_unknown_fields) for item in value]
+                    # TODO: fix type checking
+                    value = [_value_from_dict(item, meta, field_cls, ignore_unknown_fields) for item in value]  # type: ignore
                 else:
                     value = _value_from_dict(value, meta, field_cls, ignore_unknown_fields)
 
@@ -1183,7 +1184,8 @@ class Message(ABC):
                 }
 
             elif meta.repeated:
-                value = [_value_from_dict(item, meta, field_cls, ignore_unknown_fields) for item in value]
+                # TODO: fix type checking
+                value = [_value_from_dict(item, meta, field_cls, ignore_unknown_fields) for item in value]  # type: ignore
 
             else:
                 value = _value_from_dict(value, meta, field_cls, ignore_unknown_fields)
