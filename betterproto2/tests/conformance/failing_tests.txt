@@ -4,8 +4,6 @@ Required.Proto3.DurationProtoNanosTooLarge.JsonOutput # Should have failed to se
 Required.Proto3.DurationProtoNanosTooSmall.JsonOutput # Should have failed to serialize, but didn't.
 Required.Proto3.DurationProtoNanosWrongSign.JsonOutput # Should have failed to serialize, but didn't.
 Required.Proto3.DurationProtoNanosWrongSignNegativeSecs.JsonOutput # Should have failed to serialize, but didn't.
-Required.Proto3.JsonInput.AnyWithFieldMask.JsonOutput # Failed to parse input or produce output.
-Required.Proto3.JsonInput.AnyWithFieldMask.ProtobufOutput # Failed to parse input or produce output.
 Required.Proto3.JsonInput.AnyWithNoType.JsonOutput # Failed to parse input or produce output.
 Required.Proto3.JsonInput.AnyWithNoType.ProtobufOutput # Failed to parse input or produce output.
 Required.Proto3.JsonInput.BoolMapEscapedKey.ProtobufOutput # Failed to parse input or produce output.
@@ -23,10 +21,6 @@ Required.Proto3.JsonInput.DurationNegativeSeconds.JsonOutput # Failed to parse i
 Required.Proto3.JsonInput.DurationNegativeSeconds.ProtobufOutput # Failed to parse input or produce output.
 Required.Proto3.JsonInput.DurationRepeatedValue.JsonOutput # Failed to parse input or produce output.
 Required.Proto3.JsonInput.DurationRepeatedValue.ProtobufOutput # Failed to parse input or produce output.
-Required.Proto3.JsonInput.EmptyFieldMask.JsonOutput # Failed to parse input or produce output.
-Required.Proto3.JsonInput.EmptyFieldMask.ProtobufOutput # Failed to parse input or produce output.
-Required.Proto3.JsonInput.FieldMask.JsonOutput # Failed to parse input or produce output.
-Required.Proto3.JsonInput.FieldMask.ProtobufOutput # Failed to parse input or produce output.
 Required.Proto3.JsonInput.FieldNameInLowerCamelCase.Validator # Expected JSON payload but got type 1
 Required.Proto3.JsonInput.FieldNameInSnakeCase.JsonOutput # Failed to parse input or produce output.
 Required.Proto3.JsonInput.FieldNameInSnakeCase.ProtobufOutput # Failed to parse input or produce output.
