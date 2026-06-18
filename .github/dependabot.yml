@@ -6,11 +6,6 @@ updates:
       interval: "monthly"
 
   - package-ecosystem: "uv"
-    directory: "/betterproto2"
-    schedule:
-      interval: "monthly"
-
-  - package-ecosystem: "uv"
-    directory: "/betterproto2_compiler"
+    directory: "/"
     schedule:
       interval: "monthly"
