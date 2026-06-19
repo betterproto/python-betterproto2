@@ -28,26 +28,16 @@ jobs:
       run: uv sync --locked --all-extras --all-groups
 
     - name: Check formatting and linting (betterproto2)
-      working-directory: ./betterproto2
-      shell: bash
-      run: uv run poe check
+      run: uv run poe check-lib
 
     - name: Check formatting and linting (betterproto2_compiler)
-      working-directory: ./betterproto2_compiler
-      shell: bash
-      run: uv run poe check
+      run: uv run poe check-plugin
 
     - name: Check proto formatting
-      working-directory: ./betterproto2_compiler
-      shell: bash
-      run: uv run poe check-proto
+      run: uv run poe check-proto-plugin
 
-    - name: Pyright
-      working-directory: ./betterproto2
-      shell: bash
-      run: uv run poe typecheck
+    - name: Pyright (betterproto2)
+      run: uv run poe typecheck-lib
 
-    - name: Pyright
-      working-directory: ./betterproto2_compiler
-      shell: bash
-      run: uv run poe typecheck
+    - name: Pyright (betterproto2_compiler)
+      run: uv run poe typecheck-plugin

@@ -12,6 +12,9 @@ members = [
     "betterproto2-compiler",
 ]
 
+[manifest.dependency-groups]
+dev = [{ name = "poethepoet", specifier = ">=0.34.0" }]
+
 [[package]]
 name = "annotated-types"
 version = "0.7.0"
