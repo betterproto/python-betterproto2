@@ -35,7 +35,7 @@ protoc-gen-python_betterproto2 = "betterproto2_compiler.plugin:main"
 dev = [
     "buf-bin",
     "grpcio-tools>=1.54.2,<2",
-    "poethepoet>=0.32.2,<0.47",
+    "poethepoet>=0.47.1,<0.48",
     "pyright>=1.1.411,<2",
     "ipykernel>=6.29.5,<8",
     "ruff==0.15.17",
