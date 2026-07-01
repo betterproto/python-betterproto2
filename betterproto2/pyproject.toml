@@ -31,7 +31,7 @@ dev = [
     "mkdocs-material>=9.6.14",
     "mkdocstrings[python]>=0.29.1",
     "pyright>=1.1.411",
-    "ruff==0.15.17",
+    "ruff==0.15.20",
 ]
 test = [
     "cachelib>=0.13.0",
