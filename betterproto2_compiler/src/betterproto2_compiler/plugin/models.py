@@ -38,7 +38,7 @@ from betterproto2_compiler.compile.naming import (
     pythonize_field_name,
     pythonize_method_name,
 )
-from betterproto2_compiler.known_types import KNOWN_METHODS, WRAPPED_TYPES
+from betterproto2_compiler.known_types import KNOWN_IMPORTS, KNOWN_METHODS, WRAPPED_TYPES
 from betterproto2_compiler.lib.google.protobuf import (
     DescriptorProto,
     EnumDescriptorProto,
@@ -241,6 +241,15 @@ class OutputTemplate:
 
         return "\n".join(descriptors)
 
+    @property
+    def custom_imports(self) -> list[str]:
+        imports: set[str] = set()
+
+        for message in self.messages.values():
+            imports.update(message.custom_imports)
+
+        return sorted(imports)
+
 
 @dataclass(kw_only=True)
 class MessageCompiler(ProtoContentBase):
@@ -291,6 +300,13 @@ class MessageCompiler(ProtoContentBase):
             methods_source.append(source.strip())
 
         return methods_source
+
+    @property
+    def custom_imports(self) -> tuple[str, ...]:
+        """
+        Return imports required by custom known-type methods.
+        """
+        return KNOWN_IMPORTS.get((self.source_file.package, self.py_name), ())
 
     @property
     def descriptor_name(self) -> str:

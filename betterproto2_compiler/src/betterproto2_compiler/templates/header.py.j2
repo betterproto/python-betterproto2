@@ -14,7 +14,6 @@ __all__ = (
 import re
 import builtins
 import datetime
-import dateutil.parser
 import warnings
 from collections.abc import AsyncIterable, AsyncIterator, Iterable, Iterator
 import typing
@@ -34,6 +33,9 @@ from betterproto2 import grpclib as betterproto2_grpclib
 import grpc
 import grpclib
 from google.protobuf.descriptor import Descriptor, EnumDescriptor
+{% for custom_import in output_file.custom_imports %}
+{{ custom_import }}
+{% endfor %}
 
 {# Import the message pool of the generated code. #}
 {% if output_file.package %}

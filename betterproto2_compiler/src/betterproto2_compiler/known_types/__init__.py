@@ -17,8 +17,7 @@ from .struct import ListValue, Struct, Value
 from .timestamp import Timestamp
 
 # For each (package, message name), lists the methods that should be added to the message definition.
-# The source code of the method is read from the `known_types` folder. If imports are needed, they can be directly added
-# to the template file: they will automatically be removed if not necessary.
+# The source code of the method is read from the `known_types` folder.
 KNOWN_METHODS: dict[tuple[str, str], list[Callable]] = {
     ("google.protobuf", "Any"): [Any.pack, Any.unpack, Any.to_dict, Any.from_dict],
     ("google.protobuf", "Timestamp"): [
@@ -105,6 +104,11 @@ KNOWN_METHODS: dict[tuple[str, str], list[Callable]] = {
         Value.from_dict,
         Value.to_dict,
     ],
+}
+
+# For each (package, message name), lists imports required by known-type methods.
+KNOWN_IMPORTS: dict[tuple[str, str], tuple[str, ...]] = {
+    ("google.protobuf", "Timestamp"): ("from betterproto2.nano_datetime import NanoDatetime",),
 }
 
 # A wrapped type is the type of a message that is automatically replaced by a known Python type.
