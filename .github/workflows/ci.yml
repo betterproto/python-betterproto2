@@ -28,13 +28,10 @@ jobs:
         run: uv sync --locked
 
       - name: Compile test files
-        working-directory: ./betterproto2_compiler
-        shell: bash
-        run: uv run poe generate
+        run: uv run poe generate-plugin
 
       - name: Execute test suite
-        working-directory: ./betterproto2
-        run: uv run poe test
+        run: uv run poe test-lib
 
 
       - name: Add Pydantic
@@ -42,8 +39,7 @@ jobs:
         run: uv sync --locked --extra=pydantic
 
       - name: Execute test suite
-        working-directory: ./betterproto2
-        run: uv run poe test
+        run: uv run poe test-lib
 
 
       - name: Add all but Pydantic
@@ -51,8 +47,7 @@ jobs:
         run: uv sync --locked --extra=grpclib --extra=grpcio --extra=protobuf
 
       - name: Execute test suite
-        working-directory: ./betterproto2
-        run: uv run poe test
+        run: uv run poe test-lib
 
 
       - name: Add grpclib
@@ -60,8 +55,7 @@ jobs:
         run: uv sync --locked --extra=grpclib
 
       - name: Execute test suite
-        working-directory: ./betterproto2
-        run: uv run poe test
+        run: uv run poe test-lib
 
 
       - name: Add all but grpclib
@@ -69,8 +63,7 @@ jobs:
         run: uv sync --locked --extra=pydantic --extra=grpcio --extra=protobuf
 
       - name: Execute test suite
-        working-directory: ./betterproto2
-        run: uv run poe test
+        run: uv run poe test-lib
 
 
       - name: Add grpcio
@@ -78,8 +71,7 @@ jobs:
         run: uv sync --locked --extra=grpcio
 
       - name: Execute test suite
-        working-directory: ./betterproto2
-        run: uv run poe test
+        run: uv run poe test-lib
 
 
       - name: Add all but grpcio
@@ -87,8 +79,7 @@ jobs:
         run: uv sync --locked --extra=pydantic --extra=grpclib --extra=protobuf
 
       - name: Execute test suite
-        working-directory: ./betterproto2
-        run: uv run poe test
+        run: uv run poe test-lib
 
 
       - name: Add protobuf
@@ -96,8 +87,7 @@ jobs:
         run: uv sync --locked --extra=protobuf
 
       - name: Execute test suite
-        working-directory: ./betterproto2
-        run: uv run poe test
+        run: uv run poe test-lib
 
 
       - name: Add all but protobuf
@@ -105,8 +95,7 @@ jobs:
         run: uv sync --locked --extra=pydantic --extra=grpclib --extra=grpcio
 
       - name: Execute test suite
-        working-directory: ./betterproto2
-        run: uv run poe test
+        run: uv run poe test-lib
 
   tests:
     name: ${{ matrix.os }} / ${{ matrix.python-version }}
@@ -129,19 +118,16 @@ jobs:
         run: uv sync --locked --all-extras --all-groups
 
       - name: Test betterproto2_compiler
-        working-directory: ./betterproto2_compiler
         shell: bash
-        run: uv run poe test
+        run: uv run poe test-plugin
 
       - name: Compile test files
-        working-directory: ./betterproto2_compiler
         shell: bash
-        run: uv run poe generate
+        run: uv run poe generate-plugin
 
       - name: Execute test suite
-        working-directory: ./betterproto2
         shell: bash
-        run: uv run poe test
+        run: uv run poe test-lib
 
       # Run conformance test on all Ubuntu and MacOS versions
       - name: Install Node.js

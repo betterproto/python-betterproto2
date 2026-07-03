@@ -1,2 +1,123 @@
 [tool.uv.workspace]
 members = ["betterproto2", "betterproto2_compiler"]
+
+[dependency-groups]
+dev = ["poethepoet>=0.34.0"]
+
+# ── Runtime library (betterproto2) ─────────────────────────────────────────
+
+[tool.poe.tasks.test-lib]
+cmd = "pytest"
+cwd = "betterproto2"
+help = "Run runtime library tests"
+
+[tool.poe.tasks.test-lib-cov]
+cmd = "pytest --cov=betterproto2 --cov-report=term --cov-report=html tests/"
+cwd = "betterproto2"
+help = "Run runtime library tests with coverage"
+
+[tool.poe.tasks.typecheck-lib]
+cmd = "pyright src"
+cwd = "betterproto2"
+help = "Typecheck the runtime library with Pyright"
+
+[tool.poe.tasks.format-lib]
+sequence = ["_format-lib", "_sort-imports-lib"]
+help = "Format the runtime library source code and sort imports"
+
+[tool.poe.tasks.check-lib]
+sequence = ["_check-format-lib", "_check-lib"]
+help = "Check that the runtime library source code is formatted and imports sorted"
+
+[tool.poe.tasks._format-lib]
+cmd = "ruff format src tests"
+cwd = "betterproto2"
+
+[tool.poe.tasks._sort-imports-lib]
+cmd = "ruff check --select I --fix src tests"
+cwd = "betterproto2"
+
+[tool.poe.tasks._check-format-lib]
+cmd = "ruff format --diff src tests"
+cwd = "betterproto2"
+
+[tool.poe.tasks._check-lib]
+cmd = "ruff check src tests"
+cwd = "betterproto2"
+
+[tool.poe.tasks.clean-lib]
+shell = """
+rm -rf .coverage .mypy_cache .pytest_cache dist betterproto2.egg-info testsoutput_*
+find . -type d -name __pycache__ -exec rm -rf {} +
+"""
+cwd = "betterproto2"
+help = "Clean generated files from the runtime workspace"
+
+[tool.poe.tasks.serve-docs-lib]
+cmd = "mkdocs serve"
+cwd = "betterproto2"
+help = "Serve the runtime library documentation locally"
+
+# ── Compiler plugin (betterproto2_compiler) ────────────────────────────────
+
+[tool.poe.tasks.test-plugin]
+cmd = "pytest"
+cwd = "betterproto2_compiler"
+help = "Run compiler tests"
+
+[tool.poe.tasks.generate-plugin]
+sequence = ["_generate-tests-plugin"]
+help = "Generate test cases"
+
+[tool.poe.tasks._generate-tests-plugin]
+script = "tests.generate:main"
+cwd = "betterproto2_compiler"
+
+[tool.poe.tasks.typecheck-plugin]
+cmd = "pyright src"
+cwd = "betterproto2_compiler"
+help = "Typecheck the compiler with Pyright"
+
+[tool.poe.tasks.format-plugin]
+sequence = ["_format-plugin", "_sort-imports-plugin"]
+help = "Format the compiler source code and sort imports"
+
+[tool.poe.tasks.check-plugin]
+sequence = ["_check-format-plugin", "_check-ruff-lint-plugin"]
+help = "Check that the compiler source code is formatted and passes the linter"
+
+[tool.poe.tasks._format-plugin]
+cmd = "ruff format src tests"
+cwd = "betterproto2_compiler"
+
+[tool.poe.tasks._sort-imports-plugin]
+cmd = "ruff check --select I --fix src tests"
+cwd = "betterproto2_compiler"
+
+[tool.poe.tasks._check-format-plugin]
+cmd = "ruff format --diff src tests"
+cwd = "betterproto2_compiler"
+
+[tool.poe.tasks._check-ruff-lint-plugin]
+cmd = "ruff check src tests"
+cwd = "betterproto2_compiler"
+
+[tool.poe.tasks.check-proto-plugin]
+cmd = "buf format --exit-code tests/inputs"
+cwd = "betterproto2_compiler"
+help = "Check that .proto files are formatted"
+
+# ── Aggregate ──────────────────────────────────────────────────────────────
+
+[tool.poe.tasks.all]
+sequence = [
+    "generate-plugin",
+    "typecheck-lib",
+    "typecheck-plugin",
+    "check-lib",
+    "check-plugin",
+    "check-proto-plugin",
+    "test-lib",
+    "test-plugin",
+]
+help = "Run all CI steps end-to-end"
