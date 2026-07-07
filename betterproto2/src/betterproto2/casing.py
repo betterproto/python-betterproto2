@@ -1,8 +1,6 @@
 import keyword
 import re
 
-# TODO it should be possible to delete this file
-
 # Word delimiters and symbols that will not be preserved when re-casing.
 # language=PythonRegExp
 SYMBOLS = "[^a-zA-Z0-9]*"
@@ -23,43 +21,25 @@ def safe_snake_case(value: str) -> str:
     return value
 
 
-def snake_case(value: str, strict: bool = True) -> str:
+def snake_case(name: str) -> str:
     """
     Join words with an underscore into lowercase and remove symbols.
-
-    Parameters
-    -----------
-    value: :class:`str`
-        The value to convert.
-    strict: :class:`bool`
-        Whether or not to force single underscores.
-
-    Returns
-    --------
-    :class:`str`
-        The value in snake_case.
     """
 
-    def substitute_word(symbols: str, word: str, is_start: bool) -> str:
-        if not word:
-            return ""
-        if strict:
-            delimiter_count = 0 if is_start else 1  # Single underscore if strict.
-        elif is_start:
-            delimiter_count = len(symbols)
-        elif word.isupper() or word.islower():
-            delimiter_count = max(1, len(symbols))  # Preserve all delimiters if not strict.
-        else:
-            delimiter_count = len(symbols) + 1  # Extra underscore for leading capital.
+    # If there are already underscores in the name, don't break it
+    if "_" in name or not any([c.isupper() for c in name]):
+        return name
 
-        return ("_" * delimiter_count) + word.lower()
+    # Add an underscore before capital letters
+    name = re.sub(r"(?<=[a-z0-9])([A-Z])", r"_\1", name)
 
-    snake = re.sub(
-        f"(^)?({SYMBOLS})({WORD_UPPER}|{WORD})",
-        lambda groups: substitute_word(groups[2], groups[3], groups[1] is not None),
-        value,
-    )
-    return snake
+    # Add an underscore before capital letters following an acronym
+    name = re.sub(r"(?<=[A-Z])([A-Z])(?=[a-z])", r"_\1", name)
+
+    # Add an underscore before digits
+    name = re.sub(r"(?<=[a-zA-Z])([0-9])", r"_\1", name)
+
+    return name.lower()
 
 
 def pascal_case(value: str, strict: bool = True) -> str:
