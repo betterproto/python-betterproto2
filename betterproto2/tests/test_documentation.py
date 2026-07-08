@@ -60,3 +60,13 @@ Simple quotes are not escaped "
     Simple quotes are not escaped "
     """
         )
+
+
+def test_help(requires_grpclib) -> None:
+    """Test that help(Foo) doesn't trigger an error."""
+    from .outputs.documentation.documentation import Test
+
+    # help(Test) triggers help(Message)
+    # which inspects the class attribute Message._betterproto
+    # which is only supposed to be defined on subclasses of Message.
+    help(Test)
