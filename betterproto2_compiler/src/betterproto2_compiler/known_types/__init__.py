@@ -2,6 +2,7 @@ from collections.abc import Callable
 
 from .any import Any
 from .duration import Duration
+from .field_mask import FieldMask
 from .google_values import (
     BoolValue,
     BytesValue,
@@ -92,6 +93,12 @@ KNOWN_METHODS: dict[tuple[str, str], list[Callable]] = {
         BytesValue.to_dict,
         BytesValue.from_wrapped,
         BytesValue.to_wrapped,
+    ],
+    ("google.protobuf", "FieldMask"): [
+        FieldMask._path_snake_to_camel,
+        FieldMask._path_camel_to_snake,
+        FieldMask.from_dict,
+        FieldMask.to_dict,
     ],
     ("google.protobuf", "Struct"): [
         Struct.from_dict,
