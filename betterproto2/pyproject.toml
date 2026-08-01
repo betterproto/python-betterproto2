@@ -28,7 +28,7 @@ all = ["grpclib>=0.4.8", "grpcio>=1.72.1", "pydantic>=2.11.5", "protobuf>=5.29.3
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
-    "mkdocs-material>=9.6.14",
+    "mkdocs-material>=9.7.7",
     "mkdocstrings[python]>=1.0.4",
     "pyright>=1.1.411",
     "ruff==0.15.20",
