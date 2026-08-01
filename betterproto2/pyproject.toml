@@ -47,7 +47,7 @@ package = true
 default-groups = "all"
 
 [build-system]
-requires = ["uv_build>=0.9.7,<0.12"]
+requires = ["uv_build>=0.12.0,<0.13"]
 build-backend = "uv_build"
 
 [tool.ruff]
