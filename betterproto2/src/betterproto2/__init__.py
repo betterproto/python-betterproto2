@@ -1019,7 +1019,13 @@ class Message(ABC):
         :class:`Message`
             The initialized message.
         """
+        # Do not leave the parameter named ``data`` in the local frame while
+        # constructing a Pydantic dataclass.  Generated modules commonly use
+        # a module-level ``data`` alias for nested enums; Pydantic's lazy
+        # forward-reference resolver can otherwise see this bytes argument
+        # and resolve ``data.SomeEnum`` against ``bytes``.
         with BytesIO(data) as stream:
+            del data
             return cls().load(stream)
 
     # For compatibility with other libraries.
