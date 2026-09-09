@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package descriptor_cross_package.use;
+
+import "dep.proto";
+
+message UseMsg {
+  descriptor_cross_package.dep.DepMsg dep = 1;
+}

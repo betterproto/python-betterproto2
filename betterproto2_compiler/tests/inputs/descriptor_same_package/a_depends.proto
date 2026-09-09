@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package descriptor_same_package;
+
+import "z_base.proto";
+
+message Depends {
+  Base base = 1;
+}

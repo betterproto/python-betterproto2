@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package descriptor_same_package;
+
+message Base {
+  string name = 1;
+}

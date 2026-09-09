@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package descriptor_cross_package.dep;
+
+message DepMsg {
+  string name = 1;
+}

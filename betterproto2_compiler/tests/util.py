@@ -24,7 +24,7 @@ async def protoc(
         "grpc.tools.protoc",
         f"--proto_path={resolved_path.as_posix()}",
         f"--{python_out_option}={resolved_output_dir.as_posix()}",
-        *[p.as_posix() for p in resolved_path.glob("*.proto")],
+        *[p.as_posix() for p in sorted(resolved_path.glob("*.proto"))],
     ]
 
     if not reference:
