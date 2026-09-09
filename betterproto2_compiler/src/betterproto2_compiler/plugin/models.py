@@ -32,7 +32,11 @@ from dataclasses import dataclass, field
 from betterproto2 import unwrap
 
 from betterproto2_compiler import casing
-from betterproto2_compiler.compile.importing import get_symbol_reference, get_type_reference, parse_source_type_name
+from betterproto2_compiler.compile.importing import (
+    get_symbol_reference,
+    get_type_reference,
+    parse_source_type_name,
+)
 from betterproto2_compiler.compile.naming import (
     pythonize_class_name,
     pythonize_field_name,
@@ -220,28 +224,28 @@ class OutputTemplate:
     def _ordered_input_files(self) -> list[FileDescriptorProto]:
         """Return input files in proto dependency order.
 
-        Files from other packages are skipped; those are loaded via
-        ``_descriptor_dependency_imports`` instead.
+        Files from other packages are skipped; those are loaded via ``_descriptor_dependency_imports`` instead.
         """
         by_name = {proto_file.name: proto_file for proto_file in self.input_files}
         ordered: list[FileDescriptorProto] = []
         visiting: set[str] = set()
         visited: set[str] = set()
 
-        def visit(name: str) -> None:
+        def _visit(name: str) -> None:
             if name in visited or name not in by_name:
                 return
             if name in visiting:
                 return
             visiting.add(name)
             for dep_name in by_name[name].dependency:
-                visit(dep_name)
+                _visit(dep_name)
             visiting.remove(name)
             visited.add(name)
             ordered.append(by_name[name])
 
         for proto_file in self.input_files:
-            visit(proto_file.name)
+            _visit(proto_file.name)
+
         return ordered
 
     def _descriptor_dependency_imports(self) -> list[str]:
