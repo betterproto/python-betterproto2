@@ -32,7 +32,11 @@ from dataclasses import dataclass, field
 from betterproto2 import unwrap
 
 from betterproto2_compiler import casing
-from betterproto2_compiler.compile.importing import get_type_reference, parse_source_type_name
+from betterproto2_compiler.compile.importing import (
+    get_symbol_reference,
+    get_type_reference,
+    parse_source_type_name,
+)
 from betterproto2_compiler.compile.naming import (
     pythonize_class_name,
     pythonize_field_name,
@@ -217,6 +221,68 @@ class OutputTemplate:
     def get_descriptor_name(self, source_file: FileDescriptorProto):
         return f"{source_file.name.replace('/', '_').replace('.', '_').upper()}_DESCRIPTOR"
 
+    def _ordered_input_files(self) -> list[FileDescriptorProto]:
+        """Return input files in proto dependency order.
+
+        Files from other packages are skipped; those are loaded via ``_descriptor_dependency_imports`` instead.
+        """
+        by_name = {proto_file.name: proto_file for proto_file in self.input_files}
+        ordered: list[FileDescriptorProto] = []
+        visiting: set[str] = set()
+        visited: set[str] = set()
+
+        def _visit(name: str) -> None:
+            if name in visited or name not in by_name:
+                return
+            if name in visiting:
+                return
+            visiting.add(name)
+            for dep_name in by_name[name].dependency:
+                _visit(dep_name)
+            visiting.remove(name)
+            visited.add(name)
+            ordered.append(by_name[name])
+
+        for proto_file in self.input_files:
+            _visit(proto_file.name)
+
+        return ordered
+
+    def _descriptor_dependency_imports(self) -> list[str]:
+        """Relative imports that register foreign-package descriptors first."""
+        file_to_package = {
+            proto_file.name: package_name
+            for package_name, package in self.parent_request.output_packages.items()
+            for proto_file in package.input_files
+        }
+
+        needed: set[str] = set()
+        for proto_file in self.input_files:
+            for dep_name in proto_file.dependency:
+                dep_package = file_to_package.get(dep_name)
+                if dep_package is not None and dep_package != self.package:
+                    needed.add(dep_package)
+
+        imports: set[str] = set()
+        aliases: list[str] = []
+        for dep_package in sorted(needed):
+            ref, _ = get_symbol_reference(
+                package=self.package,
+                imports=imports,
+                source_package=dep_package,
+                symbol="_prereq",
+            )
+            alias = ref.rsplit(".", 1)[0]
+            aliases.append(alias)
+
+        lines: list[str] = []
+        for imp in sorted(imports):
+            lines.append(imp)
+        for alias in aliases:
+            # Keep the import live so ruff F401 does not strip the side-effect load.
+            lines.append(f"_ = {alias}")
+        return lines
+
     @property
     def descriptors(self):
         """Google protobuf library descriptors.
@@ -224,11 +290,12 @@ class OutputTemplate:
         Returns
         -------
         str
-            A list of pool registrations for proto descriptors.
+            Prerequisite package imports followed by pool registrations.
         """
         descriptors: list[str] = []
+        descriptors.extend(self._descriptor_dependency_imports())
 
-        for f in self.input_files:
+        for f in self._ordered_input_files():
             # Remove the source_code_info field since it is not needed at runtime.
             source_code_info: SourceCodeInfo | None = f.source_code_info
             f.source_code_info = None

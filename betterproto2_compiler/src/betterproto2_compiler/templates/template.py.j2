@@ -133,7 +133,7 @@ default_message_pool.register_message("{{ output_file.package }}", "{{ message.p
 {% endfor %}
 
 {% if output_file.settings.google_protobuf_descriptors %}
-{# Add descriptors to Google protobuf's default pool to be more drop-in compatible with other libraries. #}
+{# Register dependency descriptors to Google protobuf's default pool, then this file's FileDescriptorProtos. #}
 {{ output_file.descriptors }}
 {% endif %}
 

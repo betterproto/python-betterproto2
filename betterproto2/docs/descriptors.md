@@ -4,6 +4,8 @@ Google's protoc plugin for Python generated DESCRIPTOR fields that enable reflec
 
 By default, betterproto2 doesn't generate these as it introduces a dependency on `protobuf`. If you're okay with this dependency and want to generate DESCRIPTORs, use the compiler option `python_betterproto2_opt=google_protobuf_descriptors`.
 
+Generated modules register each file's `FileDescriptor` with a shared `DescriptorPool` at import time. Files that import another proto (including `google/protobuf/descriptor.proto` for custom options) first import that proto's generated package so its descriptors are already in the pool. Package-level import cycles are not handled; the proto file graph is expected to be a DAG.
+
 
 ## grpclib Reflection
 
